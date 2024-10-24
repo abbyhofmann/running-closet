@@ -12,6 +12,9 @@ import { Conversation } from '../types';
  *
  * @type {Model<Conversation>}
  */
-const ConversationModel: Model<Conversation> = mongoose.model<Conversation>('Conversation', conversationSchema);
+const ConversationModel: Model<Conversation> = mongoose.model<Conversation>(
+  'Conversation',
+  conversationSchema,
+);
 
 export default ConversationModel;
