@@ -10,6 +10,7 @@ import {
   QuestionResponse,
   Tag,
   UserResponse,
+  User,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
