@@ -257,3 +257,35 @@ export interface ServerToClientEvents {
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (comment: CommentUpdatePayload) => void;
 }
+
+/**
+ * Interface representing a Notification document, which contains:
+ * - _id - The unique identifier for the notification. Optional field
+ * - user: The username of the user that has a notification.
+ * - message_id: The message_id that the notification is for.
+ */
+ export interface Notification {
+  _id?: ObjectId;
+  user: string;
+  messageId: string;
+}
+ 
+ /**
+ * Interface representing an User document, which contains:
+ * - id: The unique identifier for the user.
+ * - username: The unique username for each user.
+ * - email: The email associated with the account.
+ * - password: The an ecrypted version of the user's password for the account.
+ * - deleted: A boolean value representing if the account has been deleted. 
+ * - following: A list of of users that the user follows.
+ * - followers: A list of of users that follow the user.
+ */
+export interface User {
+  _id?: ObjectId;
+  username: string;
+  email: string;
+  password: string;
+  deleted: boolean;
+  following: User[];
+  followers: User[];
+}
