@@ -226,7 +226,7 @@ export interface User {
   username: string;
   email: string;
   password: string;
-  deleted?: boolean;
+  deleted: boolean;
   following: User[];
   followers: User[];
 }

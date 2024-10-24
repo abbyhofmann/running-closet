@@ -24,7 +24,6 @@ const userSchema: Schema = new Schema(
     },
     deleted: {
       type: Boolean,
-      default: false,
     },
     following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
