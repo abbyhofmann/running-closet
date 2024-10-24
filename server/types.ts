@@ -201,6 +201,53 @@ export interface AnswerUpdatePayload {
 }
 
 /**
+ * Interface for the request query to find questions using a search string, which contains:
+ * - order - The order in which to sort the questions
+ * - search - The search string used to find questions
+ * - askedBy - The username of the user who asked the question
+ */
+export interface FindQuestionRequest extends Request {
+  query: {
+    order: OrderType;
+    search: string;
+    askedBy: string;
+  };
+}
+
+/**
+ * Interface for the request parameters when finding a question by its ID.
+ * - qid - The unique identifier of the question.
+ */
+export interface FindQuestionByIdRequest extends Request {
+  params: {
+    qid: string;
+  };
+  query: {
+    username: string;
+  };
+}
+
+/**
+ * Interface for the request body when registering a new user.
+ * - username - The username of the user registering.
+ * - email - The email address of the user registering.
+ * - password - The password of the user registering.
+ */
+export interface RegisterUserRequest {
+  body: {
+    username: string;
+    email: string;
+    password: string;
+  };
+}
+
+/**
+ * Type representing the possible responses for a User-related operation.
+ */
+export type UserResponse = User | { error: string };
+
+
+/**
  * Interface representing the possible events that the server can emit to the client.
  */
 export interface ServerToClientEvents {
