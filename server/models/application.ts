@@ -9,6 +9,7 @@ import {
   Question,
   QuestionResponse,
   Tag,
+  UserResponse,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -393,6 +394,22 @@ export const saveComment = async (comment: Comment): Promise<CommentResponse> =>
     return result;
   } catch (error) {
     return { error: 'Error when saving a comment' };
+  }
+};
+
+/**
+ * Saves a new user to the database.
+ *
+ * @param {User} user - The user to save
+ *
+ * @returns {Promise<UserResponse>} - The saved user, or an error message if the save failed
+ */
+export const saveUser = async (user: User): Promise<UserResponse> => {
+  try {
+    const result = await UserModel.create(user);
+    return result;
+  } catch (error) {
+    return { error: 'Error when saving a user' };
   }
 };
 

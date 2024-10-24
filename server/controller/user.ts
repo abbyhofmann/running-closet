@@ -1,5 +1,6 @@
 import express, { Response } from 'express';
 import { FakeSOSocket, RegisterUserRequest } from '../types';
+import { saveUser } from '../models/application';
 
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -62,34 +63,16 @@ const userController = (socket: FakeSOSocket) => {
     });
     
     try {
-      const user = await newUser.save(); // todo - model off of saveAnswer and saveQuestion functions 
-      res.send({
-        success: true,
-        message: `${username} successfully added.`,
-      });      
+      const userFromDb = await saveUser(newUser); // todo - saveUser method in application.ts 
+
+      if ('error' in userFromDb) {
+        throw new Error(userFromDb.error as string);
+      }
+
+      res.json(userFromDb);
     } catch (err) {
-      res.send({
-        success: false,
-        message: `Server error: ${err}`,
-      });
+      res.status(500).send(`Error when registering user: ${(err as Error).message}`);
     }
-
-    // try {
-    //   const ansFromDb = await saveAnswer(ansInfo);
-
-    //   if ('error' in ansFromDb) {
-    //     throw new Error(ansFromDb.error as string);
-    //   }
-
-      
-    //   if (populatedAns && 'error' in populatedAns) {
-    //     throw new Error(populatedAns.error as string);
-    //   }
-
-    //   res.json(ansFromDb);
-    // } catch (err) {
-    //   res.status(500).send(`Error when adding answer: ${(err as Error).message}`);
-    // }
   };
 
   // add appropriate HTTP verbs and their endpoints to the router.
