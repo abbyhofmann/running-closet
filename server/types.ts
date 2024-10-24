@@ -221,4 +221,23 @@ export interface ServerToClientEvents {
   _id?: ObjectId;
   user: string;
   messageId: string;
+
+ /**
+ * Interface representing an User document, which contains:
+ * - id: The unique identifier for the user.
+ * - username: The unique username for each user.
+ * - email: The email associated with the account.
+ * - password: The an ecrypted version of the user's password for the account.
+ * - deleted: A boolean value representing if the account has been deleted. 
+ * - following: A list of of users that the user follows.
+ * - followers: A list of of users that follow the user.
+ */
+export interface User {
+  _id?: ObjectId;
+  username: string;
+  email: string;
+  password: string;
+  deleted: boolean;
+  following: User[];
+  followers: User[];
 }
