@@ -221,7 +221,8 @@ export interface ServerToClientEvents {
   _id?: ObjectId;
   user: string;
   messageId: string;
-
+}
+ 
  /**
  * Interface representing an User document, which contains:
  * - id: The unique identifier for the user.
