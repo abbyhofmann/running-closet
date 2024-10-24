@@ -210,3 +210,15 @@ export interface ServerToClientEvents {
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (comment: CommentUpdatePayload) => void;
 }
+
+/**
+ * Interface representing a Notification document, which contains:
+ * - _id - The unique identifier for the notification. Optional field
+ * - user: The username of the user that has a notification.
+ * - message_id: The message_id that the notification is for.
+ */
+ export interface Notification {
+  _id?: ObjectId;
+  user: string;
+  messageId: string;
+}
