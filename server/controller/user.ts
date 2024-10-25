@@ -2,8 +2,10 @@ import express, { Response } from 'express';
 import { FakeSOSocket, RegisterUserRequest } from '../types';
 import { saveUser } from '../models/application';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
+
+const SALT_ROUNDS = 10;
 
 const userController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -52,18 +54,18 @@ const userController = (socket: FakeSOSocket) => {
 
     const { username, email, password } = req.body;
 
-    const hash = await bcrypt.hash(password, saltRounds);
-    const newUser = new userModel({
+    const hash = await bcrypt.hash(password, SALT_ROUNDS);
+    const newUser = {
       username,
       email,
       password: hash,
-      deleted: false, 
-      following: [], 
+      deleted: false,
+      following: [],
       followers: [],
-    });
-    
+    };
+
     try {
-      const userFromDb = await saveUser(newUser); // todo - saveUser method in application.ts 
+      const userFromDb = await saveUser(newUser); // todo - saveUser method in application.ts
 
       if ('error' in userFromDb) {
         throw new Error(userFromDb.error as string);
