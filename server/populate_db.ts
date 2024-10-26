@@ -275,6 +275,17 @@ const populate = async () => {
       [c12],
     );
 
+    await questionCreate(
+      Q4_DESC,
+      Q4_TXT,
+      [t3],
+      [a8],
+      'giraffe245',
+      new Date('2024-10-10T14:28:01'),
+      [],
+      [],
+    );
+
     await userCreate(
       'dogLover123',
       'dogsaresuperior@gmail.com',

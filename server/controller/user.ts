@@ -1,6 +1,7 @@
 import express, { Response } from 'express';
 import { FakeSOSocket, RegisterUserRequest } from '../types';
 import { saveUser } from '../models/application';
+import UserModel from '../models/users';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
@@ -34,6 +35,23 @@ const userController = (socket: FakeSOSocket) => {
   }
 
   /**
+   * Checks if there already exists a user with the provided username.
+   * @param username The username to check.
+   * @returns true if the username is available, false otherwise. Considers the username unavailable
+   * if an error occurs.
+   */
+  const isUsernameAvailable = async (username: string): Promise<boolean> => {
+    try {
+      const user = await UserModel.findOne({ username });
+      return !user;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error checking username availability:', error);
+      return false;
+    }
+  };
+
+  /**
    * Adds a new user to the database. The user request and user are
    * validated and then saved. If there is an error, the HTTP response's status is updated.
    *
@@ -51,6 +69,10 @@ const userController = (socket: FakeSOSocket) => {
       res.status(400).send('Invalid email');
       return;
     }
+    if (!(await isUsernameAvailable(req.body.username))) {
+      res.status(400).send('Username already in use');
+      return;
+    }
 
     const { username, email, password } = req.body;
 
@@ -65,7 +87,7 @@ const userController = (socket: FakeSOSocket) => {
     };
 
     try {
-      const userFromDb = await saveUser(newUser); // todo - saveUser method in application.ts
+      const userFromDb = await saveUser(newUser);
 
       if ('error' in userFromDb) {
         throw new Error(userFromDb.error as string);

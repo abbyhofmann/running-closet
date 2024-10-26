@@ -242,6 +242,16 @@ export interface RegisterUserRequest {
 }
 
 /**
+ * Interface for the request query to find user by username.
+ * - username - The username of the user to get.
+ */
+export interface FindUserByUsername extends Request {
+  query: {
+    username: string;
+  };
+}
+
+/**
  * Type representing the possible responses for a User-related operation.
  */
 export type UserResponse = User | { error: string };
