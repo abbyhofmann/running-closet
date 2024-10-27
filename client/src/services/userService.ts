@@ -6,8 +6,9 @@ const USER_API_URL = `${process.env.REACT_APP_SERVER_URL}/user`;
 /**
  * Registers a new user.
  *
- * @param qid - The ID of the question to which the answer is being added.
- * @param ans - The answer object containing the answer details.
+ * @param qid - The username of the user being registered.
+ * @param email - The email of the user being registered.
+ * @param password - The password of the user being regiestered.
  * @throws Error Throws an error if the request fails or the response status is not 200.
  */
 const registerUser = async (username: string, email: string, password: string): Promise<User> => {
