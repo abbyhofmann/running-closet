@@ -151,7 +151,7 @@ export interface ServerToClientEvents {
 
 /**
  * Interface representing the structure of a Conversation object.
- * 
+ *
  * - _id - The unique identifier for the conversation.
  * - users - An array of users who are participating in the conversation.
  */
@@ -162,7 +162,7 @@ export interface Conversation {
 
 /**
  * Interface representing the structure of a Message object.
- * 
+ *
  * - _id - The unique identifier for the message.
  * - messageContent - The content of the message.
  * - conversation - The conversation to which the message belongs.
