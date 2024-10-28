@@ -15,10 +15,14 @@ import {
   saveComment,
   addComment,
   addVoteToQuestion,
+  saveUser,
+  hashPassword,
+  isUsernameAvailable,
 } from '../models/application';
-import { Answer, Question, Tag, Comment } from '../types';
+import { Answer, Question, Tag, Comment, User } from '../types';
 import { T1_DESC, T2_DESC, T3_DESC } from '../data/posts_strings';
 import AnswerModel from '../models/answers';
+import UserModel from '../models/users';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mockingoose = require('mockingoose');
@@ -881,6 +885,76 @@ describe('application module', () => {
           expect(err).toBeInstanceOf(Error);
           if (err instanceof Error) expect(err.message).toBe('Invalid comment');
         }
+      });
+    });
+
+    describe('saveUser', () => {
+      test('saveUser returns new user', async () => {
+        const mockUser = {
+          username: 'husky009',
+          email: 'neuStudent@northeastern.edu',
+          password: 'strongPassword',
+          deleted: false,
+          followers: [],
+          following: [],
+        };
+
+        const result = (await saveUser(mockUser)) as User;
+
+        expect(result._id).toBeDefined();
+        expect(result.username).toEqual(mockUser.username);
+        expect(result.email).toEqual(mockUser.email);
+        expect(result.password).toEqual(mockUser.password);
+        expect(result.deleted).toEqual(mockUser.deleted);
+        expect(result.followers).toEqual(mockUser.followers);
+        expect(result.following).toEqual(mockUser.following);
+      });
+    });
+
+    describe('hashPassword', () => {
+      test('hash password encrypts the password', async () => {
+        const password = 'password';
+        const hashedPassword = (await hashPassword(password)) as string;
+
+        expect(hashedPassword).not.toEqual(password);
+      });
+    });
+
+    describe('isUsernameAvailable', () => {
+      test('isUsernameAvailable returns false when username is not available', async () => {
+        const mockUserFromDb = {
+          _id: new ObjectId('65e9a5c2b26199dbcc3e6dc8'),
+          username: 'husky101',
+          email: 'neuStudent@northeastern.edu',
+          password: 'strongPassword',
+          deleted: false,
+          followers: [],
+          following: [],
+        };
+        mockingoose(UserModel).toReturn(mockUserFromDb, 'findOne');
+        const username = 'husky101';
+        const result = await isUsernameAvailable(username);
+
+        expect(result).toBe(false);
+      });
+
+      test('isUsernameAvailable returns true when username is available', async () => {
+        mockingoose(UserModel).toReturn(null, 'findOne');
+        const username = 'husky101';
+        const result = await isUsernameAvailable(username);
+
+        expect(result).toBe(true);
+      });
+
+      test('isUsernameAvailable returns false when db error occurs', async () => {
+        mockingoose(UserModel).toReturn(
+          new Error('Error when finding user by username'),
+          'findOne',
+        );
+        const username = 'husky101';
+        const result = await isUsernameAvailable(username);
+
+        expect(result).toBe(false);
       });
     });
   });

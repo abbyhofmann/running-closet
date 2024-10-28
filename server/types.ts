@@ -201,6 +201,26 @@ export interface AnswerUpdatePayload {
 }
 
 /**
+ * Interface for the request body when registering a new user.
+ * - username - The username of the user registering.
+ * - email - The email address of the user registering.
+ * - password - The password of the user registering.
+ */
+export interface RegisterUserRequest {
+  body: {
+    username: string;
+    email: string;
+    password: string;
+  };
+}
+
+/**
+ * Type representing the possible responses for a User-related operation.
+ */
+export type UserResponse = User | { error: string };
+
+
+/**
  * Interface representing the possible events that the server can emit to the client.
  */
 export interface ServerToClientEvents {

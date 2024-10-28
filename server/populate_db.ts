@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 import AnswerModel from './models/answers';
 import QuestionModel from './models/questions';
 import TagModel from './models/tags';
-import { Answer, Comment, Question, Tag } from './types';
+import UserModel from './models/users';
+import { Answer, Comment, Question, Tag, User } from './types';
 import {
   Q1_DESC,
   Q1_TXT,
@@ -173,6 +174,31 @@ async function questionCreate(
   return await QuestionModel.create(questionDetail);
 }
 
+async function userCreate(
+  username: string,
+  email: string,
+  password: string,
+  deleted: boolean,
+  following: User[],
+  followers: User[],
+): Promise<User> {
+  if (
+    username === '' ||
+    email === '' ||
+    password === ''
+  )
+    throw new Error('Invalid User Format');
+  const userDetail: User = {
+    username: username,
+    email: email,
+    password: password,
+    deleted: deleted,
+    following: following,
+    followers: followers,
+  }; 
+  return await UserModel.create(userDetail);
+}
+
 /**
  * Populates the database with predefined data.
  * Logs the status of the operation to the console.
@@ -247,6 +273,26 @@ const populate = async () => {
       new Date('2023-03-10T14:28:01'),
       [],
       [c12],
+    );
+
+    await questionCreate(
+      Q4_DESC,
+      Q4_TXT,
+      [t3],
+      [a8],
+      'giraffe245',
+      new Date('2024-10-10T14:28:01'),
+      [],
+      [],
+    );
+
+    await userCreate(
+      'dogLover123',
+      'dogsaresuperior@gmail.com',
+      '1234',
+      false,
+      [],
+      []
     );
 
     console.log('Database populated');
