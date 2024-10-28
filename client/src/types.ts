@@ -160,3 +160,33 @@ export interface Notification {
   user: string;
   messageId: string;
 }
+
+/**
+ * Interface representing the structure of a Conversation object.
+ *
+ * - _id - The unique identifier for the conversation.
+ * - users - An array of users who are participating in the conversation.
+ */
+export interface Conversation {
+  _id?: string;
+  users: User[];
+}
+
+/**
+ * Interface representing the structure of a Message object.
+ *
+ * - _id - The unique identifier for the message.
+ * - messageContent - The content of the message.
+ * - conversation - The conversation to which the message belongs.
+ * - sender - The user who sent the message.
+ * - sentAt - The date and time when the message was sent.
+ * - readBy - An array of users that have read the message.
+ */
+export interface Message {
+  _id?: string;
+  messageContent: string;
+  conversation: Conversation;
+  sender: User;
+  sentAt: Date;
+  readBy: User[];
+}

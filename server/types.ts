@@ -242,3 +242,31 @@ export interface User {
   following: User[];
   followers: User[];
 }
+
+/**
+ * Interface representing a Conversation document, which contains:
+ * - id: The unique identifier for the conversation.
+ * - users: A list of users that are participating in the conversation.
+ */
+export interface Conversation {
+  _id?: ObjectId;
+  users: User[];
+}
+
+/**
+ * Interface representing a Message document, which contains:
+ * - id: The unique identifier for the message.
+ * - messageContent: The content of the message.
+ * - conversation: The conversation to which the message belongs.
+ * - sender: The user who sent the message.
+ * - sentAt: The date and time when the message was sent.
+ * - readBy: A list of users that have read the message.
+ */
+export interface Message {
+  _id?: ObjectId;
+  messageContent: string;
+  conversation: Conversation;
+  sender: User;
+  sentAt: Date;
+  readBy: User[];
+}
