@@ -1,12 +1,7 @@
 import express, { Response } from 'express';
 import { FakeSOSocket, RegisterUserRequest } from '../types';
-import { saveUser } from '../models/application';
+import { saveUser, isUsernameAvailable, hashPassword } from '../models/application';
 import UserModel from '../models/users';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const bcrypt = require('bcrypt');
-
-const SALT_ROUNDS = 10;
 
 const userController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -35,23 +30,6 @@ const userController = (socket: FakeSOSocket) => {
   }
 
   /**
-   * Checks if there already exists a user with the provided username.
-   * @param username The username to check.
-   * @returns true if the username is available, false otherwise. Considers the username unavailable
-   * if an error occurs.
-   */
-  const isUsernameAvailable = async (username: string): Promise<boolean> => {
-    try {
-      const user = await UserModel.findOne({ username });
-      return !user;
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error checking username availability:', error);
-      return false;
-    }
-  };
-
-  /**
    * Adds a new user to the database. The user request and user are
    * validated and then saved. If there is an error, the HTTP response's status is updated.
    *
@@ -76,7 +54,8 @@ const userController = (socket: FakeSOSocket) => {
 
     const { username, email, password } = req.body;
 
-    const hash = await bcrypt.hash(password, SALT_ROUNDS);
+    const hash = await hashPassword(password) as string;
+    
     const newUser = {
       username,
       email,

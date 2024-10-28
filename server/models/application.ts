@@ -18,6 +18,10 @@ import TagModel from './tags';
 import CommentModel from './comments';
 import UserModel from './users';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const bcrypt = require('bcrypt');
+
+
 /**
  * Parses tags from a search string.
  *
@@ -414,6 +418,35 @@ export const saveUser = async (user: User): Promise<UserResponse> => {
     return { error: 'Error when saving a user' };
   }
 };
+
+/**
+   * Checks if there already exists a user with the provided username.
+   * 
+   * @param username The username to check.
+   * @returns true if the username is available, false otherwise. Considers the username unavailable
+   * if an error occurs.
+   */
+export const isUsernameAvailable = async (username: string): Promise<boolean> => {
+  try {
+    const user = await UserModel.findOne({ username });
+    return !user;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error checking username availability:', error);
+    return false;
+  }
+};
+
+/**
+ * Hashes the provided password for secure storage in db.
+ * 
+ * @param password The password to hash.
+ * @returns 
+ */
+export const hashPassword = async (password: string): Promise<string> => {
+  const saltRounds = 10;
+  return await bcrypt.hash(password, saltRounds);
+}
 
 /**
  * Processes a list of tags by removing duplicates, checking for existing tags in the database,

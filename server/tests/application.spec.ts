@@ -15,10 +15,12 @@ import {
   saveComment,
   addComment,
   addVoteToQuestion,
+  saveUser,
 } from '../models/application';
-import { Answer, Question, Tag, Comment } from '../types';
+import { Answer, Question, Tag, Comment, User } from '../types';
 import { T1_DESC, T2_DESC, T3_DESC } from '../data/posts_strings';
 import AnswerModel from '../models/answers';
+import UserModel from '../models/users';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mockingoose = require('mockingoose');
@@ -882,6 +884,32 @@ describe('application module', () => {
           if (err instanceof Error) expect(err.message).toBe('Invalid comment');
         }
       });
+    });
+
+    describe('saveUser', () => {
+      // saveUser = async (user: User): Promise<UserResponse>
+      test('saveUser returns new user', async () => {
+        const mockUser = {
+          username: 'husky009',
+          email: 'neuStudent@northeastern.edu',
+          password: 'strongPassword',
+          deleted: false,
+          followers: [],
+          following: [],
+        };
+
+        const result = (await saveUser(mockUser)) as User;
+
+        expect(result._id).toBeDefined();
+        expect(result.username).toEqual(mockUser.username);
+        expect(result.email).toEqual(mockUser.email);
+        expect(result.password).toEqual(mockUser.password);
+        expect(result.deleted).toEqual(mockUser.deleted);
+        expect(result.followers).toEqual(mockUser.followers);
+        expect(result.following).toEqual(mockUser.following);
+      });
+
+      
     });
   });
 });
