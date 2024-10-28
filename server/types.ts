@@ -219,6 +219,10 @@ export interface RegisterUserRequest {
  */
 export type UserResponse = User | { error: string };
 
+/**
+ * Type representing the possible responses for fetching numerous users.
+ */
+export type MultipleUserResponse = User[] | { error: string };
 
 /**
  * Interface representing the possible events that the server can emit to the client.

@@ -11,6 +11,7 @@ import {
   Tag,
   UserResponse,
   User,
+  MultipleUserResponse,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -693,3 +694,17 @@ export const getTagCountMap = async (): Promise<Map<string, number> | null | { e
     return { error: 'Error when construction tag map' };
   }
 };
+
+/**
+ * Gets a list of all users from the database. 
+ * 
+ * @returns 
+ */
+export const fetchAllUsers = async (): Promise<MultipleUserResponse> => {
+  try {
+    const ulist = await UserModel.find();
+    return ulist;
+  } catch (error) {
+    return { error: 'Error when fetching all users' };
+  }
+}

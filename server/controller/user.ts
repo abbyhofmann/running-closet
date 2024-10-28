@@ -1,6 +1,6 @@
-import express, { Response } from 'express';
-import { FakeSOSocket, RegisterUserRequest } from '../types';
-import { saveUser, isUsernameAvailable, hashPassword } from '../models/application';
+import express, { Request, Response } from 'express';
+import { FakeSOSocket, RegisterUserRequest, User } from '../types';
+import { saveUser, isUsernameAvailable, hashPassword, fetchAllUsers } from '../models/application';
 
 const userController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -77,8 +77,33 @@ const userController = (socket: FakeSOSocket) => {
     }
   };
 
+  /**
+   * Retrieves a list of all users from the database. 
+   * If there is an error, the HTTP response's status is updated.
+   * 
+   * @param req The request object that will be empty
+   * @param res The HTTP response object used to send back the result of the operation.
+   * 
+   * @returns A Promise that resolves to void.
+   */
+  const getAllUsers = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const ulist = await fetchAllUsers();
+
+      if ('error' in ulist) {
+        throw new Error(ulist.error as string);
+      }
+
+      res.json(ulist);
+    } catch (err) {
+      res.status(500).send(`Error when fetching all users: ${(err as Error).message}`);
+    }
+  };
+
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/registerUser', registerUser);
+  router.get('/getAllUsers', getAllUsers);
 
   return router;
 };
