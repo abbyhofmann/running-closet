@@ -1,7 +1,6 @@
 import express, { Response } from 'express';
 import { FakeSOSocket, RegisterUserRequest } from '../types';
 import { saveUser, isUsernameAvailable, hashPassword } from '../models/application';
-import UserModel from '../models/users';
 
 const userController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -54,8 +53,8 @@ const userController = (socket: FakeSOSocket) => {
 
     const { username, email, password } = req.body;
 
-    const hash = await hashPassword(password) as string;
-    
+    const hash = (await hashPassword(password)) as string;
+
     const newUser = {
       username,
       email,

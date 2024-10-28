@@ -20,7 +20,6 @@ import {
 import { Answer, Question, Tag, Comment, User } from '../types';
 import { T1_DESC, T2_DESC, T3_DESC } from '../data/posts_strings';
 import AnswerModel from '../models/answers';
-import UserModel from '../models/users';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mockingoose = require('mockingoose');
@@ -908,8 +907,6 @@ describe('application module', () => {
         expect(result.followers).toEqual(mockUser.followers);
         expect(result.following).toEqual(mockUser.following);
       });
-
-      
     });
   });
 });
