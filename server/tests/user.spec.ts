@@ -2,10 +2,43 @@ import mongoose from 'mongoose';
 import supertest from 'supertest';
 import { app } from '../app';
 import * as util from '../models/application';
+import { User } from '../types';
+import { ObjectId } from 'mongodb';
 
 const saveUserSpy = jest.spyOn(util, 'saveUser');
 const isUsernameAvailableSpy = jest.spyOn(util, 'isUsernameAvailable');
 const hashPasswordSpy = jest.spyOn(util, 'hashPassword');
+const fetchAllUsersSpy = jest.spyOn(util, 'fetchAllUsers');
+
+const user1: User = {
+  _id: new ObjectId('45e9b58910afe6e94fc6e6dc'),
+  username: 'user1',
+  email: 'user1@gmail.com',
+  password: 'password',
+  deleted: false,
+  following: [],
+  followers: [],
+};
+
+const user2: User = {
+  _id: new ObjectId('46e9b58910afe6e94fc6e6dd'),
+  username: 'user2',
+  email: 'user2@gmail.com',
+  password: 'password',
+  deleted: false,
+  following: [],
+  followers: [],
+};
+
+const user3: User = {
+  _id: new ObjectId('47e9b58910afe6e94fc6e6dd'),
+  username: 'user3',
+  email: 'user3@gmail.com',
+  password: 'password',
+  deleted: false,
+  following: [],
+  followers: [],
+};
 
 describe('POST /registerUser', () => {
   afterEach(async () => {
@@ -130,5 +163,35 @@ describe('POST /registerUser', () => {
 
     expect(response.status).toBe(500);
     expect(response.text).toBe('Error when registering user: Error when saving a user');
+  });
+});
+
+describe('GET /getAllUsers', () => { 
+  afterEach(async () => {
+    await mongoose.connection.close(); // Ensure the connection is properly closed
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
+  });
+
+  it('should return all users in the database', async () => {
+    jest.spyOn(util, 'fetchAllUsers').mockResolvedValue([user1, user2, user3]);
+
+    const response = await supertest(app).get('/user/getAllUsers');
+
+    const expectedResponse = [user1, user2, user3].map(user => ({ ...user, _id: user._id?.toString() }));
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(expectedResponse);
+  });
+
+  it('should return database error in response if fetchAllUsers method throws an error', async () => {
+    fetchAllUsersSpy.mockResolvedValue({ error: 'Error when fetching all users' });
+
+    const response = await supertest(app).get('/user/getAllUsers');
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Error when fetching all users: Error when fetching all users');
   });
 });
