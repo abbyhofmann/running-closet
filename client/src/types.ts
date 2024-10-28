@@ -148,3 +148,45 @@ export interface ServerToClientEvents {
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (update: CommentUpdatePayload) => void;
 }
+
+/**
+ * Interface representing a Notification document, which contains:
+ * - _id - The unique identifier for the notification. Optional field.
+ * - user: The username of the user that has a notification.
+ * - message_id: The message_id that the notification is for.
+ */
+export interface Notification {
+  _id?: string;
+  user: string;
+  messageId: string;
+}
+
+/**
+ * Interface representing the structure of a Conversation object.
+ *
+ * - _id - The unique identifier for the conversation.
+ * - users - An array of users who are participating in the conversation.
+ */
+export interface Conversation {
+  _id?: string;
+  users: User[];
+}
+
+/**
+ * Interface representing the structure of a Message object.
+ *
+ * - _id - The unique identifier for the message.
+ * - messageContent - The content of the message.
+ * - conversation - The conversation to which the message belongs.
+ * - sender - The user who sent the message.
+ * - sentAt - The date and time when the message was sent.
+ * - readBy - An array of users that have read the message.
+ */
+export interface Message {
+  _id?: string;
+  messageContent: string;
+  conversation: Conversation;
+  sender: User;
+  sentAt: Date;
+  readBy: User[];
+}

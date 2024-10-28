@@ -114,4 +114,21 @@ describe('POST /registerUser', () => {
     expect(response.status).toBe(400);
     expect(response.text).toBe('Username already in use');
   });
+
+  it('should return database error in response if saveUser method throws an error', async () => {
+    const mockReqBody = {
+      username: 'user1',
+      email: 'this.is.an.email@gmail.com',
+      password: '1234abcd',
+    };
+
+    isUsernameAvailableSpy.mockResolvedValueOnce(true);
+    hashPasswordSpy.mockResolvedValue('thisPasswordIsHashed');
+    saveUserSpy.mockResolvedValueOnce({ error: 'Error when saving a user' });
+
+    const response = await supertest(app).post('/user/registerUser').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Error when registering user: Error when saving a user');
+  });
 });
