@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import supertest from 'supertest';
+import { ObjectId } from 'mongodb';
 import { app } from '../app';
 import * as util from '../models/application';
 import { User } from '../types';
-import { ObjectId } from 'mongodb';
 
 const saveUserSpy = jest.spyOn(util, 'saveUser');
 const isUsernameAvailableSpy = jest.spyOn(util, 'isUsernameAvailable');
@@ -166,7 +166,7 @@ describe('POST /registerUser', () => {
   });
 });
 
-describe('GET /getAllUsers', () => { 
+describe('GET /getAllUsers', () => {
   afterEach(async () => {
     await mongoose.connection.close(); // Ensure the connection is properly closed
   });
@@ -180,7 +180,10 @@ describe('GET /getAllUsers', () => {
 
     const response = await supertest(app).get('/user/getAllUsers');
 
-    const expectedResponse = [user1, user2, user3].map(user => ({ ...user, _id: user._id?.toString() }));
+    const expectedResponse = [user1, user2, user3].map(user => ({
+      ...user,
+      _id: user._id?.toString(),
+    }));
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual(expectedResponse);

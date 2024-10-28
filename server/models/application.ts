@@ -696,9 +696,9 @@ export const getTagCountMap = async (): Promise<Map<string, number> | null | { e
 };
 
 /**
- * Gets a list of all users from the database. 
- * 
- * @returns 
+ * Gets a list of all users from the database.
+ *
+ * @returns
  */
 export const fetchAllUsers = async (): Promise<MultipleUserResponse> => {
   try {
@@ -707,4 +707,4 @@ export const fetchAllUsers = async (): Promise<MultipleUserResponse> => {
   } catch (error) {
     return { error: 'Error when fetching all users' };
   }
-}
+};

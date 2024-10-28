@@ -22,8 +22,8 @@ const registerUser = async (username: string, email: string, password: string): 
 };
 
 /**
- * Gets all the users from the database. 
- * 
+ * Gets all the users from the database.
+ *
  * @throws Error Throws an error if the request fails or the response status is not 200.
  */
 const getAllUsers = async (): Promise<User[]> => {

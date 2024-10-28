@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { FakeSOSocket, RegisterUserRequest, User } from '../types';
+import { FakeSOSocket, RegisterUserRequest } from '../types';
 import { saveUser, isUsernameAvailable, hashPassword, fetchAllUsers } from '../models/application';
 
 const userController = (socket: FakeSOSocket) => {
@@ -78,12 +78,12 @@ const userController = (socket: FakeSOSocket) => {
   };
 
   /**
-   * Retrieves a list of all users from the database. 
+   * Retrieves a list of all users from the database.
    * If there is an error, the HTTP response's status is updated.
-   * 
+   *
    * @param req The request object that will be empty
    * @param res The HTTP response object used to send back the result of the operation.
-   * 
+   *
    * @returns A Promise that resolves to void.
    */
   const getAllUsers = async (req: Request, res: Response): Promise<void> => {
@@ -99,7 +99,6 @@ const userController = (socket: FakeSOSocket) => {
       res.status(500).send(`Error when fetching all users: ${(err as Error).message}`);
     }
   };
-
 
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/registerUser', registerUser);
