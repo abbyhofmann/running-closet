@@ -749,3 +749,39 @@ export const fetchUserByUsername = async (username: string): Promise<UserRespons
     return { error: `Error when fetching user: ${(error as Error).message}` };
   }
 };
+
+/**
+ * Deletes a user by setting the user's deleted field to true.
+ *
+ * @param uid The id of the user being deleted.
+ * @returns A Promise that resolves to the deleted user, or an error message if the operation fails.
+ */
+export const updateDeletedStatus = async (uid: string): Promise<UserResponse> => {
+  const updateOperation = [
+    {
+      $set: {
+        deleted: true,
+      },
+    },
+  ];
+
+  try {
+    const result = await UserModel.findOneAndUpdate({ _id: uid }, updateOperation, {
+      new: true,
+    });
+
+    if (!result) {
+      return { error: 'User not found!' };
+    }
+
+    if (!result.deleted) {
+      return { error: 'User not deleted!' };
+    }
+
+    return result;
+  } catch (err) {
+    return {
+      error: `Error when deleting user with id ${uid}`,
+    };
+  }
+};

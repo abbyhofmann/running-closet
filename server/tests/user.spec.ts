@@ -42,6 +42,7 @@ const user3: User = {
   following: [],
   followers: [],
 };
+const updateDeletedStatusSpy = jest.spyOn(util, 'updateDeletedStatus');
 
 describe('POST /registerUser', () => {
   beforeAll(() => {
@@ -359,5 +360,79 @@ describe('POST /loginUser', () => {
     expect(response.text).toBe(
       'Error when logging in user: Error when fetching user: Failed to fetch user with username jack_sparrow',
     );
+  });
+});
+
+describe('POST /deleteUser', () => {
+  afterEach(async () => {
+    await mongoose.connection.close(); // Ensure the connection is properly closed
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
+  });
+
+  it('should return invalid request error if request body is empty', async () => {
+    const mockReqBody = {};
+
+    const response = await supertest(app).post('/user/deleteUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid request');
+  });
+
+  it('should return invalid request error if uid is missing', async () => {
+    const mockReqBody = {
+      uid: '',
+    };
+
+    const response = await supertest(app).post('/user/deleteUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid request');
+  });
+
+  it('should return error if updateDeletedStatus errors', async () => {
+    const mockReqBody = {
+      uid: 'someUid',
+    };
+
+    updateDeletedStatusSpy.mockResolvedValueOnce({ error: 'User not found!' });
+
+    const response = await supertest(app).post('/user/deleteUser').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Error when deleting user someUid: User not found!');
+  });
+
+  it('should return user with deleted field updated upon successful deletion', async () => {
+    const validUid = new mongoose.Types.ObjectId();
+    const mockReqBody = {
+      uid: validUid.toString(),
+    };
+
+    const updatedUser = {
+      _id: validUid,
+      username: 'humptydumpty',
+      email: 'fairytalechar@gmail.com',
+      password: 'hashedPassworddddd',
+      deleted: true,
+      following: [],
+      followers: [],
+    };
+
+    updateDeletedStatusSpy.mockResolvedValueOnce(updatedUser);
+
+    const response = await supertest(app).post('/user/deleteUser').send(mockReqBody);
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      _id: validUid.toString(),
+      username: 'humptydumpty',
+      email: 'fairytalechar@gmail.com',
+      password: 'hashedPassworddddd',
+      deleted: true,
+      following: [],
+      followers: [],
+    });
   });
 });

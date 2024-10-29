@@ -227,6 +227,16 @@ export interface LoginUserRequest {
 }
 
 /**
+ * Interface for the request body when deleting a user.
+ * - uid - The unique id of the user being deleted.
+ */
+export interface DeleteUserRequest {
+  body: {
+    uid: string;
+  };
+}
+
+/**
  * Type representing the possible responses for a User-related operation.
  */
 export type UserResponse = User | { error: string };

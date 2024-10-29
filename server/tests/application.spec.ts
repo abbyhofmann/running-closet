@@ -20,6 +20,7 @@ import {
   isUsernameAvailable,
   fetchAllUsers,
   fetchUserByUsername,
+  updateDeletedStatus,
 } from '../models/application';
 import { Answer, Question, Tag, Comment, User } from '../types';
 import { T1_DESC, T2_DESC, T3_DESC } from '../data/posts_strings';
@@ -1055,6 +1056,78 @@ describe('application module', () => {
         expect(result).toEqual({
           error: `Error when fetching user: Failed to fetch user with username djKhaledRules`,
         });
+      });
+    });
+
+    describe('updateDeletedStatus', () => {
+      test('update deleted status should return user with deleted field set to true', async () => {
+        const mockUserFromDb = {
+          _id: new ObjectId('65e9a5c2b26199dbcc3e6dc8'),
+          username: 'husky101',
+          email: 'neuStudent@northeastern.edu',
+          password: 'strongPassword',
+          deleted: false,
+          followers: [],
+          following: [],
+        };
+
+        mockingoose(UserModel).toReturn(
+          {
+            _id: mockUserFromDb._id.toString(),
+            username: 'husky101',
+            email: 'neuStudent@northeastern.edu',
+            password: 'strongPassword',
+            deleted: true,
+            followers: [],
+            following: [],
+          },
+          'findOneAndUpdate',
+        );
+
+        const result = (await updateDeletedStatus('someUserId')) as User;
+
+        expect(result._id?.toString()).toBe(mockUserFromDb._id.toString());
+        expect(result.username).toBe('husky101');
+        expect(result.email).toBe('neuStudent@northeastern.edu');
+        expect(result.password).toBe('strongPassword');
+        expect(result.deleted).toBe(true);
+        expect(result.followers).toEqual([]);
+        expect(result.following).toEqual([]);
+      });
+
+      test('updateDeletedStatus should return an error when there is an issue with finding and updating', async () => {
+        mockingoose(UserModel).toReturn(new Error('Database error'), 'findOneAndUpdate');
+
+        const result = await updateDeletedStatus('someUserId');
+
+        expect(result).toEqual({
+          error: `Error when deleting user with id someUserId`,
+        });
+      });
+
+      test('updateDeletedStatus should return an error if the deleted field is not true after db update', async () => {
+        const mockUserFromDb = {
+          _id: new ObjectId('65e9a5c2b26199dbcc3e6dc8'),
+          username: 'husky101',
+          email: 'neuStudent@northeastern.edu',
+          password: 'strongPassword',
+          deleted: false,
+          followers: [],
+          following: [],
+        };
+        mockingoose(UserModel).toReturn(mockUserFromDb, 'findOneAndUpdate');
+
+        const result = await updateDeletedStatus('someUserId');
+
+        expect(result).toEqual({ error: 'User not deleted!' });
+      });
+
+      test('updateDeletedStatus should return an error when the user is not found', async () => {
+        mockingoose(UserModel).toReturn(null, 'findOneAndUpdate');
+
+        const result = await updateDeletedStatus('someUserId');
+
+        expect(result).toEqual({ error: 'User not found!' });
       });
     });
   });

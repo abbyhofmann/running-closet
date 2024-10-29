@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { FakeSOSocket, RegisterUserRequest, LoginUserRequest } from '../types';
+import { FakeSOSocket, RegisterUserRequest, LoginUserRequest, DeleteUserRequest } from '../types';
 import {
   saveUser,
   isUsernameAvailable,
@@ -8,6 +8,7 @@ import {
   fetchUserByUsername,
   comparePasswords,
   generateJwt,
+  updateDeletedStatus,
 } from '../models/application';
 
 const userController = (socket: FakeSOSocket) => {
@@ -168,10 +169,39 @@ const userController = (socket: FakeSOSocket) => {
     }
   };
 
+  /**
+   * Deletes the requested user from the db; here, deleting involves updating the user's deleted field to
+   * be true.
+   * @param req The DeleteUserRequest object containing the uid of the user to delete.
+   * @param res The HTTP response object used to send back the result of the operation.
+   * @returns A Promise that resolves to void.
+   */
+  const deleteUser = async (req: DeleteUserRequest, res: Response): Promise<void> => {
+    if (!req.body.uid) {
+      res.status(400).send('Invalid request');
+      return;
+    }
+
+    const { uid } = req.body;
+
+    try {
+      const result = await updateDeletedStatus(uid);
+
+      if (result && 'error' in result) {
+        throw new Error(result.error as string);
+      }
+
+      res.json(result);
+    } catch (err) {
+      res.status(500).send(`Error when deleting user ${uid}: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/registerUser', registerUser);
   router.post('/loginUser', loginUser);
   router.get('/getAllUsers', getAllUsers);
+  router.post('/deleteUser', deleteUser);
 
   return router;
 };
