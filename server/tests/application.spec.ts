@@ -18,6 +18,7 @@ import {
   saveUser,
   hashPassword,
   isUsernameAvailable,
+  fetchAllUsers,
 } from '../models/application';
 import { Answer, Question, Tag, Comment, User } from '../types';
 import { T1_DESC, T2_DESC, T3_DESC } from '../data/posts_strings';
@@ -138,6 +139,36 @@ const QUESTIONS: Question[] = [
     comments: [],
   },
 ];
+
+const user1: User = {
+  _id: new ObjectId('45e9b58910afe6e94fc6e6dc'),
+  username: 'user1',
+  email: 'user1@gmail.com',
+  password: 'password',
+  deleted: false,
+  following: [],
+  followers: [],
+};
+
+const user2: User = {
+  _id: new ObjectId('46e9b58910afe6e94fc6e6dd'),
+  username: 'user2',
+  email: 'user2@gmail.com',
+  password: 'password',
+  deleted: false,
+  following: [user1],
+  followers: [user1],
+};
+
+const user3: User = {
+  _id: new ObjectId('47e9b58910afe6e94fc6e6dd'),
+  username: 'user3',
+  email: 'user3@gmail.com',
+  password: 'password',
+  deleted: false,
+  following: [user1, user2],
+  followers: [],
+};
 
 describe('application module', () => {
   beforeEach(() => {
@@ -887,7 +918,9 @@ describe('application module', () => {
         }
       });
     });
+  });
 
+  describe('userModel', () => {
     describe('saveUser', () => {
       test('saveUser returns new user', async () => {
         const mockUser = {
@@ -955,6 +988,26 @@ describe('application module', () => {
         const result = await isUsernameAvailable(username);
 
         expect(result).toBe(false);
+      });
+    });
+    describe('fetchAllUsers', () => {
+      test('fetchAllUsers should return all users', async () => {
+        mockingoose(UserModel).toReturn([user1, user2, user3], 'find');
+
+        const result = (await fetchAllUsers()) as User[];
+
+        expect(result.length).toEqual(3);
+        expect(result[0]._id?.toString()).toEqual('45e9b58910afe6e94fc6e6dc');
+        expect(result[1]._id?.toString()).toEqual('46e9b58910afe6e94fc6e6dd');
+        expect(result[2]._id?.toString()).toEqual('47e9b58910afe6e94fc6e6dd');
+      });
+
+      test('fetchAllUsers should return an object with error if find throws an error', async () => {
+        mockingoose(UserModel).toReturn(new Error('error'), 'find');
+
+        const result = await fetchAllUsers();
+
+        expect(result).toEqual({ error: 'Error when fetching all users' });
       });
     });
   });

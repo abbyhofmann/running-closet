@@ -21,4 +21,17 @@ const registerUser = async (username: string, email: string, password: string): 
   return res.data;
 };
 
-export default registerUser;
+/**
+ * Gets all the users from the database.
+ *
+ * @throws Error Throws an error if the request fails or the response status is not 200.
+ */
+const getAllUsers = async (): Promise<User[]> => {
+  const res = await api.get(`${USER_API_URL}/getAllUsers`);
+  if (res.status !== 200) {
+    throw new Error('Error while fetching all users');
+  }
+  return res.data;
+};
+
+export { registerUser, getAllUsers };
