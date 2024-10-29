@@ -1,6 +1,14 @@
 import express, { Request, Response } from 'express';
-import { FakeSOSocket, RegisterUserRequest } from '../types';
-import { saveUser, isUsernameAvailable, hashPassword, fetchAllUsers } from '../models/application';
+import { FakeSOSocket, RegisterUserRequest, LoginUserRequest } from '../types';
+import {
+  saveUser,
+  isUsernameAvailable,
+  hashPassword,
+  fetchAllUsers,
+  fetchUserByUsername,
+  comparePasswords,
+  generateJwt,
+} from '../models/application';
 
 const userController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -8,18 +16,33 @@ const userController = (socket: FakeSOSocket) => {
   /**
    * Checks if the provided register user request contains the required fields.
    *
-   * @param req The request object containing the answer user.
+   * @param req The request object containing the new user's username, email, and password.
    *
    * @returns `true` if the request is valid, otherwise `false`.
    */
-  function isRequestValid(req: RegisterUserRequest): boolean {
+  function isRegisterRequestValid(req: RegisterUserRequest): boolean {
     return !!req.body.username && !!req.body.email && !!req.body.password;
+  }
+
+  /**
+   * Checks if the provided login user request contains the required fields.
+   *
+   * @param req The request object containing the user's username and password.
+   * @returns `true` if the request is valid, otherwise `false`.
+   */
+  function isLoginRequestValid(req: LoginUserRequest): boolean {
+    return (
+      !!req.body.username &&
+      !!req.body.password &&
+      req.body.username?.trim() !== '' &&
+      req.body.password?.trim() !== ''
+    );
   }
 
   /**
    * Checks if the provided email is a valid email using regular expressions.
    *
-   * @param ans The email string to validate.
+   * @param email The email string to validate.
    *
    * @returns `true` if the email is valid, otherwise `false`.
    */
@@ -29,16 +52,17 @@ const userController = (socket: FakeSOSocket) => {
   }
 
   /**
-   * Adds a new user to the database. The user request and user are
-   * validated and then saved. If there is an error, the HTTP response's status is updated.
+   * Adds a new user to the database. The user request and user are validated and then saved, and a JWT is
+   * created. If there is an error, the HTTP response's status is updated.
    *
    * @param req The RegisterUserRequest object containing the User data.
-   * @param res The HTTP response object used to send back the result of the operation.
+   * @param res The HTTP response object used to send back the result of the operation. The response object contains
+   * the new user and the JWT.
    *
    * @returns A Promise that resolves to void.
    */
   const registerUser = async (req: RegisterUserRequest, res: Response): Promise<void> => {
-    if (!isRequestValid(req)) {
+    if (!isRegisterRequestValid(req)) {
       res.status(400).send('Invalid register request');
       return;
     }
@@ -71,9 +95,53 @@ const userController = (socket: FakeSOSocket) => {
         throw new Error(userFromDb.error as string);
       }
 
-      res.json(userFromDb);
+      // generate JWT
+      const token = await generateJwt(userFromDb._id);
+
+      res.json({ userFromDb, token });
     } catch (err) {
       res.status(500).send(`Error when registering user: ${(err as Error).message}`);
+    }
+  };
+
+  /**
+   * Logs in a user. The user request and user are validated and then saved. A JWT is created for the logged in
+   * user. If there is an error, the HTTP response's status is updated.
+   *
+   * @param req The LoginUserRequest object containing the User data.
+   * @param res The HTTP response object used to send back the result of the operation. The response object contains
+   * the user and the JWT.
+   *
+   * @returns A Promise that resolves to void.
+   */
+  const loginUser = async (req: LoginUserRequest, res: Response): Promise<void> => {
+    if (!isLoginRequestValid(req)) {
+      res.status(400).send('Invalid login request');
+      return;
+    }
+
+    const { username, password } = req.body;
+
+    try {
+      const user = await fetchUserByUsername(username);
+
+      if ('error' in user) {
+        throw new Error(user.error as string);
+      }
+
+      // check if the password from the db matches the provided password
+      const correctPassword = (await comparePasswords(password, user.password)) as boolean;
+      if (!correctPassword) {
+        res.status(400).send('Incorrect password');
+        return;
+      }
+
+      // generate JWT
+      const token = await generateJwt(user._id);
+
+      res.json({ user, token });
+    } catch (err) {
+      res.status(500).send(`Error when logging in user: ${(err as Error).message}`);
     }
   };
 
@@ -102,6 +170,7 @@ const userController = (socket: FakeSOSocket) => {
 
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/registerUser', registerUser);
+  router.post('/loginUser', loginUser);
   router.get('/getAllUsers', getAllUsers);
 
   return router;

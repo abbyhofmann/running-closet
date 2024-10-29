@@ -8,6 +8,9 @@ import { User } from '../types';
 const saveUserSpy = jest.spyOn(util, 'saveUser');
 const isUsernameAvailableSpy = jest.spyOn(util, 'isUsernameAvailable');
 const hashPasswordSpy = jest.spyOn(util, 'hashPassword');
+const generateJwtSpy = jest.spyOn(util, 'generateJwt');
+const fetchUserByUsernameSpy = jest.spyOn(util, 'fetchUserByUsername');
+const comparePasswordsSpy = jest.spyOn(util, 'comparePasswords');
 const fetchAllUsersSpy = jest.spyOn(util, 'fetchAllUsers');
 
 const user1: User = {
@@ -41,11 +44,15 @@ const user3: User = {
 };
 
 describe('POST /registerUser', () => {
+  beforeAll(() => {
+    process.env.JWT_SECRET = 'testSecret';
+  });
   afterEach(async () => {
     await mongoose.connection.close(); // Ensure the connection is properly closed
   });
 
   afterAll(async () => {
+    delete process.env.JWT_SECRET;
     await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
   });
 
@@ -98,7 +105,6 @@ describe('POST /registerUser', () => {
     expect(response.text).toBe('Invalid email');
   });
 
-  // todo - this test will need to be updated once the JWT work gets added
   it('should return user object and jwt upon valid request', async () => {
     const validUid = new mongoose.Types.ObjectId();
     const mockReqBody = {
@@ -117,20 +123,26 @@ describe('POST /registerUser', () => {
       followers: [],
     };
 
+    const generatedToken = await util.generateJwt(mockUserFromDb._id);
+
     isUsernameAvailableSpy.mockResolvedValue(true);
     saveUserSpy.mockResolvedValue(mockUserFromDb);
     hashPasswordSpy.mockResolvedValue('hashedPassworddddd');
+    generateJwtSpy.mockResolvedValue(generatedToken);
 
     const response = await supertest(app).post('/user/registerUser').send(mockReqBody);
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
-      _id: validUid.toString(),
-      username: 'humptydumpty',
-      email: 'fairytalechar@gmail.com',
-      password: 'hashedPassworddddd',
-      deleted: false,
-      following: [],
-      followers: [],
+      userFromDb: {
+        _id: validUid.toString(),
+        username: 'humptydumpty',
+        email: 'fairytalechar@gmail.com',
+        password: 'hashedPassworddddd',
+        deleted: false,
+        following: [],
+        followers: [],
+      },
+      token: generatedToken,
     });
   });
 
@@ -196,5 +208,156 @@ describe('GET /getAllUsers', () => {
 
     expect(response.status).toBe(500);
     expect(response.text).toBe('Error when fetching all users: Error when fetching all users');
+  });
+});
+
+describe('POST /loginUser', () => {
+  beforeAll(() => {
+    process.env.JWT_SECRET = 'testSecret';
+  });
+  afterEach(async () => {
+    await mongoose.connection.close(); // Ensure the connection is properly closed
+  });
+
+  afterAll(async () => {
+    delete process.env.JWT_SECRET;
+    await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
+  });
+
+  it('should return invalid request error if password is missing', async () => {
+    const mockReqBody = {
+      username: 'jack_sparrow',
+    };
+
+    const response = await supertest(app).post('/user/loginUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid login request');
+  });
+
+  it('should return invalid request error if username is missing', async () => {
+    const mockReqBody = {
+      password: 'i$landLyfe',
+    };
+
+    const response = await supertest(app).post('/user/loginUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid login request');
+  });
+
+  it('should return invalid request error if password is empty string', async () => {
+    const mockReqBody = {
+      username: 'jack_sparrow',
+      password: ' ',
+    };
+
+    const response = await supertest(app).post('/user/loginUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid login request');
+  });
+
+  it('should return invalid request error if username is empty string', async () => {
+    const mockReqBody = {
+      username: ' ',
+      password: 'i$landLyfe',
+    };
+
+    const response = await supertest(app).post('/user/loginUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid login request');
+  });
+
+  it('should return user object and jwt upon valid login request', async () => {
+    const validUid = new mongoose.Types.ObjectId();
+    const mockReqBody = {
+      username: 'jack_sparrow',
+      password: 'i$landLyfe',
+    };
+
+    const mockUserFromDb = {
+      _id: validUid,
+      username: 'jack_sparrow',
+      email: 'i_am_a_pirate@hotmail.com',
+      password: 'hashedPassworddddd',
+      deleted: false,
+      following: [],
+      followers: [],
+    };
+
+    const generatedToken = 'generatedJwtToken';
+
+    fetchUserByUsernameSpy.mockResolvedValue(mockUserFromDb);
+    comparePasswordsSpy.mockResolvedValue(true);
+    generateJwtSpy.mockResolvedValue(generatedToken);
+
+    const response = await supertest(app).post('/user/loginUser').send(mockReqBody);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      user: {
+        _id: validUid.toString(),
+        username: 'jack_sparrow',
+        email: 'i_am_a_pirate@hotmail.com',
+        password: 'hashedPassworddddd',
+        deleted: false,
+        following: [],
+        followers: [],
+      },
+      token: generatedToken,
+    });
+  });
+
+  it('should return request error if passwords do not match', async () => {
+    const validUid = new mongoose.Types.ObjectId();
+    const mockReqBody = {
+      username: 'jack_sparrow',
+      password: 'i$landLyfe',
+    };
+
+    const mockUserFromDb = {
+      _id: validUid,
+      username: 'jack_sparrow',
+      email: 'i_am_a_pirate@hotmail.com',
+      password: 'hashedPassworddddd',
+      deleted: false,
+      following: [],
+      followers: [],
+    };
+
+    const generatedToken = 'generatedJwtToken';
+
+    fetchUserByUsernameSpy.mockResolvedValue(mockUserFromDb);
+    comparePasswordsSpy.mockResolvedValue(false);
+    generateJwtSpy.mockResolvedValue(generatedToken);
+
+    const response = await supertest(app).post('/user/loginUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Incorrect password');
+  });
+
+  it('should return 500 if user is not fetched', async () => {
+    const mockReqBody = {
+      username: 'jack_sparrow',
+      password: 'i$landLyfe',
+    };
+
+    const generatedToken = 'generatedJwtToken';
+
+    fetchUserByUsernameSpy.mockResolvedValue({
+      error: `Error when fetching user: Failed to fetch user with username jack_sparrow`,
+    });
+    comparePasswordsSpy.mockResolvedValue(true);
+    generateJwtSpy.mockResolvedValue(generatedToken);
+
+    const response = await supertest(app).post('/user/loginUser').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe(
+      'Error when logging in user: Error when fetching user: Failed to fetch user with username jack_sparrow',
+    );
   });
 });

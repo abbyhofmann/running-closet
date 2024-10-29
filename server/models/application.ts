@@ -22,6 +22,9 @@ import UserModel from './users';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const jwt = require('jsonwebtoken');
+
 /**
  * Parses tags from a search string.
  *
@@ -449,6 +452,27 @@ export const hashPassword = async (password: string): Promise<string> => {
 };
 
 /**
+ * Compares a given password string with a hashed password string, returning true if they are the same.
+ *
+ * @param password The non-hashed password.
+ * @param hashedPassword The hashed password.
+ * @returns boolean indicating if the passwords represent the same string.
+ */
+export const comparePasswords = async (
+  password: string,
+  hashedPassword: string,
+): Promise<boolean> => bcrypt.compare(password, hashedPassword);
+
+/**
+ * Generates a JWT; generated with user logs in or registers.
+ *
+ * @param uid The unique id of the user logging in/registering.
+ * @returns The generated token.
+ */
+export const generateJwt = async (uid: ObjectId | undefined): Promise<string> =>
+  jwt.sign({ id: uid }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+/**
  * Processes a list of tags by removing duplicates, checking for existing tags in the database,
  * and adding non-existing tags. Returns an array of the existing or newly added tags.
  * If an error occurs during the process, it is logged, and an empty array is returned.
@@ -706,5 +730,22 @@ export const fetchAllUsers = async (): Promise<MultipleUserResponse> => {
     return ulist;
   } catch (error) {
     return { error: 'Error when fetching all users' };
+  }
+};
+
+/**
+ * Fetches a user by their username.
+ * @param username The username of the user being fetched.
+ * @returns The user or an error if the user is not found.
+ */
+export const fetchUserByUsername = async (username: string): Promise<UserResponse> => {
+  try {
+    const user = await UserModel.findOne({ username });
+    if (!user) {
+      throw new Error(`Failed to fetch user with username ${username}`);
+    }
+    return user;
+  } catch (error) {
+    return { error: `Error when fetching user: ${(error as Error).message}` };
   }
 };

@@ -215,6 +215,18 @@ export interface RegisterUserRequest {
 }
 
 /**
+ * Interface for the request body when logging in as a user.
+ * - username - The username of the user logging in.
+ * - password - The password of the user logging in.
+ */
+export interface LoginUserRequest {
+  body: {
+    username: string;
+    password: string;
+  }
+}
+
+/**
  * Type representing the possible responses for a User-related operation.
  */
 export type UserResponse = User | { error: string };

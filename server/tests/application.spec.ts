@@ -19,6 +19,7 @@ import {
   hashPassword,
   isUsernameAvailable,
   fetchAllUsers,
+  fetchUserByUsername,
 } from '../models/application';
 import { Answer, Question, Tag, Comment, User } from '../types';
 import { T1_DESC, T2_DESC, T3_DESC } from '../data/posts_strings';
@@ -920,7 +921,7 @@ describe('application module', () => {
     });
   });
 
-  describe('userModel', () => {
+  describe('User model', () => {
     describe('saveUser', () => {
       test('saveUser returns new user', async () => {
         const mockUser = {
@@ -1008,6 +1009,52 @@ describe('application module', () => {
         const result = await fetchAllUsers();
 
         expect(result).toEqual({ error: 'Error when fetching all users' });
+      });
+    });
+
+    describe('fetchUserByUsername', () => {
+      test('fetchUserByUsername returns user', async () => {
+        const mockUser = {
+          _id: new ObjectId('507f191e810c19729de860ea'),
+          username: 'husky009',
+          email: 'neuStudent@northeastern.edu',
+          password: 'strongPassword',
+          deleted: false,
+          followers: [],
+          following: [],
+        };
+
+        mockingoose(UserModel).toReturn(mockUser, 'findOne');
+
+        const result = (await fetchUserByUsername('husky009')) as User;
+        expect(result._id?.toString()).toEqual(mockUser._id.toString());
+        expect(result.username).toEqual(mockUser.username);
+        expect(result.email).toEqual(mockUser.email);
+        expect(result.password).toEqual(mockUser.password);
+        expect(result.deleted).toEqual(mockUser.deleted);
+        expect(result.followers).toEqual(mockUser.followers);
+        expect(result.following).toEqual(mockUser.following);
+      });
+
+      test('fetchUserByUsername returns error if findOne errors', async () => {
+        mockingoose(UserModel).toReturn(
+          new Error(`Failed to fetch user with username djKhaledRules`),
+          'findOne',
+        );
+
+        const result = (await fetchUserByUsername('djKhaledRules')) as User;
+        expect(result).toEqual({
+          error: `Error when fetching user: Failed to fetch user with username djKhaledRules`,
+        });
+      });
+
+      test('fetchUserByUsername returns error if findOne returns null', async () => {
+        mockingoose(UserModel).toReturn(null, 'findOne');
+
+        const result = (await fetchUserByUsername('djKhaledRules')) as User;
+        expect(result).toEqual({
+          error: `Error when fetching user: Failed to fetch user with username djKhaledRules`,
+        });
       });
     });
   });

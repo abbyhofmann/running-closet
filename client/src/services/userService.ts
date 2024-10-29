@@ -34,4 +34,21 @@ const getAllUsers = async (): Promise<User[]> => {
   return res.data;
 };
 
-export { registerUser, getAllUsers };
+/**
+ * Logs in a new user.
+ *
+ * @param username - The username of the user logging in.
+ * @param password - The password of the user logging in.
+ * @throws Error Throws an error if the request fails or the response status is not 200.
+ */
+const loginUser = async (username: string, password: string): Promise<User> => {
+  const data = { username, password };
+
+  const res = await api.post(`${USER_API_URL}/loginUser`, data);
+  if (res.status !== 200) {
+    throw new Error('Error while logging in a user');
+  }
+  return res.data;
+};
+
+export { registerUser, loginUser, getAllUsers };
