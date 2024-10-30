@@ -153,12 +153,12 @@ export interface ServerToClientEvents {
  * Interface representing a Notification document, which contains:
  * - _id - The unique identifier for the notification. Optional field.
  * - user: The username of the user that has a notification.
- * - message_id: The message_id that the notification is for.
+ * - message: The message_id that the notification is for.
  */
 export interface Notification {
   _id?: string;
   user: string;
-  messageId: string;
+  message: Message;
 }
 
 /**
