@@ -3,10 +3,21 @@ import { Socket } from 'socket.io-client';
 export type FakeSOSocket = Socket<ServerToClientEvents>;
 
 /**
- * Represents a user in the application.
+ * Interface representing a User, which contains:
+ * - username - The unique identifier of the user.
+ * - email - The email of the user.
+ * - password - The password of the user.
+ * - deleted - Boolean inidicating if this user has been deleted.
+ * - following - Usernames of users that this user is following.
+ * - followers - Usernames of users that are following this user.
  */
 export interface User {
   username: string;
+  email: string;
+  password: string;
+  deleted: boolean;
+  following: User[];
+  followers: User[];
 }
 
 /**

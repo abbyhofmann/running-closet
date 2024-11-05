@@ -123,13 +123,18 @@ const userController = (socket: FakeSOSocket) => {
       const user = await fetchUserByUsername(username);
 
       if ('error' in user) {
+        const userErrorString: string = user.error as string;
+        if (userErrorString.includes('Failed to fetch user with username')) {
+          res.status(401).send(userErrorString);
+          return;
+        }
         throw new Error(user.error as string);
       }
 
       // check if the password from the db matches the provided password
       const correctPassword = (await comparePasswords(password, user.password)) as boolean;
       if (!correctPassword) {
-        res.status(400).send('Incorrect password');
+        res.status(401).send('Incorrect password');
         return;
       }
 

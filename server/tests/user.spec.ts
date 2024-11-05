@@ -312,11 +312,11 @@ describe('POST /loginUser', () => {
 
     const response = await supertest(app).post('/user/loginUser').send(mockReqBody);
 
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(401);
     expect(response.text).toBe('Incorrect password');
   });
 
-  it('should return 500 if user is not fetched', async () => {
+  it('should return 400 if user is not fetched', async () => {
     const mockReqBody = {
       username: 'jack_sparrow',
       password: 'i$landLyfe',
@@ -329,9 +329,9 @@ describe('POST /loginUser', () => {
 
     const response = await supertest(app).post('/user/loginUser').send(mockReqBody);
 
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(401);
     expect(response.text).toBe(
-      'Error when logging in user: Error when fetching user: Failed to fetch user with username jack_sparrow',
+      'Error when fetching user: Failed to fetch user with username jack_sparrow',
     );
   });
 });

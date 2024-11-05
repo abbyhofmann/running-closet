@@ -1,5 +1,18 @@
 import React from 'react';
 import './index.css';
+import {
+  Alert,
+  Box,
+  Button,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import useLogin from '../../hooks/useLogin';
 
 /**
@@ -7,26 +20,82 @@ import useLogin from '../../hooks/useLogin';
  * to the application's context through the useLoginContext hook.
  */
 const Login = () => {
-  const { username, handleSubmit, handleInputChange } = useLogin();
+  const {
+    username,
+    password,
+    alert,
+    showPassword,
+    handleUsernameChange,
+    handlePasswordChange,
+    handleClickShowPassword,
+    handleSignIn,
+    handleSignUp,
+  } = useLogin();
 
   return (
     <div className='container'>
-      <h2>Welcome to FakeStackOverflow!</h2>
-      <h4>Please enter your username.</h4>
-      <form onSubmit={handleSubmit}>
-        <input
-          type='text'
-          value={username}
-          onChange={handleInputChange}
-          placeholder='Enter your username'
-          required
-          className='input-text'
-          id={'usernameInput'}
-        />
-        <button type='submit' className='login-button'>
-          Submit
-        </button>
-      </form>
+      <Typography variant='h3' gutterBottom>
+        Welcome to FakeStackOverflow!
+      </Typography>
+      <Box
+        component='form'
+        sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}
+        noValidate
+        autoComplete='off'
+        onSubmit={handleSignIn}>
+        <div>
+          <TextField
+            id='outlined-username-input'
+            label='Username'
+            type='username'
+            autoComplete='current-username'
+            value={username}
+            onChange={handleUsernameChange}
+          />
+          <FormControl sx={{ m: 1, width: '25ch' }} variant='outlined'>
+            <InputLabel htmlFor='outlined-adornment-password'>Password</InputLabel>
+            <OutlinedInput
+              id='outlined-adornment-password'
+              type={showPassword ? 'text' : 'password'}
+              endAdornment={
+                <InputAdornment position='end'>
+                  <IconButton
+                    aria-label={showPassword ? 'hide the password' : 'display the password'}
+                    onClick={handleClickShowPassword}
+                    edge='end'>
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label='Password'
+              value={password}
+              onChange={handlePasswordChange}
+            />
+          </FormControl>
+
+          <Button variant='contained' type='submit' sx={{ mt: 2 }}>
+            Sign In
+          </Button>
+        </div>
+      </Box>
+
+      <Box
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
+        sx={{ mt: 2, flexWrap: 'nowrap' }}>
+        <Typography variant='body2' color='text.secondary' sx={{ whiteSpace: 'nowrap' }}>
+          Need an Account?
+        </Typography>
+        <Button
+          variant='text'
+          sx={{ ml: 1, fontWeight: 'bold', textTransform: 'none', whiteSpace: 'nowrap' }}
+          onClick={handleSignUp}>
+          Sign Up Here!
+        </Button>
+      </Box>
+
+      {alert && <Alert severity='error'>{alert}</Alert>}
     </div>
   );
 };

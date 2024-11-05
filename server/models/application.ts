@@ -708,13 +708,17 @@ export const getTagCountMap = async (): Promise<Map<string, number> | null | { e
 };
 
 /**
- * Gets a list of all users from the database.
+ * Gets a list of all non deleted users from the database.
  *
  * @returns
  */
 export const fetchAllUsers = async (): Promise<MultipleUserResponse> => {
   try {
-    const ulist = await UserModel.find();
+    const ulist = await UserModel.find({ deleted: false }).populate([
+      { path: 'following', model: UserModel },
+      { path: 'followers', model: UserModel },
+    ]);
+
     return ulist;
   } catch (error) {
     return { error: 'Error when fetching all users' };
@@ -722,13 +726,17 @@ export const fetchAllUsers = async (): Promise<MultipleUserResponse> => {
 };
 
 /**
- * Fetches a user by their username.
+ * Fetches a user by their username from the database if the user is not deleted.
  * @param username The username of the user being fetched.
  * @returns The user or an error if the user is not found.
  */
 export const fetchUserByUsername = async (username: string): Promise<UserResponse> => {
   try {
-    const user = await UserModel.findOne({ username });
+    const user = await UserModel.findOne({ username, deleted: false }).populate([
+      { path: 'following', model: UserModel },
+      { path: 'followers', model: UserModel },
+    ]);
+
     if (!user) {
       throw new Error(`Failed to fetch user with username ${username}`);
     }
