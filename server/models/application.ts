@@ -22,9 +22,6 @@ import UserModel from './users';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const jwt = require('jsonwebtoken');
-
 /**
  * Parses tags from a search string.
  *
@@ -462,15 +459,6 @@ export const comparePasswords = async (
   password: string,
   hashedPassword: string,
 ): Promise<boolean> => bcrypt.compare(password, hashedPassword);
-
-/**
- * Generates a JWT; generated with user logs in or registers.
- *
- * @param uid The unique id of the user logging in/registering.
- * @returns The generated token.
- */
-export const generateJwt = async (uid: ObjectId | undefined): Promise<string> =>
-  jwt.sign({ id: uid }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
 /**
  * Processes a list of tags by removing duplicates, checking for existing tags in the database,

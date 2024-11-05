@@ -8,7 +8,6 @@ import { User } from '../types';
 const saveUserSpy = jest.spyOn(util, 'saveUser');
 const isUsernameAvailableSpy = jest.spyOn(util, 'isUsernameAvailable');
 const hashPasswordSpy = jest.spyOn(util, 'hashPassword');
-const generateJwtSpy = jest.spyOn(util, 'generateJwt');
 const fetchUserByUsernameSpy = jest.spyOn(util, 'fetchUserByUsername');
 const comparePasswordsSpy = jest.spyOn(util, 'comparePasswords');
 const fetchAllUsersSpy = jest.spyOn(util, 'fetchAllUsers');
@@ -45,15 +44,11 @@ const user3: User = {
 const updateDeletedStatusSpy = jest.spyOn(util, 'updateDeletedStatus');
 
 describe('POST /registerUser', () => {
-  beforeAll(() => {
-    process.env.JWT_SECRET = 'testSecret';
-  });
   afterEach(async () => {
     await mongoose.connection.close(); // Ensure the connection is properly closed
   });
 
   afterAll(async () => {
-    delete process.env.JWT_SECRET;
     await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
   });
 
@@ -106,7 +101,7 @@ describe('POST /registerUser', () => {
     expect(response.text).toBe('Invalid email');
   });
 
-  it('should return user object and jwt upon valid request', async () => {
+  it('should return user object upon valid request', async () => {
     const validUid = new mongoose.Types.ObjectId();
     const mockReqBody = {
       username: 'humptydumpty',
@@ -124,26 +119,20 @@ describe('POST /registerUser', () => {
       followers: [],
     };
 
-    const generatedToken = await util.generateJwt(mockUserFromDb._id);
-
     isUsernameAvailableSpy.mockResolvedValue(true);
     saveUserSpy.mockResolvedValue(mockUserFromDb);
     hashPasswordSpy.mockResolvedValue('hashedPassworddddd');
-    generateJwtSpy.mockResolvedValue(generatedToken);
 
     const response = await supertest(app).post('/user/registerUser').send(mockReqBody);
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
-      userFromDb: {
-        _id: validUid.toString(),
-        username: 'humptydumpty',
-        email: 'fairytalechar@gmail.com',
-        password: 'hashedPassworddddd',
-        deleted: false,
-        following: [],
-        followers: [],
-      },
-      token: generatedToken,
+      _id: validUid.toString(),
+      username: 'humptydumpty',
+      email: 'fairytalechar@gmail.com',
+      password: 'hashedPassworddddd',
+      deleted: false,
+      following: [],
+      followers: [],
     });
   });
 
@@ -213,15 +202,11 @@ describe('GET /getAllUsers', () => {
 });
 
 describe('POST /loginUser', () => {
-  beforeAll(() => {
-    process.env.JWT_SECRET = 'testSecret';
-  });
   afterEach(async () => {
     await mongoose.connection.close(); // Ensure the connection is properly closed
   });
 
   afterAll(async () => {
-    delete process.env.JWT_SECRET;
     await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
   });
 
@@ -271,7 +256,7 @@ describe('POST /loginUser', () => {
     expect(response.text).toBe('Invalid login request');
   });
 
-  it('should return user object and jwt upon valid login request', async () => {
+  it('should return user object upon valid login request', async () => {
     const validUid = new mongoose.Types.ObjectId();
     const mockReqBody = {
       username: 'jack_sparrow',
@@ -288,26 +273,20 @@ describe('POST /loginUser', () => {
       followers: [],
     };
 
-    const generatedToken = 'generatedJwtToken';
-
     fetchUserByUsernameSpy.mockResolvedValue(mockUserFromDb);
     comparePasswordsSpy.mockResolvedValue(true);
-    generateJwtSpy.mockResolvedValue(generatedToken);
 
     const response = await supertest(app).post('/user/loginUser').send(mockReqBody);
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
-      user: {
-        _id: validUid.toString(),
-        username: 'jack_sparrow',
-        email: 'i_am_a_pirate@hotmail.com',
-        password: 'hashedPassworddddd',
-        deleted: false,
-        following: [],
-        followers: [],
-      },
-      token: generatedToken,
+      _id: validUid.toString(),
+      username: 'jack_sparrow',
+      email: 'i_am_a_pirate@hotmail.com',
+      password: 'hashedPassworddddd',
+      deleted: false,
+      following: [],
+      followers: [],
     });
   });
 
@@ -328,11 +307,8 @@ describe('POST /loginUser', () => {
       followers: [],
     };
 
-    const generatedToken = 'generatedJwtToken';
-
     fetchUserByUsernameSpy.mockResolvedValue(mockUserFromDb);
     comparePasswordsSpy.mockResolvedValue(false);
-    generateJwtSpy.mockResolvedValue(generatedToken);
 
     const response = await supertest(app).post('/user/loginUser').send(mockReqBody);
 
@@ -346,13 +322,10 @@ describe('POST /loginUser', () => {
       password: 'i$landLyfe',
     };
 
-    const generatedToken = 'generatedJwtToken';
-
     fetchUserByUsernameSpy.mockResolvedValue({
       error: `Error when fetching user: Failed to fetch user with username jack_sparrow`,
     });
     comparePasswordsSpy.mockResolvedValue(true);
-    generateJwtSpy.mockResolvedValue(generatedToken);
 
     const response = await supertest(app).post('/user/loginUser').send(mockReqBody);
 

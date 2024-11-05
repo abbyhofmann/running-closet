@@ -7,7 +7,6 @@ import {
   fetchAllUsers,
   fetchUserByUsername,
   comparePasswords,
-  generateJwt,
   updateDeletedStatus,
 } from '../models/application';
 
@@ -53,12 +52,12 @@ const userController = (socket: FakeSOSocket) => {
   }
 
   /**
-   * Adds a new user to the database. The user request and user are validated and then saved, and a JWT is
-   * created. If there is an error, the HTTP response's status is updated.
+   * Adds a new user to the database. The user request and user are validated and then saved.
+   * If there is an error, the HTTP response's status is updated.
    *
    * @param req The RegisterUserRequest object containing the User data.
    * @param res The HTTP response object used to send back the result of the operation. The response object contains
-   * the new user and the JWT.
+   * the new user.
    *
    * @returns A Promise that resolves to void.
    */
@@ -96,22 +95,19 @@ const userController = (socket: FakeSOSocket) => {
         throw new Error(userFromDb.error as string);
       }
 
-      // generate JWT
-      const token = await generateJwt(userFromDb._id);
-
-      res.json({ userFromDb, token });
+      res.json(userFromDb);
     } catch (err) {
       res.status(500).send(`Error when registering user: ${(err as Error).message}`);
     }
   };
 
   /**
-   * Logs in a user. The user request and user are validated and then saved. A JWT is created for the logged in
-   * user. If there is an error, the HTTP response's status is updated.
+   * Logs in a user. The user request and user are validated and then saved.
+   * If there is an error, the HTTP response's status is updated.
    *
    * @param req The LoginUserRequest object containing the User data.
    * @param res The HTTP response object used to send back the result of the operation. The response object contains
-   * the user and the JWT.
+   * the user.
    *
    * @returns A Promise that resolves to void.
    */
@@ -137,10 +133,7 @@ const userController = (socket: FakeSOSocket) => {
         return;
       }
 
-      // generate JWT
-      const token = await generateJwt(user._id);
-
-      res.json({ user, token });
+      res.json(user);
     } catch (err) {
       res.status(500).send(`Error when logging in user: ${(err as Error).message}`);
     }
