@@ -732,7 +732,7 @@ export const getTagCountMap = async (): Promise<Map<string, number> | null | { e
 /**
  * Gets a list of all non deleted users from the database.
  *
- * @returns
+ * @returns a list of all users.
  */
 export const fetchAllUsers = async (): Promise<MultipleUserResponse> => {
   try {

@@ -1,5 +1,11 @@
 import express, { Request, Response } from 'express';
-import { FakeSOSocket, RegisterUserRequest, LoginUserRequest, DeleteUserRequest } from '../types';
+import {
+  FakeSOSocket,
+  RegisterUserRequest,
+  LoginUserRequest,
+  DeleteUserRequest,
+  GetUserRequest,
+} from '../types';
 import {
   saveUser,
   isUsernameAvailable,
@@ -195,11 +201,49 @@ const userController = (socket: FakeSOSocket) => {
     }
   };
 
+  /**
+   * Validates the request for getting a user by username.
+   * @param {GetUserRequest} req the request to validate
+   * @returns `true` if the request is valid, otherwise `false`.
+   */
+  const isGetUserByUsernameRequestValid = (req: GetUserRequest): boolean =>
+    !!req.body && !!req.body.username && req.body.username !== '';
+
+  /**
+   * Retrieves the user with the given username from the database.
+   * If there is an error, the HTTP response's status is updated.
+   *
+   * @param req The request object with the username of the user to retrieve.
+   * @param res The HTTP response object used to send back the result of the operation.
+   *
+   * @returns A Promise that resolves to void.
+   */
+  const getUserByUsername = async (req: GetUserRequest, res: Response): Promise<void> => {
+    if (!isGetUserByUsernameRequestValid(req)) {
+      res.status(400).send('Invalid request');
+      return;
+    }
+
+    const { username } = req.body;
+    try {
+      const user = await fetchUserByUsername(username);
+
+      if ('error' in user) {
+        throw new Error(user.error as string);
+      }
+
+      res.json(user);
+    } catch (err) {
+      res.status(500).send(`Error when fetching user: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/registerUser', registerUser);
   router.post('/loginUser', loginUser);
   router.get('/getAllUsers', getAllUsers);
   router.post('/deleteUser', deleteUser);
+  router.get('/getUserByUsername', getUserByUsername);
 
   return router;
 };

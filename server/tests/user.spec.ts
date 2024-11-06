@@ -409,3 +409,69 @@ describe('POST /deleteUser', () => {
     });
   });
 });
+
+describe('GET /getUserByUsername', () => {
+  afterEach(async () => {
+    await mongoose.connection.close(); // Ensure the connection is properly closed
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
+  });
+
+  it('should return a user from the database', async () => {
+    const mockReqBody = {
+      username: 'jack_sparrow',
+    };
+
+    fetchUserByUsernameSpy.mockResolvedValueOnce(user1);
+
+    const response = await supertest(app).get('/user/getUserByUsername').send(mockReqBody);
+
+    const expectedResponse = {
+      ...user1,
+      _id: user1._id?.toString(),
+    };
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(expectedResponse);
+  });
+
+  it('should return database error in response if fetchUserByUsername method throws an error', async () => {
+    const mockReqBody = {
+      username: 'jack_sparrow',
+    };
+
+    fetchUserByUsernameSpy.mockResolvedValue({ error: 'error' });
+
+    const response = await supertest(app).get('/user/getUserByUsername').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Error when fetching user: error');
+  });
+
+  it('should return bad request error if username is missing', async () => {
+    const mockReqBody = {};
+    const response = await supertest(app).get('/user/getUserByUsername').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid request');
+  });
+
+  it('should return bad request error if username is empty', async () => {
+    const mockReqBody = {
+      username: '',
+    };
+    const response = await supertest(app).get('/user/getUserByUsername').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid request');
+  });
+
+  it('should return bad request error if no request body is given', async () => {
+    const response = await supertest(app).get('/user/getUserByUsername');
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid request');
+  });
+});

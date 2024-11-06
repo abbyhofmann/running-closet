@@ -237,6 +237,16 @@ export interface DeleteUserRequest {
 }
 
 /**
+ * Interface for the request body when getting a user.
+ * - username - The username of the user being fetched.
+ */
+export interface GetUserRequest {
+  body: {
+    username: string;
+  };
+}
+
+/**
  * Type representing the possible responses for a User-related operation.
  */
 export type UserResponse = User | { error: string };
