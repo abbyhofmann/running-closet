@@ -11,6 +11,7 @@ import NewQuestionPage from './main/newQuestion';
 import NewAnswerPage from './main/newAnswer';
 import AnswerPage from './main/answerPage';
 import MessagesPage from './main/messagesPage';
+import Register from './register';
 
 const ProtectedRoute = ({
   user,
@@ -40,7 +41,7 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
       <Routes>
         {/* Public Route */}
         <Route path='/' element={<Login />} />
-
+        <Route path='/register' element={<Register />} />
         {/* Protected Routes */}
         {
           <Route
