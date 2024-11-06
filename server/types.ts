@@ -293,11 +293,20 @@ export interface User {
  * Interface representing a Conversation document, which contains:
  * - id: The unique identifier for the conversation.
  * - users: A list of users that are participating in the conversation.
+ * - messages: A list of all the messages in the conversation.
+ * - updatedAt: The date/time of the most recent message sent or received in the conversation.
  */
 export interface Conversation {
   _id?: ObjectId;
   users: User[];
+  messages: Message[];
+  updatedAt: Date;
 }
+
+/**
+ * Type representing the possible responses for fetching multiple conversations.
+ */
+export type MultipleConversationResponse = Conversation[] | { error: string };
 
 /**
  * Interface representing a Message document, which contains:
@@ -316,3 +325,16 @@ export interface Message {
   sentAt: Date;
   readBy: User[];
 }
+
+/**
+ * Interface for the request body when adding a new conversation.
+ * - body - The conversation being added.
+ */
+export interface AddConversationRequest extends Request {
+  body: Conversation;
+}
+
+/**
+ * Type representing the possible responses for a Conversation-related operation.
+ */
+export type ConversationResponse = Conversation | { error: string };

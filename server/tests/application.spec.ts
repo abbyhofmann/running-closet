@@ -21,11 +21,16 @@ import {
   fetchAllUsers,
   fetchUserByUsername,
   updateDeletedStatus,
+  saveConversation,
+  areUsersRegistered,
+  doesConversationExist,
+  fetchConvosByParticipants,
 } from '../models/application';
-import { Answer, Question, Tag, Comment, User } from '../types';
+import { Answer, Question, Tag, Comment, User, Conversation } from '../types';
 import { T1_DESC, T2_DESC, T3_DESC } from '../data/posts_strings';
 import AnswerModel from '../models/answers';
 import UserModel from '../models/users';
+import ConversationModel from '../models/conversations';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mockingoose = require('mockingoose');
@@ -1128,6 +1133,159 @@ describe('application module', () => {
         const result = await updateDeletedStatus('someUserId');
 
         expect(result).toEqual({ error: 'User not found!' });
+      });
+    });
+  });
+
+  describe('Conversation model', () => {
+    beforeEach(() => {
+      mockingoose.resetAll();
+    });
+    describe('saveConversation', () => {
+      test('saveConversation returns new conversation', async () => {
+        const mockConversation = {
+          users: [user1, user2],
+          messages: [],
+          updatedAt: new Date(),
+        };
+
+        const result = (await saveConversation(mockConversation)) as Conversation;
+
+        expect(result._id).toBeDefined();
+        expect(result.users.length).toEqual(2);
+        expect(result.users[0]).toEqual(user1._id);
+        expect(result.users[1]).toEqual(user2._id);
+      });
+    });
+
+    describe('areUsersRegistered', () => {
+      test('areUsersRegistered returns false if user is not found', async () => {
+        mockingoose(UserModel).toReturn(null, 'findOne');
+
+        const result = await areUsersRegistered([user1]);
+
+        expect(result).toEqual(false);
+      });
+
+      test('areUsersRegistered returns false if error during fetchUserByUsername', async () => {
+        mockingoose(UserModel).toReturn(new Error('Error during findOne'), 'findOne');
+
+        const result = await areUsersRegistered([user1]);
+
+        expect(result).toEqual(false);
+      });
+
+      test('areUsersRegistered returns true for proper user', async () => {
+        const mockUserFromDb = {
+          _id: new ObjectId('65e9a5c2b26199dbcc3e6dc8'),
+          username: 'husky101',
+          email: 'neuStudent@northeastern.edu',
+          password: 'strongPassword',
+          deleted: false,
+          followers: [],
+          following: [],
+        };
+        mockingoose(UserModel).toReturn(mockUserFromDb, 'findOne');
+
+        const result = await areUsersRegistered([]);
+
+        expect(result).toEqual(true);
+      });
+    });
+
+    describe('fetchConvosByParticipants', () => {
+      test('fetchConvosByParticipants returns empty list if convo not found', async () => {
+        mockingoose(ConversationModel).toReturn([], 'find');
+
+        const result = (await fetchConvosByParticipants([])) as Conversation[];
+        expect(result.length).toBe(0);
+      });
+
+      test('fetchConvosByParticipants can return multiple convos', async () => {
+        const mockConversation = {
+          users: [user1, user2],
+          messages: [],
+          updatedAt: new Date(),
+        };
+        mockingoose(ConversationModel).toReturn([mockConversation, mockConversation], 'find');
+
+        const result = (await fetchConvosByParticipants([])) as Conversation[];
+        expect(result.length).toBe(2);
+      });
+
+      test('fetchConvosByParticipants returns convo if convo found', async () => {
+        const dateVar = new Date('October 1, 2024');
+        const mockConversation = {
+          users: [user1, user2],
+          messages: [],
+          updatedAt: dateVar,
+        };
+        mockingoose(ConversationModel).toReturn([mockConversation], 'find');
+
+        const result = (await fetchConvosByParticipants([])) as Conversation[];
+        expect(result[0]._id).toBeDefined();
+        expect(result[0].messages.length).toEqual(0);
+        expect(result[0].updatedAt).toEqual(dateVar);
+        expect(result[0].users[0]).toEqual(user1._id);
+        expect(result[0].users[1]).toEqual(user2._id);
+      });
+
+      test('fetchConvosByParticipants returns error message if error occurs', async () => {
+        mockingoose(ConversationModel).toReturn(new Error('Error thrown'), 'find');
+
+        const result = (await fetchConvosByParticipants([])) as Conversation[];
+        expect(result).toEqual({ error: 'Error when fetching the conversations' });
+      });
+    });
+
+    describe('doesConversationExist', () => {
+      beforeEach(() => {
+        mockingoose.resetAll();
+      });
+      test('doesConversationExist returns false if fetch convos returns empty list', async () => {
+        mockingoose(ConversationModel).toReturn([], 'find');
+
+        const result = await doesConversationExist([]);
+        expect(result).toBe(false);
+      });
+
+      test('doesConversationExist returns error if fetch convos list with more than one convo', async () => {
+        const mockConvo1 = {
+          _id: new ObjectId(),
+          users: [user1._id, user2._id],
+          messages: [],
+          updatedAt: new Date(),
+        };
+        const mockConvo2 = {
+          _id: new ObjectId(),
+          users: [user2._id, user1._id],
+          messages: [],
+          updatedAt: new Date(),
+        };
+        mockingoose(ConversationModel).toReturn([mockConvo1, mockConvo2], 'find');
+        await expect(doesConversationExist([user1, user2])).rejects.toThrow(
+          'Duplicate conversations exist in the database',
+        );
+      });
+
+      test('doesConversationExist returns error if fetch convos returns error', async () => {
+        mockingoose(ConversationModel).toReturn(new Error('Error thrown'), 'find');
+
+        await expect(doesConversationExist([])).rejects.toThrow(
+          'Error occurred fetching conversation',
+        );
+      });
+
+      test('doesConversationExist returns true upon successful fetch', async () => {
+        const mockConversation = {
+          users: [user1, user2],
+          messages: [],
+          updatedAt: new Date(),
+        };
+        mockingoose(ConversationModel).toReturn([mockConversation], 'find');
+
+        const result = await doesConversationExist([]);
+        expect(result).toBe(true);
       });
     });
   });

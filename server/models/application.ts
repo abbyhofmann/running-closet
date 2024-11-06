@@ -12,12 +12,16 @@ import {
   UserResponse,
   User,
   MultipleUserResponse,
+  ConversationResponse,
+  Conversation,
+  MultipleConversationResponse,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
 import TagModel from './tags';
 import CommentModel from './comments';
 import UserModel from './users';
+import ConversationModel from './conversations';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
@@ -420,6 +424,24 @@ export const saveUser = async (user: User): Promise<UserResponse> => {
 };
 
 /**
+ * Saves a new conversation to the database.
+ *
+ * @param {Conversation} conversation - The conversation to save
+ *
+ * @returns {Promise<ConversationResponse>} - The saved conversation, or an error message if the save failed
+ */
+export const saveConversation = async (
+  conversation: Conversation,
+): Promise<ConversationResponse> => {
+  try {
+    const result = await ConversationModel.create(conversation);
+    return result;
+  } catch (error) {
+    return { error: 'Error when saving a conversation' };
+  }
+};
+
+/**
  * Checks if there already exists a user with the provided username.
  *
  * @param username The username to check.
@@ -780,4 +802,76 @@ export const updateDeletedStatus = async (uid: string): Promise<UserResponse> =>
       error: `Error when deleting user with id ${uid}`,
     };
   }
+};
+
+/**
+ * Ensures that each user in the supplied list is registered and active in the database.
+ *
+ * @param users The list of users being validated.
+ * @returns `true` if all users are registered, otherwise `false`.
+ */
+export const areUsersRegistered = async (users: User[]): Promise<boolean> => {
+  try {
+    // fetch user associated with each username
+    const promises = users.map(user => fetchUserByUsername(user.username));
+    const usersFromDb = await Promise.all(promises);
+
+    // check if any user is not found or marked as deleted
+    for (const user of usersFromDb) {
+      if ('error' in user) {
+        return false;
+      }
+    }
+
+    return true;
+  } catch (error) {
+    // return false if there is an error during the fetch process
+    return false;
+  }
+};
+
+/**
+ * Fetches the conversations in the db that involve the given participants, no matter the order.
+ *
+ * @param participants The users involved in the conversation being retrieved.
+ * @returns A Promise that resolves to the list of conversations, or an error message if an error occurs.
+ */
+export const fetchConvosByParticipants = async (
+  participants: User[],
+): Promise<MultipleConversationResponse> => {
+  try {
+    // query the conversation db for the conversations with the given users
+    const convos = await ConversationModel.find({
+      users: { $all: participants, $size: participants.length },
+    });
+
+    return convos;
+  } catch (error) {
+    return { error: 'Error when fetching the conversations' };
+  }
+};
+
+/**
+ * Checks if there exists a conversation in the db with the provided list of users.
+ *
+ * @param users The list of users involved in the conversation.
+ * @returns `true` if there exists a conversation, `false` if there does not exist a conversation,
+ * and throws an error if an error occurs during the check.
+ */
+export const doesConversationExist = async (users: User[]): Promise<boolean | Error> => {
+  // fetch convo that contains every user
+  const convos = await fetchConvosByParticipants(users);
+
+  // if fetching the convo results in an error message, throw error
+  if ('error' in convos) {
+    throw new Error('Error occurred fetching conversation');
+  }
+
+  // if more than one convo is returned, there are duplicates in the db
+  if (convos.length > 1) {
+    throw new Error('Duplicate conversations exist in the database');
+  }
+
+  // exactly 1 valid conversation exists
+  return convos.length === 1;
 };
