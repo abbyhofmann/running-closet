@@ -32,7 +32,11 @@ const QuestionBody = ({ views, text, askby, meta }: QuestionBodyProps) => (
     <div className='bold_title answer_question_view'>{views} views</div>
     <div className='answer_question_text'>{handleHyperlink(text)}</div>
     <div className='answer_question_right'>
-      <div className='question_author'>{askby}</div>
+      <div className='question_author'>
+        <a href={`/profile/${askby}`} className='question_author'>
+          {askby}
+        </a>
+      </div>
       <div className='answer_question_meta'>asked {meta}</div>
     </div>
   </div>

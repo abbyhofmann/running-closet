@@ -73,7 +73,11 @@ const QuestionView = ({ q }: QuestionProps) => {
         </div>
       </div>
       <div className='lastActivity'>
-        <div className='question_author'>{q.askedBy}</div>
+        <div className='question_author'>
+          <a href={`/profile/${q.askedBy}`} className='question_author'>
+            {q.askedBy}
+          </a>
+        </div>
         <div>&nbsp;</div>
         <div className='question_meta'>asked {getMetaData(new Date(q.askDateTime))}</div>
       </div>

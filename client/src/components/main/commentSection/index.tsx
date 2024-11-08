@@ -61,7 +61,11 @@ const CommentSection = ({ comments, handleAddComment }: CommentSectionProps) => 
                 <li key={index} className='comment-item'>
                   <p className='comment-text'>{comment.text}</p>
                   <small className='comment-meta'>
-                    {comment.commentBy}, {getMetaData(new Date(comment.commentDateTime))}
+                    <a className='comment-meta' href={`/profile/${comment.commentBy}`}>
+                      {comment.commentBy}
+                    </a>
+                    {', '}
+                    {getMetaData(new Date(comment.commentDateTime))}
                   </small>
                 </li>
               ))
