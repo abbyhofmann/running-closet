@@ -19,4 +19,20 @@ const addConversation = async (c: Conversation): Promise<Conversation> => {
   return res.data;
 };
 
-export default addConversation;
+/**
+ * Gets all the conversations for which a user is a participant in.
+ *
+ * @param uid The id of the user whose conversations are being retrieved.
+ * @throws Error if there is an issue fetching the conversations by user ID.
+ */
+const getConversations = async (uid: string): Promise<Conversation[]> => {
+  const res = await api.get(`${CONVERSATION_API_URL}/getConversations/${uid}`);
+
+  if (res.status !== 200) {
+    throw new Error('Error while fetching all conversations');
+  }
+
+  return res.data;
+};
+
+export { addConversation, getConversations };

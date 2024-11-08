@@ -22,6 +22,7 @@ import TagModel from './tags';
 import CommentModel from './comments';
 import UserModel from './users';
 import ConversationModel from './conversations';
+import MessageModel from './messages';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
@@ -748,6 +749,24 @@ export const fetchAllUsers = async (): Promise<MultipleUserResponse> => {
 };
 
 /**
+ * Fetches a non-deleted user by their id.
+ *
+ * @param uid The id of the user being fetched.
+ * @returns The user or an error if the user is not found.
+ */
+export const fetchUserById = async (uid: string): Promise<UserResponse> => {
+  try {
+    const user = await UserModel.findOne({ _id: uid, deleted: false });
+    if (!user) {
+      throw new Error(`Failed to fetch user with id ${uid}`);
+    }
+    return user;
+  } catch (error) {
+    return { error: `Error when fetching user: ${(error as Error).message}` };
+  }
+};
+
+/**
  * Fetches a user by their username from the database if the user is not deleted.
  * @param username The username of the user being fetched.
  * @returns The user or an error if the user is not found.
@@ -833,17 +852,34 @@ export const areUsersRegistered = async (users: User[]): Promise<boolean> => {
 /**
  * Fetches the conversations in the db that involve the given participants, no matter the order.
  *
- * @param participants The users involved in the conversation being retrieved.
+ * @param participants The users involved in the conversations being retrieved.
+ * @param exact Boolean indicating if the conversations being retrieved should contain only and exactly the
+ * users in the list (when exact is set to true) or if the conversations only need to contain the users (when
+ * exact is set to false).
  * @returns A Promise that resolves to the list of conversations, or an error message if an error occurs.
  */
 export const fetchConvosByParticipants = async (
   participants: User[],
+  exact: boolean,
 ): Promise<MultipleConversationResponse> => {
+  let findQuery: QueryOptions;
+
+  // we want only these users to be in the conversation
+  if (exact) {
+    findQuery = { $all: participants, $size: participants.length };
+  }
+  // we want these users to be part of the conversation (additional people can be part of it, too)
+  else {
+    findQuery = { $all: participants };
+  }
   try {
     // query the conversation db for the conversations with the given users
     const convos = await ConversationModel.find({
-      users: { $all: participants, $size: participants.length },
-    });
+      users: findQuery,
+    }).populate([
+      { path: 'users', model: UserModel },
+      { path: 'messages', model: MessageModel },
+    ]);
 
     return convos;
   } catch (error) {
@@ -860,7 +896,7 @@ export const fetchConvosByParticipants = async (
  */
 export const doesConversationExist = async (users: User[]): Promise<boolean | Error> => {
   // fetch convo that contains every user
-  const convos = await fetchConvosByParticipants(users);
+  const convos = await fetchConvosByParticipants(users, true);
 
   // if fetching the convo results in an error message, throw error
   if ('error' in convos) {

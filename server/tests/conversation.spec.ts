@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 import supertest from 'supertest';
 import { app } from '../app';
-import { User } from '../types';
+import { User, MultipleConversationResponse } from '../types';
 import * as util from '../models/application';
 
 const saveConversationSpy = jest.spyOn(util, 'saveConversation');
@@ -161,5 +161,78 @@ describe('POST /addConversation', () => {
       messages: [],
       updatedAt: dateObj,
     });
+  });
+});
+
+describe('GET /getConversations', () => {
+  afterEach(async () => {
+    await mongoose.connection.close(); // Ensure the connection is properly closed
+    jest.resetAllMocks();
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
+  });
+
+  it('should return invalid ID error if provided uid is not an ObjectId', async () => {
+    const mockReqParams = {
+      uid: 'id',
+    };
+
+    const response = await supertest(app).get(
+      `/conversation/getConversations/${mockReqParams.uid}`,
+    );
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid ID format');
+  });
+
+  it('should return a list of conversations upon valid request', async () => {
+    jest.clearAllMocks();
+    const dateObj = new Date('December 17, 1995');
+    const mockConversation = {
+      _id: new mongoose.Types.ObjectId(),
+      users: [user1, user2],
+      messages: [],
+      updatedAt: dateObj,
+    };
+
+    jest.spyOn(util, 'fetchUserById').mockResolvedValueOnce(user1 as User);
+    jest
+      .spyOn(util, 'fetchConvosByParticipants')
+      .mockResolvedValueOnce([mockConversation] as MultipleConversationResponse);
+
+    const response = await supertest(app).get(`/conversation/getConversations/${user1._id}`);
+
+    const expectedResponse = [
+      {
+        _id: mockConversation._id.toString(),
+        messages: [],
+        updatedAt: new Date(dateObj).toISOString(),
+        users: [
+          {
+            _id: user1._id?.toString(),
+            username: 'user1',
+            email: 'user1@gmail.com',
+            password: 'password',
+            deleted: false,
+            following: [],
+            followers: [],
+          },
+          {
+            _id: user2._id?.toString(),
+            username: 'user2',
+            email: 'user2@gmail.com',
+            password: 'password',
+            deleted: false,
+            following: [],
+            followers: [],
+          },
+        ],
+      },
+    ];
+
+    expect(response.status).toBe(200);
+    expect(JSON.parse(response.text)).toEqual(expectedResponse);
   });
 });

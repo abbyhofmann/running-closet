@@ -1197,7 +1197,7 @@ describe('application module', () => {
       test('fetchConvosByParticipants returns empty list if convo not found', async () => {
         mockingoose(ConversationModel).toReturn([], 'find');
 
-        const result = (await fetchConvosByParticipants([])) as Conversation[];
+        const result = (await fetchConvosByParticipants([], true)) as Conversation[];
         expect(result.length).toBe(0);
       });
 
@@ -1209,7 +1209,7 @@ describe('application module', () => {
         };
         mockingoose(ConversationModel).toReturn([mockConversation, mockConversation], 'find');
 
-        const result = (await fetchConvosByParticipants([])) as Conversation[];
+        const result = (await fetchConvosByParticipants([], true)) as Conversation[];
         expect(result.length).toBe(2);
       });
 
@@ -1222,7 +1222,7 @@ describe('application module', () => {
         };
         mockingoose(ConversationModel).toReturn([mockConversation], 'find');
 
-        const result = (await fetchConvosByParticipants([])) as Conversation[];
+        const result = (await fetchConvosByParticipants([], true)) as Conversation[];
         expect(result[0]._id).toBeDefined();
         expect(result[0].messages.length).toEqual(0);
         expect(result[0].updatedAt).toEqual(dateVar);
@@ -1233,8 +1233,34 @@ describe('application module', () => {
       test('fetchConvosByParticipants returns error message if error occurs', async () => {
         mockingoose(ConversationModel).toReturn(new Error('Error thrown'), 'find');
 
-        const result = (await fetchConvosByParticipants([])) as Conversation[];
+        const result = (await fetchConvosByParticipants([], true)) as Conversation[];
         expect(result).toEqual({ error: 'Error when fetching the conversations' });
+      });
+
+      test('fetchConvosByParticipants returns every convo containing given user', async () => {
+        const dateVar = new Date('October 1, 2024');
+        const mockConversation = {
+          users: [user1, user2],
+          messages: [],
+          updatedAt: dateVar,
+        };
+        const mockConversation2 = {
+          users: [user1, user3],
+          messages: [],
+          updatedAt: dateVar,
+        };
+        mockingoose(ConversationModel).toReturn([mockConversation, mockConversation2], 'find');
+
+        const result = (await fetchConvosByParticipants([user1], false)) as Conversation[];
+        expect(result.length).toEqual(2);
+        expect(result[0].messages.length).toEqual(0);
+        expect(result[0].updatedAt).toEqual(dateVar);
+        expect(result[0].users[0]).toEqual(user1._id);
+        expect(result[0].users[1]).toEqual(user2._id);
+        expect(result[1].messages.length).toEqual(0);
+        expect(result[1].updatedAt).toEqual(dateVar);
+        expect(result[1].users[0]).toEqual(user1._id);
+        expect(result[1].users[1]).toEqual(user3._id);
       });
     });
 

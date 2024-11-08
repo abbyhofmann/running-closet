@@ -348,3 +348,14 @@ export interface AddConversationRequest extends Request {
  * Type representing the possible responses for a Conversation-related operation.
  */
 export type ConversationResponse = Conversation | { error: string };
+
+/**
+ * Interface for the request parameter when fetching the conversations associated with a user given
+ * their user ID.
+ * - uid - The unique identifier of the user.
+ */
+export interface FindConversationsByUserIdRequest extends Request {
+  params: {
+    uid: string;
+  };
+}
