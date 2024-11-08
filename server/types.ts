@@ -241,7 +241,7 @@ export interface DeleteUserRequest {
  * - username - The username of the user being fetched.
  */
 export interface GetUserRequest {
-  body: {
+  params: {
     username: string;
   };
 }

@@ -202,14 +202,6 @@ const userController = (socket: FakeSOSocket) => {
   };
 
   /**
-   * Validates the request for getting a user by username.
-   * @param {GetUserRequest} req the request to validate
-   * @returns `true` if the request is valid, otherwise `false`.
-   */
-  const isGetUserByUsernameRequestValid = (req: GetUserRequest): boolean =>
-    !!req.body && !!req.body.username && req.body.username !== '';
-
-  /**
    * Retrieves the user with the given username from the database.
    * If there is an error, the HTTP response's status is updated.
    *
@@ -219,13 +211,9 @@ const userController = (socket: FakeSOSocket) => {
    * @returns A Promise that resolves to void.
    */
   const getUserByUsername = async (req: GetUserRequest, res: Response): Promise<void> => {
-    if (!isGetUserByUsernameRequestValid(req)) {
-      res.status(400).send('Invalid request');
-      return;
-    }
-
-    const { username } = req.body;
     try {
+      const { username } = req.params;
+
       const user = await fetchUserByUsername(username);
 
       if ('error' in user) {
@@ -243,7 +231,7 @@ const userController = (socket: FakeSOSocket) => {
   router.post('/loginUser', loginUser);
   router.get('/getAllUsers', getAllUsers);
   router.post('/deleteUser', deleteUser);
-  router.get('/getUserByUsername', getUserByUsername);
+  router.get('/getUserByUsername/:username', getUserByUsername);
 
   return router;
 };
