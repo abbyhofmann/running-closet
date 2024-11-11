@@ -77,7 +77,7 @@ const useLogin = () => {
    * @param e - the event object
    */
   const handleSignUp = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // TODO - Implement sign up logic here (should just be a redirect to the sign up page) but not possible until that UI is created
+    navigate('/register');
   };
 
   return {
