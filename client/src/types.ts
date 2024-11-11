@@ -177,10 +177,14 @@ export interface Notification {
  *
  * - _id - The unique identifier for the conversation.
  * - users - An array of users who are participating in the conversation.
+ * - messages - An array of messages that have been sent in the conversation.
+ * - updatedAt - The date and time when the conversation was last updated.
  */
 export interface Conversation {
   _id?: string;
   users: User[];
+  messages: Message[];
+  updatedAt: Date;
 }
 
 /**
@@ -188,16 +192,16 @@ export interface Conversation {
  *
  * - _id - The unique identifier for the message.
  * - messageContent - The content of the message.
- * - conversation - The conversation to which the message belongs.
  * - sender - The user who sent the message.
  * - sentAt - The date and time when the message was sent.
  * - readBy - An array of users that have read the message.
+ * - cid - The conversation ID that the message belongs to.
  */
 export interface Message {
   _id?: string;
   messageContent: string;
-  conversation: Conversation;
   sender: User;
   sentAt: Date;
   readBy: User[];
+  cid: string;
 }

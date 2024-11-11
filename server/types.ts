@@ -319,22 +319,55 @@ export interface Conversation {
 export type MultipleConversationResponse = Conversation[] | { error: string };
 
 /**
+ * Interface representing the possible responses for a Conversation-related operation.
+ */
+export type ConversationResponse = Conversation | { error: string };
+
+/**
  * Interface representing a Message document, which contains:
  * - id: The unique identifier for the message.
  * - messageContent: The content of the message.
- * - conversation: The conversation to which the message belongs.
  * - sender: The user who sent the message.
  * - sentAt: The date and time when the message was sent.
  * - readBy: A list of users that have read the message.
+ * - cid: The unique identifier for the conversation that the message is being added to.
  */
 export interface Message {
   _id?: ObjectId;
   messageContent: string;
-  conversation: Conversation;
   sender: User;
   sentAt: Date;
   readBy: User[];
+  cid: string;
 }
+
+/**
+ * Interface representing the request body when sending a message, which contains:
+ * - sentBy: The username of who sent the message.
+ * - messageContent: The content of the message.
+ * - cid: The unique identifier for the conversation that the message is being added to.
+ */
+export interface AddMessageRequest extends Request {
+  body: {
+    sentBy: string;
+    messageContent: string;
+    cid: string;
+  };
+}
+
+/**
+ * Interface representing the possible responses for a Message-related operation.
+ */
+export type MessageResponse = Message | { error: string };
+
+/** 
+  * Interface for the request body when adding a new conversation.
+ * - body - The conversation being added.
+ */
+export interface AddConversationRequest extends Request {
+  body: Conversation;
+}
+
 
 /**
  * Interface for the request body when adding a new conversation.
@@ -343,11 +376,6 @@ export interface Message {
 export interface AddConversationRequest extends Request {
   body: Conversation;
 }
-
-/**
- * Type representing the possible responses for a Conversation-related operation.
- */
-export type ConversationResponse = Conversation | { error: string };
 
 /**
  * Interface for the request parameter when fetching the conversations associated with a user given

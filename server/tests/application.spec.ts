@@ -25,15 +25,21 @@ import {
   areUsersRegistered,
   doesConversationExist,
   fetchConvosByParticipants,
+  fetchConversationById,
+  saveMessage,
+  addMessage,
 } from '../models/application';
-import { Answer, Question, Tag, Comment, User, Conversation } from '../types';
+import { Answer, Question, Tag, Comment, User, Conversation, Message } from '../types';
 import { T1_DESC, T2_DESC, T3_DESC } from '../data/posts_strings';
 import AnswerModel from '../models/answers';
 import UserModel from '../models/users';
 import ConversationModel from '../models/conversations';
+import MessageModel from '../models/messages';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mockingoose = require('mockingoose');
+
+const createMessageSpy = jest.spyOn(MessageModel, 'create');
 
 const tag1: Tag = {
   _id: new ObjectId('507f191e810c19729de860ea'),
@@ -175,6 +181,38 @@ const user3: User = {
   deleted: false,
   following: [user1, user2],
   followers: [],
+};
+
+const CID1: string = '55e9b58910afe6e94fc6e6aa';
+
+const message1 = {
+  _id: new ObjectId('44e9b58910afe6e94fc6e6bb'),
+  messageContent: 'message 1 content',
+  sender: user1,
+  sentAt: new Date('2024-11-03T09:24:00'),
+  readBy: [user1],
+  cid: CID1,
+};
+
+const message2 = {
+  _id: new ObjectId('44e9b58910afe6e94fc6e6bc'),
+  messageContent: 'message 2 content',
+  sender: user1,
+  sentAt: new Date('2024-11-02T09:24:00'),
+  readBy: [],
+  cid: CID1,
+};
+
+const conversation1 = {
+  _id: new ObjectId('55e9b58910afe6e94fc6e6aa'),
+  users: [user1, user2],
+  messages: [message1],
+};
+
+const conversation2 = {
+  _id: new ObjectId('55e9b58910afe6e94fc6e6ab'),
+  users: [user1, user2],
+  messages: [],
 };
 
 describe('application module', () => {
@@ -1137,6 +1175,126 @@ describe('application module', () => {
     });
   });
 
+  describe('Message module', () => {
+    describe('saveMessage', () => {
+      test('saveMessage should return the saved message', async () => {
+        const result = (await saveMessage(message1)) as Message;
+
+        expect(result._id).toBeDefined();
+        expect(result.messageContent).toEqual(message1.messageContent);
+        expect(result.sender._id?.toString()).toEqual(message1.sender._id?.toString());
+        expect(result.sentAt).toEqual(message1.sentAt);
+        expect(result.readBy.length).toEqual(1);
+        expect(result.readBy[0]._id?.toString()).toEqual(message1.sender._id?.toString());
+      });
+
+      test('saveMessage should return an error when create throws an error', async () => {
+        createMessageSpy.mockRejectedValueOnce(new Error('error'));
+
+        const result = await saveMessage(message2);
+
+        expect(result).toEqual({ error: 'Error when saving a message' });
+      });
+    });
+
+    describe('addMessage', () => {
+      test('addMessage should return the updated conversation', async () => {
+        const conversation: Conversation = {
+          ...conversation2,
+          messages: [message1],
+          users: [user1, user2],
+          updatedAt: new Date(),
+        };
+
+        mockingoose(ConversationModel).toReturn(conversation, 'findOneAndUpdate');
+
+        const result = (await addMessage(message1)) as Conversation;
+
+        expect(result.messages.length).toEqual(1);
+        expect(result.messages[0]._id?.toString()).toContain(message1._id?.toString());
+      });
+
+      test('addMessage should throw an error if the message content is missing in the message', async () => {
+        const invalidMessage: Partial<Message> = {
+          sender: user1,
+          sentAt: new Date(),
+          readBy: [user1],
+          cid: CID1,
+        };
+
+        try {
+          await addMessage(invalidMessage as Message);
+        } catch (err: unknown) {
+          expect(err).toBeInstanceOf(Error);
+          if (err instanceof Error) expect(err.message).toBe('Invalid message');
+        }
+      });
+
+      test('addMessage should throw an error if the sender is missing in the message', async () => {
+        const invalidMessage: Partial<Message> = {
+          messageContent: 'hey!',
+          sentAt: new Date(),
+          readBy: [user1],
+          cid: CID1,
+        };
+
+        try {
+          await addMessage(invalidMessage as Message);
+        } catch (err: unknown) {
+          expect(err).toBeInstanceOf(Error);
+          if (err instanceof Error) expect(err.message).toBe('Invalid message');
+        }
+      });
+
+      test('addMessage should throw an error if the sentAt is missing in the message', async () => {
+        const invalidMessage: Partial<Message> = {
+          messageContent: 'hey!',
+          sender: user1,
+          readBy: [user1],
+          cid: CID1,
+        };
+
+        try {
+          await addMessage(invalidMessage as Message);
+        } catch (err: unknown) {
+          expect(err).toBeInstanceOf(Error);
+          if (err instanceof Error) expect(err.message).toBe('Invalid message');
+        }
+      });
+
+      test('addMessage should throw an error if the cid is missing in the message', async () => {
+        const invalidMessage: Partial<Message> = {
+          messageContent: 'hey!',
+          sentAt: new Date(),
+          sender: user1,
+          readBy: [user1],
+        };
+
+        try {
+          await addMessage(invalidMessage as Message);
+        } catch (err: unknown) {
+          expect(err).toBeInstanceOf(Error);
+          if (err instanceof Error) expect(err.message).toBe('Invalid message');
+        }
+      });
+
+      test('addMessage should return an object with error if findOneAndUpdate returns null', async () => {
+        mockingoose(ConversationModel).toReturn(null, 'findOneAndUpdate');
+        const result = await addMessage(message1);
+        expect(result).toEqual({
+          error:
+            'Error when adding a message to conversation:  Error when adding message to conversation',
+        });
+      });
+
+      test('addMessage should return an object with error if findOneAndUpdate throws an error', async () => {
+        mockingoose(ConversationModel).toReturn(new Error('error'), 'findOneAndUpdate');
+        const result = await addMessage(message1);
+        expect(result).toEqual({ error: 'Error when adding a message to conversation:  error' });
+      });
+    });
+  });
+
   describe('Conversation model', () => {
     beforeEach(() => {
       mockingoose.resetAll();
@@ -1312,6 +1470,42 @@ describe('application module', () => {
 
         const result = await doesConversationExist([]);
         expect(result).toBe(true);
+      });
+    });
+
+    describe('fetchConversationById', () => {
+      test('fetchConversationById should return a conversation from the db with the given id if one exists', async () => {
+        mockingoose(ConversationModel).toReturn(conversation1, 'findOne');
+        ConversationModel.schema.path('users', Object);
+        ConversationModel.schema.path('messages', Object);
+
+        const result = (await fetchConversationById('55e9b58910afe6e94fc6e6aa')) as Conversation;
+
+        expect(result._id?.toString()).toEqual('55e9b58910afe6e94fc6e6aa');
+        expect(result.users.length).toEqual(2);
+        expect(result.users[0]).toEqual(user1);
+        expect(result.users[1]).toEqual(user2);
+        expect(result.messages.length).toEqual(1);
+        expect(result.messages[0]).toEqual(message1);
+      });
+
+      test('fetchConversationById should return an error when no conversation is found', async () => {
+        mockingoose(ConversationModel).toReturn(null, 'findOne');
+
+        const result = await fetchConversationById('55e9b58910afe6e94fc6e6aa');
+
+        expect(result).toEqual({
+          error:
+            'Error when fetching conversation: Failed to fetch converation with id 55e9b58910afe6e94fc6e6aa',
+        });
+      });
+
+      test('fetchConversationById should return an error when findOne throws an error', async () => {
+        mockingoose(ConversationModel).toReturn(new Error('error'), 'findOne');
+
+        const result = await fetchConversationById('55e9b58910afe6e94fc6e6aa');
+
+        expect(result).toEqual({ error: 'Error when fetching conversation: error' });
       });
     });
   });

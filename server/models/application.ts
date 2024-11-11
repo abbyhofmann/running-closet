@@ -13,16 +13,18 @@ import {
   User,
   MultipleUserResponse,
   ConversationResponse,
-  Conversation,
   MultipleConversationResponse,
+  Conversation,
+  Message,
+  MessageResponse,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
 import TagModel from './tags';
 import CommentModel from './comments';
 import UserModel from './users';
-import ConversationModel from './conversations';
 import MessageModel from './messages';
+import ConversationModel from './conversations';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
@@ -443,6 +445,22 @@ export const saveConversation = async (
 };
 
 /**
+ * Saves a new message to the database.
+ *
+ * @param {Message} message - The message to save
+ *
+ * @returns {Promise<MessageResponse>} - The saved message, or an error message if the save failed
+ */
+export const saveMessage = async (message: Message): Promise<MessageResponse> => {
+  try {
+    const result = await MessageModel.create(message);
+    return result;
+  } catch (error) {
+    return { error: 'Error when saving a message' };
+  }
+};
+
+/**
  * Checks if there already exists a user with the provided username.
  *
  * @param username The username to check.
@@ -824,32 +842,6 @@ export const updateDeletedStatus = async (uid: string): Promise<UserResponse> =>
 };
 
 /**
- * Ensures that each user in the supplied list is registered and active in the database.
- *
- * @param users The list of users being validated.
- * @returns `true` if all users are registered, otherwise `false`.
- */
-export const areUsersRegistered = async (users: User[]): Promise<boolean> => {
-  try {
-    // fetch user associated with each username
-    const promises = users.map(user => fetchUserByUsername(user.username));
-    const usersFromDb = await Promise.all(promises);
-
-    // check if any user is not found or marked as deleted
-    for (const user of usersFromDb) {
-      if ('error' in user) {
-        return false;
-      }
-    }
-
-    return true;
-  } catch (error) {
-    // return false if there is an error during the fetch process
-    return false;
-  }
-};
-
-/**
  * Fetches the conversations in the db that involve the given participants, no matter the order.
  *
  * @param participants The users involved in the conversations being retrieved.
@@ -910,4 +902,78 @@ export const doesConversationExist = async (users: User[]): Promise<boolean | Er
 
   // exactly 1 valid conversation exists
   return convos.length === 1;
+};
+
+/**
+ * Ensures that each user in the supplied list is registered and active in the database.
+ *
+ * @param users The list of users being validated.
+ * @returns `true` if all users are registered, otherwise `false`.
+ */
+export const areUsersRegistered = async (users: User[]): Promise<boolean> => {
+  try {
+    // fetch user associated with each username
+    const promises = users.map(user => fetchUserByUsername(user.username));
+    const usersFromDb = await Promise.all(promises);
+
+    // check if any user is not found or marked as deleted
+    for (const user of usersFromDb) {
+      if ('error' in user || user.deleted) {
+        return false;
+      }
+    }
+
+    return true;
+  } catch (error) {
+    // return false if there is an error during the fetch process
+    return false;
+  }
+};
+
+/**
+ * Adds a message to a conversation.
+ * @param {Message} message - The message to add.
+ * @returns Promise<ConversationResponse> - The updated conversation or an error message.
+ */
+export const addMessage = async (message: Message): Promise<ConversationResponse> => {
+  try {
+    if (!message || !message.messageContent || !message.sender || !message.sentAt || !message.cid) {
+      throw new Error('Invalid message');
+    }
+
+    const result = await ConversationModel.findOneAndUpdate(
+      { _id: new ObjectId(message.cid) },
+      { $push: { messages: { $each: [message._id] } }, $set: { updatedAt: message.sentAt } },
+      { new: true },
+    );
+
+    if (result === null) {
+      throw new Error('Error when adding message to conversation');
+    }
+
+    return result;
+  } catch (error) {
+    return { error: `Error when adding a message to conversation:  ${(error as Error).message}` };
+  }
+};
+
+/**
+ * Fetches a conversation by its id.
+ * @param {string} cid The id of the conversation to fetch.
+ * @returns The conversation or an error if the conversation is not found.
+ */
+export const fetchConversationById = async (cid: string): Promise<ConversationResponse> => {
+  try {
+    const conversation = await ConversationModel.findOne({ _id: new ObjectId(cid) }).populate([
+      { path: 'users', model: UserModel },
+      { path: 'messages', model: MessageModel },
+    ]);
+
+    if (!conversation) {
+      throw new Error(`Failed to fetch converation with id ${cid}`);
+    }
+    return conversation;
+  } catch (error) {
+    return { error: `Error when fetching conversation: ${(error as Error).message}` };
+  }
 };
