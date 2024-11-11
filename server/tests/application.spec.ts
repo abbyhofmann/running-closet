@@ -23,11 +23,13 @@ import {
   updateDeletedStatus,
   saveConversation,
   areUsersRegistered,
-  doesConversationExist,
-  fetchConvosByParticipants,
   fetchConversationById,
   saveMessage,
   addMessage,
+  fetchUserById,
+  markMessageAsRead,
+  doesConversationExist,
+  fetchConvosByParticipants,
 } from '../models/application';
 import { Answer, Question, Tag, Comment, User, Conversation, Message } from '../types';
 import { T1_DESC, T2_DESC, T3_DESC } from '../data/posts_strings';
@@ -1173,6 +1175,49 @@ describe('application module', () => {
         expect(result).toEqual({ error: 'User not found!' });
       });
     });
+
+    describe('fetchUserById', () => {
+      test('fetchUserById returns user', async () => {
+        const mockUser = {
+          _id: new ObjectId('507f191e810c19729de860ea'),
+          username: 'husky009',
+          email: 'neuStudent@northeastern.edu',
+          password: 'strongPassword',
+          deleted: false,
+          followers: [],
+          following: [],
+        };
+
+        mockingoose(UserModel).toReturn(mockUser, 'findOne');
+
+        const result = (await fetchUserById('507f191e810c19729de860ea')) as User;
+        expect(result._id?.toString()).toEqual(mockUser._id.toString());
+        expect(result.username).toEqual(mockUser.username);
+        expect(result.email).toEqual(mockUser.email);
+        expect(result.password).toEqual(mockUser.password);
+        expect(result.deleted).toEqual(mockUser.deleted);
+        expect(result.followers).toEqual(mockUser.followers);
+        expect(result.following).toEqual(mockUser.following);
+      });
+
+      test('fetchUserById returns error if findOne errors', async () => {
+        mockingoose(UserModel).toReturn(new Error(`error`), 'findOne');
+
+        const result = (await fetchUserById('507f191e810c19729de860ea')) as User;
+        expect(result).toEqual({
+          error: `Error when fetching user: error`,
+        });
+      });
+
+      test('fetchUserByUsername returns error if findOne returns null', async () => {
+        mockingoose(UserModel).toReturn(null, 'findOne');
+
+        const result = (await fetchUserById('507f191e810c19729de860ea')) as User;
+        expect(result).toEqual({
+          error: `Error when fetching user: Failed to fetch user with id 507f191e810c19729de860ea`,
+        });
+      });
+    });
   });
 
   describe('Message module', () => {
@@ -1291,6 +1336,32 @@ describe('application module', () => {
         mockingoose(ConversationModel).toReturn(new Error('error'), 'findOneAndUpdate');
         const result = await addMessage(message1);
         expect(result).toEqual({ error: 'Error when adding a message to conversation:  error' });
+      });
+    });
+
+    describe('markMessageAsRead', () => {
+      test('markMessageAsRead should return the updated message', async () => {
+        mockingoose(MessageModel).toReturn(message1, 'findOneAndUpdate');
+
+        const result = (await markMessageAsRead(message1._id?.toString(), user1)) as Message;
+
+        expect(result._id?.toString()).toEqual(message1._id?.toString());
+      });
+
+      test('markMessageAsRead should return an object with error if findOneAndUpdate returns null', async () => {
+        mockingoose(MessageModel).toReturn(null, 'findOneAndUpdate');
+
+        const result = await markMessageAsRead(message1._id?.toString(), user1);
+
+        expect(result).toEqual({ error: 'Error when marking message as read: No message found' });
+      });
+
+      test('markMessageAsRead should return an object with error if findOneAndUpdate throws an error', async () => {
+        mockingoose(MessageModel).toReturn(new Error('error'), 'findOneAndUpdate');
+
+        const result = await markMessageAsRead(message1._id?.toString(), user1);
+
+        expect(result).toEqual({ error: 'Error when marking message as read: error' });
       });
     });
   });

@@ -356,6 +356,18 @@ export interface AddMessageRequest extends Request {
 }
 
 /**
+ * Interface representing the request body when marking a message as read, which contains:
+ * - mid: The unique identifier for the message that is being marked as read.
+ * - user: The unique identifier for the user that is marking the message as read.
+ */
+export interface MarkMessageAsReadRequest extends Request {
+  body: {
+    mid: string;
+    uid: string;
+  }
+}
+
+/**
  * Interface representing the possible responses for a Message-related operation.
  */
 export type MessageResponse = Message | { error: string };

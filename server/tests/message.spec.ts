@@ -9,6 +9,8 @@ const saveMessageSpy = jest.spyOn(util, 'saveMessage');
 const fetchConversationByIdSpy = jest.spyOn(util, 'fetchConversationById');
 const addMessageSpy = jest.spyOn(util, 'addMessage');
 const areUsersRegisteredSpy = jest.spyOn(util, 'areUsersRegistered');
+const fetchUserByIdSpy = jest.spyOn(util, 'fetchUserById');
+const markMessageAsReadSpy = jest.spyOn(util, 'markMessageAsRead');
 const fetchUserByUsernameSpy = jest.spyOn(util, 'fetchUserByUsername');
 
 const user1: User = {
@@ -329,5 +331,133 @@ describe('POST /sendMessage', () => {
 
     expect(response.status).toBe(500);
     expect(response.text).toBe('Error when adding message: error');
+  });
+});
+
+describe('POST /markAsRead', () => {
+  afterEach(async () => {
+    await mongoose.connection.close();
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect();
+  });
+
+  it('should mark a message as read successfully', async () => {
+    const validMid = new mongoose.Types.ObjectId();
+    const validCid = new mongoose.Types.ObjectId();
+
+    const mockMessage = {
+      _id: validMid,
+      messageContent: 'Hello',
+      sender: user1,
+      sentAt: new Date('2024-11-03'),
+      readBy: [user1],
+      cid: validCid.toString(),
+    };
+
+    const mockReqBody = {
+      mid: validMid.toString(),
+      uid: user1._id?.toString(),
+    };
+
+    fetchUserByIdSpy.mockResolvedValueOnce(user2);
+    markMessageAsReadSpy.mockResolvedValueOnce(mockMessage);
+
+    const response = await supertest(app).post('/message/markAsRead').send(mockReqBody);
+
+    expect(response.status).toBe(200);
+    expect(response.body._id?.toString()).toBe(validMid.toString());
+    expect(response.body.messageContent).toBe('Hello');
+    expect(response.body.sender._id?.toString()).toEqual(user1._id?.toString());
+    expect(response.body.sentAt).toBe(mockMessage.sentAt.toISOString());
+    expect(response.body.readBy.length).toBe(1);
+    expect(response.body.readBy[0]._id?.toString()).toEqual(user1._id?.toString());
+  });
+
+  it('should throw a bad request error if the request body is missing', async () => {
+    const response = await supertest(app).post('/message/markAsRead');
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid request');
+  });
+
+  it('should throw a bad request error if mid is missing', async () => {
+    const mockReqBody = {
+      uid: user1._id?.toString(),
+    };
+
+    const response = await supertest(app).post('/message/markAsRead').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid request');
+  });
+
+  it('should throw a bad request error if mid is invalid', async () => {
+    const mockReqBody = {
+      mid: 'invalid mid',
+      uid: user1._id?.toString(),
+    };
+
+    const response = await supertest(app).post('/message/markAsRead').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid ID format');
+  });
+
+  it('should throw a bad request error if uid is missing', async () => {
+    const mockReqBody = {
+      mid: new mongoose.Types.ObjectId().toString(),
+    };
+
+    const response = await supertest(app).post('/message/markAsRead').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid request');
+  });
+
+  it('should throw a bad request error if uid is invalid', async () => {
+    const mockReqBody = {
+      mid: new mongoose.Types.ObjectId().toString(),
+      uid: 'invalid uid',
+    };
+
+    const response = await supertest(app).post('/message/markAsRead').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid ID format');
+  });
+
+  it('should throw a database error if there is an issue fetching the user', async () => {
+    const validMid = new mongoose.Types.ObjectId();
+
+    const mockReqBody = {
+      mid: validMid.toString(),
+      uid: user1._id?.toString(),
+    };
+
+    fetchUserByIdSpy.mockResolvedValueOnce({ error: 'error' });
+
+    const response = await supertest(app).post('/message/markAsRead').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Error when marking message as read: error');
+  });
+
+  it('should throw a database error if there is an issue marking the message as read', async () => {
+    const validMid = new mongoose.Types.ObjectId();
+
+    const mockReqBody = {
+      mid: validMid.toString(),
+      uid: user1._id?.toString(),
+    };
+
+    fetchUserByIdSpy.mockResolvedValueOnce(user1);
+    markMessageAsReadSpy.mockResolvedValueOnce({ error: 'error' });
+
+    const response = await supertest(app).post('/message/markAsRead').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Error when marking message as read: error');
   });
 });

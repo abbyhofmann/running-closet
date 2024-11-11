@@ -1,10 +1,19 @@
 import express, { Response } from 'express';
 import { ObjectId } from 'mongodb';
-import { AddMessageRequest, Conversation, FakeSOSocket, Message, User } from '../types';
+import {
+  AddMessageRequest,
+  Conversation,
+  FakeSOSocket,
+  MarkMessageAsReadRequest,
+  Message,
+  User,
+} from '../types';
 import {
   addMessage,
   areUsersRegistered,
   fetchConversationById,
+  fetchUserById,
+  markMessageAsRead,
   fetchUserByUsername,
   saveMessage,
 } from '../models/application';
@@ -108,7 +117,58 @@ const messageController = (socket: FakeSOSocket) => {
     }
   };
 
+  /**
+   * Validates the request to mark a message as read to ensure everything necessary is provided.
+   *
+   * @param {MarkMessageAsReadRequest} req the request to validate
+   * @returns  true if the request is valid, otherwise false.
+   */
+  const isMarkAsReadRequestValid = (req: MarkMessageAsReadRequest): boolean =>
+    !!req.body.mid && !!req.body.uid;
+
+  /**
+   * Handles marking a message as read by the user specified in the request. The message ID is first validated and then marked as read.
+   * If the message is invalid or saving fails, the HTTP response status is updated.
+   *
+   * @param req The MarkMessageAsReadRequest object containing the message ID and user ID.
+   * @param res The HTTP response used to send back the result of the operation.
+   * @returns A Promise that resolves to void.
+   */
+  const markAsRead = async (req: MarkMessageAsReadRequest, res: Response): Promise<void> => {
+    if (!isMarkAsReadRequestValid(req)) {
+      res.status(400).send('Invalid request');
+      return;
+    }
+
+    const mid = req.body.mid as string;
+    const uid = req.body.uid as string;
+
+    if (!ObjectId.isValid(mid) || !ObjectId.isValid(uid)) {
+      res.status(400).send('Invalid ID format');
+      return;
+    }
+
+    try {
+      const user = await fetchUserById(uid);
+
+      if (user && 'error' in user) {
+        throw new Error(user.error);
+      }
+
+      const status = await markMessageAsRead(mid, user);
+
+      if (status && 'error' in status) {
+        throw new Error(status.error);
+      }
+
+      res.json(status);
+    } catch (err) {
+      res.status(500).send(`Error when marking message as read: ${(err as Error).message}`);
+    }
+  };
+
   router.post('/sendMessage', sendMessage);
+  router.post('/markAsRead', markAsRead);
 
   return router;
 };

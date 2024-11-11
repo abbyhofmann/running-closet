@@ -977,3 +977,28 @@ export const fetchConversationById = async (cid: string): Promise<ConversationRe
     return { error: `Error when fetching conversation: ${(error as Error).message}` };
   }
 };
+
+/**
+ * Marks a message as read by the user passed in.
+ *
+ * @param mid The id of the message to mark as read.
+ * @param user The user who is marking the message as read.
+ * @returns The updates message object or an error if an issue occurs.
+ */
+export const markMessageAsRead = async (mid: string, user: User): Promise<MessageResponse> => {
+  try {
+    const result = await MessageModel.findOneAndUpdate(
+      { _id: mid },
+      { $addToSet: { readBy: user } },
+      { new: true },
+    );
+
+    if (!result) {
+      throw new Error('No message found');
+    }
+
+    return result;
+  } catch (error) {
+    return { error: `Error when marking message as read: ${(error as Error).message}` };
+  }
+};
