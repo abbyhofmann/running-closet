@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './layout';
 import Login from './login';
@@ -13,6 +12,7 @@ import AnswerPage from './main/answerPage';
 import MessagesPage from './main/messagesPage';
 import NewConversationPage from './main/messagesPage/newConversation';
 import Register from './register';
+import useFakeStackOverflow from '../hooks/useFakeStackOverflow';
 
 const ProtectedRoute = ({
   user,
@@ -35,8 +35,7 @@ const ProtectedRoute = ({
  * It manages the state for search terms and the main title.
  */
 const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
-  const [user, setUser] = useState<User | null>(null);
-
+  const { user, setUser } = useFakeStackOverflow();
   return (
     <LoginContext.Provider value={{ setUser }}>
       <Routes>

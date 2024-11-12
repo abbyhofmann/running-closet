@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { ChangeEvent, useState } from 'react';
-import useLoginContext from './useLoginContext';
 import { loginUser } from '../services/userService';
 
 /**
@@ -15,7 +14,6 @@ const useLogin = () => {
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
   const [alert, setAlert] = useState<string | null>(null);
-  const { setUser } = useLoginContext();
   const navigate = useNavigate();
 
   /**
@@ -51,7 +49,6 @@ const useLogin = () => {
       const res = await loginUser(username, password);
 
       if (res) {
-        setUser(res);
         setAlert(null);
         navigate('/home');
       } else {

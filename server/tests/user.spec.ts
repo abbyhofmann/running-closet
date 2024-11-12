@@ -11,6 +11,7 @@ const hashPasswordSpy = jest.spyOn(util, 'hashPassword');
 const fetchUserByUsernameSpy = jest.spyOn(util, 'fetchUserByUsername');
 const comparePasswordsSpy = jest.spyOn(util, 'comparePasswords');
 const fetchAllUsersSpy = jest.spyOn(util, 'fetchAllUsers');
+const getCurrentUserSpy = jest.spyOn(util, 'getCurrentUser');
 
 const user1: User = {
   _id: new ObjectId('45e9b58910afe6e94fc6e6dc'),
@@ -440,5 +441,27 @@ describe('GET /getUserByUsername', () => {
 
     expect(response.status).toBe(500);
     expect(response.text).toBe('Error when fetching user: error');
+  });
+});
+
+describe('GET /getCurrentUser', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  afterEach(async () => {
+    await mongoose.connection.close(); // Ensure the connection is properly closed
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
+  });
+  it('should return 500 status when no user is logged in', async () => {
+    const response = await supertest(app).get('/user/getCurrentUser');
+
+    getCurrentUserSpy.mockResolvedValueOnce(null);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('No current user logged in');
   });
 });

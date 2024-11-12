@@ -14,6 +14,8 @@ import {
   fetchUserByUsername,
   comparePasswords,
   updateDeletedStatus,
+  getCurrentUser,
+  setCurrentUser,
 } from '../models/application';
 
 const userController = (socket: FakeSOSocket) => {
@@ -145,6 +147,7 @@ const userController = (socket: FakeSOSocket) => {
       }
 
       res.json(user);
+      setCurrentUser(user);
     } catch (err) {
       res.status(500).send(`Error when logging in user: ${(err as Error).message}`);
     }
@@ -226,11 +229,23 @@ const userController = (socket: FakeSOSocket) => {
     }
   };
 
+  const currentUser = async (req: Request, res: Response): Promise<void> => {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      res.status(500).send('No current user logged in');
+      return;
+    }
+
+    res.json(user);
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/registerUser', registerUser);
   router.post('/loginUser', loginUser);
   router.get('/getAllUsers', getAllUsers);
   router.post('/deleteUser', deleteUser);
+  router.get('/getCurrentUser', currentUser);
   router.get('/getUserByUsername/:username', getUserByUsername);
 
   return router;

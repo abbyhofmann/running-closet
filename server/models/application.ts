@@ -29,6 +29,8 @@ import ConversationModel from './conversations';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
 
+let currentUser: User | null = null;
+
 /**
  * Parses tags from a search string.
  *
@@ -903,6 +905,22 @@ export const doesConversationExist = async (users: User[]): Promise<boolean | Er
   // exactly 1 valid conversation exists
   return convos.length === 1;
 };
+
+/**
+ * Sets the the current user in the application to the given user.
+ * @param user the user that will be set to the current user.
+ */
+export const setCurrentUser = async (user: User) => {
+  if (user !== null) {
+    currentUser = user;
+  }
+};
+
+/**
+ * Gets the current user that is logged in to the application.
+ * @returns the user that is logged in or null is no one is logged in.
+ */
+export const getCurrentUser = async (): Promise<User | null> => currentUser;
 
 /**
  * Ensures that each user in the supplied list is registered and active in the database.
