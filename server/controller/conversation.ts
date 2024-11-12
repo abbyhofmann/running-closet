@@ -4,12 +4,14 @@ import {
   Conversation,
   FakeSOSocket,
   AddConversationRequest,
+  GetConversationRequest,
   FindConversationsByUserIdRequest,
 } from '../types';
 import {
   areUsersRegistered,
   saveConversation,
   doesConversationExist,
+  fetchConversationById,
   fetchUserById,
   fetchConvosByParticipants,
 } from '../models/application';
@@ -80,11 +82,36 @@ const conversationController = (socket: FakeSOSocket) => {
   };
 
   /**
-   * Gets all the conversations that the provided user in a participant in.
+   * Retrieves the conversation with the given conversation id from the database.
+   * If there is an error, the HTTP response's status is updated.
    *
+   * @param req The request object with the id of the conversation to retrieve.
+   * @param res The HTTP response object used to send back the result of the operation.
+   * @returns A Promise that resolves to void.
+   */
+  const getConversation = async (req: GetConversationRequest, res: Response): Promise<void> => {
+    const { cid } = req.params;
+
+    try {
+      if (!ObjectId.isValid(cid)) {
+        res.status(400).send('Invalid ID format');
+        return;
+      }
+      const conversation = await fetchConversationById(cid);
+      if ('error' in conversation) {
+        throw new Error(conversation.error as string);
+      }
+
+      res.json(conversation);
+    } catch (err) {
+      res.status(500).send(`Error when fetching conversation: ${(err as Error).message}`);
+    }
+  };
+
+  /**
+   * Gets all the conversations that the provided user in a participant in.
    * @param req The FindConversationsByIdRequest containing the uid of the user.
    * @param res The HTTP response object used to send back the result of the operation.
-   *
    * @returns A Promise that resolves to void.
    */
   const getConversations = async (
@@ -118,6 +145,7 @@ const conversationController = (socket: FakeSOSocket) => {
 
   // add appropriate HTTP verbs and their endpoints to the router
   router.post('/addConversation', addConversation);
+  router.get('/getConversation/:cid', getConversation);
   router.get('/getConversations/:uid', getConversations);
 
   return router;

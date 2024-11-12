@@ -335,6 +335,7 @@ export type ConversationResponse = Conversation | { error: string };
 export interface Message {
   _id?: ObjectId;
   messageContent: string;
+  cid: string;
   sender: User;
   sentAt: Date;
   readBy: User[];
@@ -389,6 +390,22 @@ export interface AddConversationRequest extends Request {
   body: Conversation;
 }
 
+
+/**
+ * Interface representing the possible responses for a Conversation-related operation.
+ */
+export type ConversationResponse = Conversation | { error: string };
+
+/**
+ * Interface for the request params when getting a conversation by id.
+ * - cid - The id of the conversation being fetched.
+ */
+export interface GetConversationRequest {
+  params: {
+    cid: string;
+  }
+}
+
 /**
  * Interface for the request parameter when fetching the conversations associated with a user given
  * their user ID.
@@ -399,3 +416,4 @@ export interface FindConversationsByUserIdRequest extends Request {
     uid: string;
   };
 }
+

@@ -23,13 +23,13 @@ import {
   updateDeletedStatus,
   saveConversation,
   areUsersRegistered,
-  fetchConversationById,
   saveMessage,
   addMessage,
   fetchUserById,
   markMessageAsRead,
   doesConversationExist,
   fetchConvosByParticipants,
+  fetchConversationById,
 } from '../models/application';
 import { Answer, Question, Tag, Comment, User, Conversation, Message } from '../types';
 import { T1_DESC, T2_DESC, T3_DESC } from '../data/posts_strings';
@@ -1578,6 +1578,65 @@ describe('application module', () => {
 
         expect(result).toEqual({ error: 'Error when fetching conversation: error' });
       });
+    });
+  });
+
+  describe('fetchConversationById', () => {
+    beforeEach(() => {
+      mockingoose.resetAll();
+    });
+    test('fetchConversationById returns error if cid does not exist', async () => {
+      mockingoose(ConversationModel).toReturn(null, 'findOne');
+
+      const result = await fetchConversationById('dummyCid');
+      expect(result).toEqual({
+        error:
+          'Error when fetching conversation: input must be a 24 character hex string, 12 byte Uint8Array, or an integer',
+      });
+    });
+
+    test('fetchConversationById returns error if there is a DB error', async () => {
+      const mockConversation = {
+        _id: new ObjectId('65e9a5c2b26199dbcc3e6dc7'),
+        users: [user1, user2],
+        messages: [],
+        updatedAt: new Date(),
+      };
+
+      mockingoose(ConversationModel).toReturn(new Error('DB error'), 'findOne');
+
+      const result = await fetchConversationById(mockConversation._id.toString());
+      expect(result).toEqual({ error: 'Error when fetching conversation: DB error' });
+    });
+
+    test('fetchConversationById returns error if id is not a valid objectId string', async () => {
+      const mockConversation = {
+        _id: 'mockId',
+        users: [user1, user2],
+        messages: [],
+        updatedAt: new Date(),
+      };
+
+      mockingoose(ConversationModel).toReturn(mockConversation, 'findOne');
+
+      const result = await fetchConversationById(mockConversation._id);
+      expect(result).toEqual({
+        error:
+          'Error when fetching conversation: input must be a 24 character hex string, 12 byte Uint8Array, or an integer',
+      });
+    });
+
+    test('fetchConversationById returns conversation with given cid', async () => {
+      const mockConversation = {
+        _id: new ObjectId('65e9a5c2b26199dbcc3e6dc7'),
+        users: [user1, user2],
+        messages: [],
+        updatedAt: new Date(),
+      };
+
+      mockingoose(ConversationModel).toReturn(mockConversation, 'findOne');
+      const result = await fetchConversationById(mockConversation._id.toString());
+      expect((result as Conversation)._id?.toString()).toEqual(mockConversation._id.toString());
     });
   });
 });

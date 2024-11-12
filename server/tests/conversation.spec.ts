@@ -9,6 +9,7 @@ const saveConversationSpy = jest.spyOn(util, 'saveConversation');
 const areUsersRegisteredSpy = jest.spyOn(util, 'areUsersRegistered');
 const doesConversationExistSpy = jest.spyOn(util, 'doesConversationExist');
 const fetchConvosByParticipantsSpy = jest.spyOn(util, 'fetchConvosByParticipants');
+const fetchConversationById = jest.spyOn(util, 'fetchConversationById');
 
 const user1: User = {
   _id: new ObjectId('45e9b58910afe6e94fc6e6dc'),
@@ -33,6 +34,7 @@ const user2: User = {
 describe('POST /addConversation', () => {
   afterEach(async () => {
     await mongoose.connection.close(); // Ensure the connection is properly closed
+    jest.resetAllMocks();
   });
 
   afterAll(async () => {
@@ -161,6 +163,69 @@ describe('POST /addConversation', () => {
       messages: [],
       updatedAt: dateObj,
     });
+  });
+});
+
+describe('GET /conversation/:cid', () => {
+  afterEach(async () => {
+    await mongoose.connection.close(); // Ensure the connection is properly closed
+    jest.resetAllMocks();
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
+  });
+
+  it('should return the conversation if a valid id is given', async () => {
+    const validCid = new mongoose.Types.ObjectId();
+    const mockReqParams = {
+      cid: validCid.toString(),
+    };
+    const mockConvoFromDb = {
+      _id: validCid,
+      users: [user1, user2],
+      messages: [],
+      updatedAt: new Date('2023-11-18T09:24:00'),
+    };
+
+    fetchConversationById.mockResolvedValueOnce(mockConvoFromDb);
+
+    const response = await supertest(app).get(`/conversation/getConversation/${mockReqParams.cid}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body._id.toString()).toBe(validCid.toString());
+    expect(response.body.users.length).toBe(2);
+    expect(response.body.users[0]._id.toString()).toBe(user1._id?.toString());
+    expect(response.body.users[1]._id.toString()).toBe(user2._id?.toString());
+    expect(response.body.messages.length).toBe(0);
+  });
+
+  it('should return invalid request error if cid is invalid', async () => {
+    const mockReqParams = {
+      cid: 'invalidId',
+    };
+
+    fetchConversationById.mockResolvedValueOnce({ error: 'Error when fetching the conversation' });
+
+    const response = await supertest(app).get(`/conversation/getConversation/${mockReqParams.cid}`);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid ID format');
+  });
+
+  it('should return invalid request error if fetchConversationById errors', async () => {
+    const mockReqParams = {
+      cid: '65e9a5c2b26199dbcc3e6dc7',
+    };
+
+    fetchConversationById.mockResolvedValueOnce({ error: 'Error when fetching the conversation' });
+
+    const response = await supertest(app).get(`/conversation/getConversation/${mockReqParams.cid}`);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe(
+      'Error when fetching conversation: Error when fetching the conversation',
+    );
   });
 });
 
