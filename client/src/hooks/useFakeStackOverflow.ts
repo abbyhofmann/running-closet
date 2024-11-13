@@ -24,6 +24,10 @@ const useFakeStackOverflow = () => {
         }
       } catch (err) {
         setUser(null);
+        if (window.location.pathname === '/register') {
+          navigate('/register');
+          return;
+        }
         navigate('/');
       }
     };
