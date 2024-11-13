@@ -4,6 +4,7 @@ export type FakeSOSocket = Socket<ServerToClientEvents>;
 
 /**
  * Interface representing a User, which contains:
+ * - id - The id of the user.
  * - username - The unique identifier of the user.
  * - email - The email of the user.
  * - password - The password of the user.
@@ -12,6 +13,7 @@ export type FakeSOSocket = Socket<ServerToClientEvents>;
  * - followers - Usernames of users that are following this user.
  */
 export interface User {
+  _id?: string;
   username: string;
   email: string;
   password: string;

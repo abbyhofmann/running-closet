@@ -9,8 +9,8 @@ import TagPage from './main/tagPage';
 import NewQuestionPage from './main/newQuestion';
 import NewAnswerPage from './main/newAnswer';
 import AnswerPage from './main/answerPage';
-import MessagesPage from './main/messagesPage';
 import NewConversationPage from './main/messagesPage/newConversation';
+import ConversationsPage from './main/conversationsPage';
 import Register from './register';
 import useFakeStackOverflow from '../hooks/useFakeStackOverflow';
 
@@ -55,8 +55,8 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
             <Route path='/question/:qid' element={<AnswerPage />} />
             <Route path='/new/question' element={<NewQuestionPage />} />
             <Route path='/new/answer/:qid' element={<NewAnswerPage />} />
-            <Route path='/messages' element={<MessagesPage />} />
             <Route path='/new/conversation' element={<NewConversationPage />} />
+            <Route path='/conversations' element={<ConversationsPage />} />
           </Route>
         }
       </Routes>

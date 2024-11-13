@@ -22,7 +22,7 @@ const SideBarNav = () => (
       Tags
     </NavLink>
     <NavLink
-      to='/messages'
+      to='/conversations'
       id='menu_messages'
       className={({ isActive }) => `menu_button ${isActive ? 'menu_selected' : ''}`}>
       Messages
