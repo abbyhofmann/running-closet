@@ -1218,6 +1218,29 @@ describe('application module', () => {
         });
       });
     });
+
+    describe('current user functionality', () => {
+      test('logoutCurrentUser', async () => {
+        // mock the global var
+        let currentUser: User | null = user1;
+
+        // mock the functions
+        const getCurrentUser = jest.fn(() => currentUser);
+        const logoutCurrentUser = jest.fn(() => {
+          currentUser = null;
+        });
+
+        // getCurrentUser returns user1
+        const curr = (await getCurrentUser()) as User;
+        expect(curr).toEqual(user1);
+        // logout user1
+        await logoutCurrentUser();
+
+        // getCurrentUser returns null
+        const loggedOut = await getCurrentUser();
+        expect(loggedOut).toBe(null);
+      });
+    });
   });
 
   describe('Message module', () => {

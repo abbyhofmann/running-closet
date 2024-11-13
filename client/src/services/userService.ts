@@ -65,4 +65,12 @@ const deleteUser = async (uid: string) => {
   return res.data;
 };
 
-export { registerUser, loginUser, getAllUsers, deleteUser };
+const logoutUser = async () => {
+  const res = await api.post(`${USER_API_URL}/logoutUser`);
+  if (res.status !== 200) {
+    throw new Error(`Error while logging out current user`);
+  }
+  return res.data;
+};
+
+export { registerUser, loginUser, getAllUsers, deleteUser, logoutUser };

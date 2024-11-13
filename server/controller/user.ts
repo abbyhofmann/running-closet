@@ -16,6 +16,7 @@ import {
   updateDeletedStatus,
   getCurrentUser,
   setCurrentUser,
+  logoutCurrentUser,
 } from '../models/application';
 
 const userController = (socket: FakeSOSocket) => {
@@ -229,6 +230,13 @@ const userController = (socket: FakeSOSocket) => {
     }
   };
 
+  /**
+   * Retrieves the current logged in user.
+   *
+   * @param req The request object needed for the route handlers.
+   * @param res The HTTP response object used to send back the result of the operation.
+   * @returns A Promise that resolves to void.
+   */
   const currentUser = async (req: Request, res: Response): Promise<void> => {
     const user = await getCurrentUser();
 
@@ -240,6 +248,30 @@ const userController = (socket: FakeSOSocket) => {
     res.json(user);
   };
 
+  /**
+   * Logs out the current user (i.e. sets the current user to null).
+   *
+   * @param req The request object needed for the route handlers.
+   * @param res The HTTP response object used to send back the result of the operation.
+   * @returns A Promise that resolves to void.
+   */
+  const logoutUser = async (req: Request, res: Response): Promise<void> => {
+    try {
+      await logoutCurrentUser();
+
+      const loggedInUser = await getCurrentUser();
+
+      if (loggedInUser) {
+        throw new Error('Current user was not logged out');
+      }
+
+      // this response message will be used in the client to check that the user was logged out
+      res.json('User successfully logged out');
+    } catch (err) {
+      res.status(500).send(`Error when logging out user: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/registerUser', registerUser);
   router.post('/loginUser', loginUser);
@@ -247,6 +279,7 @@ const userController = (socket: FakeSOSocket) => {
   router.post('/deleteUser', deleteUser);
   router.get('/getCurrentUser', currentUser);
   router.get('/getUserByUsername/:username', getUserByUsername);
+  router.post('/logoutUser', logoutUser);
 
   return router;
 };

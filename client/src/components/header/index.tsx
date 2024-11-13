@@ -5,6 +5,7 @@ import { grey } from '@mui/material/colors';
 import useHeader from '../../hooks/useHeader';
 import NotificationDropdown from './notificationDropdown';
 import './index.css';
+import LogoutButton from './logoutButton';
 /**
  * Header component that renders the main title and a search bar.
  * The search bar allows the user to input a query and navigate to the search results page
@@ -21,7 +22,7 @@ const Header = () => {
         </Typography>
       </Grid>
       <Grid size={2}>
-        <Box sx={{ display: 'flex', marginTop: 2 }}>
+        <Box sx={{ justifyContent: 'flex-end', display: 'flex', marginTop: 2 }}>
           <input
             id='searchBar'
             placeholder='Search ...'
@@ -31,6 +32,7 @@ const Header = () => {
             onKeyDown={handleKeyDown}
           />
           <NotificationDropdown />
+          <LogoutButton />
         </Box>
       </Grid>
     </Grid>

@@ -339,7 +339,6 @@ export interface Message {
   sender: User;
   sentAt: Date;
   readBy: User[];
-  cid: string;
 }
 
 /**
@@ -389,12 +388,6 @@ export interface AddConversationRequest extends Request {
 export interface AddConversationRequest extends Request {
   body: Conversation;
 }
-
-
-/**
- * Interface representing the possible responses for a Conversation-related operation.
- */
-export type ConversationResponse = Conversation | { error: string };
 
 /**
  * Interface for the request params when getting a conversation by id.

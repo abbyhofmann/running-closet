@@ -923,6 +923,13 @@ export const setCurrentUser = async (user: User) => {
 export const getCurrentUser = async (): Promise<User | null> => currentUser;
 
 /**
+ * Logs out the current user by explicitly setting the current user to null.
+ */
+export const logoutCurrentUser = async () => {
+  currentUser = null;
+};
+
+/**
  * Ensures that each user in the supplied list is registered and active in the database.
  *
  * @param users The list of users being validated.

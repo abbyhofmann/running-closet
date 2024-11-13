@@ -465,3 +465,35 @@ describe('GET /getCurrentUser', () => {
     expect(response.text).toBe('No current user logged in');
   });
 });
+
+describe('POST /logoutUser', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  afterEach(async () => {
+    await mongoose.connection.close(); // Ensure the connection is properly closed
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
+  });
+
+  it('should return 500 if logout is unsuccessful', async () => {
+    getCurrentUserSpy.mockResolvedValueOnce(user1);
+
+    const response = await supertest(app).post('/user/logoutUser');
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Error when logging out user: Current user was not logged out');
+  });
+
+  it('should return success message if logout is successful', async () => {
+    getCurrentUserSpy.mockResolvedValueOnce(null);
+
+    const response = await supertest(app).post('/user/logoutUser');
+
+    expect(response.status).toBe(200);
+    expect(response.text).toBe('"User successfully logged out"');
+  });
+});
