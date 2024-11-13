@@ -29,9 +29,10 @@ import {
   markMessageAsRead,
   doesConversationExist,
   fetchConvosByParticipants,
+  fetchConversationById,
+  createOrFetchConversation,
   followAnotherUser,
   unfollowAnotherUser,
-  fetchConversationById,
 } from '../models/application';
 import { Answer, Question, Tag, Comment, User, Conversation, Message } from '../types';
 import { T1_DESC, T2_DESC, T3_DESC } from '../data/posts_strings';
@@ -1277,6 +1278,7 @@ describe('application module', () => {
         expect((result as User).following.length).toBe(0);
       });
     });
+
     describe('fetchUserById', () => {
       test('fetchUserById returns user', async () => {
         const mockUser = {
@@ -1317,29 +1319,6 @@ describe('application module', () => {
         expect(result).toEqual({
           error: `Error when fetching user: Failed to fetch user with id 507f191e810c19729de860ea`,
         });
-      });
-    });
-
-    describe('current user functionality', () => {
-      test('logoutCurrentUser', async () => {
-        // mock the global var
-        let currentUser: User | null = user1;
-
-        // mock the functions
-        const getCurrentUser = jest.fn(() => currentUser);
-        const logoutCurrentUser = jest.fn(() => {
-          currentUser = null;
-        });
-
-        // getCurrentUser returns user1
-        const curr = (await getCurrentUser()) as User;
-        expect(curr).toEqual(user1);
-        // logout user1
-        await logoutCurrentUser();
-
-        // getCurrentUser returns null
-        const loggedOut = await getCurrentUser();
-        expect(loggedOut).toBe(null);
       });
     });
   });
@@ -1462,20 +1441,29 @@ describe('application module', () => {
         expect(result).toEqual({ error: 'Error when adding a message to conversation:  error' });
       });
     });
+
     describe('markMessageAsRead', () => {
       test('markMessageAsRead should return the updated message', async () => {
         mockingoose(MessageModel).toReturn(message1, 'findOneAndUpdate');
+
         const result = (await markMessageAsRead(message1._id?.toString(), user1)) as Message;
+
         expect(result._id?.toString()).toEqual(message1._id?.toString());
       });
+
       test('markMessageAsRead should return an object with error if findOneAndUpdate returns null', async () => {
         mockingoose(MessageModel).toReturn(null, 'findOneAndUpdate');
+
         const result = await markMessageAsRead(message1._id?.toString(), user1);
+
         expect(result).toEqual({ error: 'Error when marking message as read: No message found' });
       });
+
       test('markMessageAsRead should return an object with error if findOneAndUpdate throws an error', async () => {
         mockingoose(MessageModel).toReturn(new Error('error'), 'findOneAndUpdate');
+
         const result = await markMessageAsRead(message1._id?.toString(), user1);
+
         expect(result).toEqual({ error: 'Error when marking message as read: error' });
       });
     });
@@ -1660,6 +1648,10 @@ describe('application module', () => {
     });
 
     describe('fetchConversationById', () => {
+      beforeEach(() => {
+        mockingoose.resetAll();
+      });
+
       test('fetchConversationById should return a conversation from the db with the given id if one exists', async () => {
         mockingoose(ConversationModel).toReturn(conversation1, 'findOne');
         ConversationModel.schema.path('users', Object);
@@ -1693,12 +1685,7 @@ describe('application module', () => {
 
         expect(result).toEqual({ error: 'Error when fetching conversation: error' });
       });
-    });
 
-    describe('fetchConversationById', () => {
-      beforeEach(() => {
-        mockingoose.resetAll();
-      });
       test('fetchConversationById returns error if cid does not exist', async () => {
         mockingoose(ConversationModel).toReturn(null, 'findOne');
 
@@ -1751,6 +1738,44 @@ describe('application module', () => {
         mockingoose(ConversationModel).toReturn(mockConversation, 'findOne');
         const result = await fetchConversationById(mockConversation._id.toString());
         expect((result as Conversation)._id?.toString()).toEqual(mockConversation._id.toString());
+      });
+    });
+
+    describe('createOrFetchConversation', () => {
+      test('createOrFetchConversation returns convo when it exists', async () => {
+        const mockConversation = {
+          _id: new ObjectId('6733979815f91991dab851bd'),
+          users: [user1, user2],
+          messages: [],
+          updatedAt: new Date('October 1, 2024'),
+        };
+        mockingoose(ConversationModel).toReturn([mockConversation], 'find');
+
+        const convo = (await createOrFetchConversation(user1, user2)) as Conversation;
+        expect(convo).toBeDefined();
+        expect(convo._id).toEqual(mockConversation._id);
+        expect(convo.users).toEqual(mockConversation.users);
+        expect(convo.messages).toEqual(mockConversation.messages);
+        expect(convo.updatedAt).toEqual(mockConversation.updatedAt);
+      });
+
+      test('createOrFetchConversation creates new convo when it doesnt exist', async () => {
+        mockingoose(ConversationModel).toReturn([], 'find');
+        const mockConversation: Conversation = {
+          _id: new ObjectId('6734a800f4078fe67cc1d2df'),
+          users: [user1, user2],
+          messages: [],
+          updatedAt: new Date('October 1, 2024'),
+        };
+        mockingoose(ConversationModel).toReturn(mockConversation, 'create');
+
+        const convo = (await createOrFetchConversation(user1, user2)) as Conversation;
+        expect(convo).toBeDefined();
+        expect(convo._id).toBeDefined();
+        expect(convo._id).toBeInstanceOf(ObjectId);
+        expect(convo.users).toEqual(mockConversation.users);
+        expect(convo.messages).toEqual(mockConversation.messages);
+        expect(convo.updatedAt).toBeInstanceOf(Date);
       });
     });
   });

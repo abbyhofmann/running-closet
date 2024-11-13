@@ -6,6 +6,7 @@ import {
   AddConversationRequest,
   GetConversationRequest,
   FindConversationsByUserIdRequest,
+  BlastMessageRequest,
 } from '../types';
 import {
   areUsersRegistered,
@@ -14,6 +15,8 @@ import {
   fetchConversationById,
   fetchUserById,
   fetchConvosByParticipants,
+  createOrFetchConversation,
+  saveAndAddMessage,
 } from '../models/application';
 
 const conversationController = (socket: FakeSOSocket) => {
@@ -30,6 +33,18 @@ const conversationController = (socket: FakeSOSocket) => {
     conversation.users !== undefined &&
     conversation.users.length !== 0 &&
     conversation.users.length !== 1;
+
+  /**
+   * Checks if the provided BlastMessageRequest contains the necessary fields.
+   *
+   * @param req BlastMessageRequest object containing the uid of the user sending the message,
+   * as well as the string message content. Does not allow empty messages to be sent.
+   * @returns `true` if the request is valid, otherwise `false`.
+   */
+  const isBlastMessageRequestValid = (req: BlastMessageRequest): boolean =>
+    !!req.body.uid &&
+    req.body.messageContent !== undefined &&
+    req.body.messageContent.trim() !== '';
 
   /**
    * Adds a new conversation to the database. The conversation is first validated and
@@ -143,10 +158,66 @@ const conversationController = (socket: FakeSOSocket) => {
     }
   };
 
+  /**
+   * Sends a blast message, where a given message is sent to all the followers of the user
+   * associated with the provided id. If there does not currently exist a conversation between
+   * the user and a follower, a new conversation is created.
+   *
+   * @param req The BlastMessageRequest containing the uid and message string.
+   * @param res The HTTP response object used to send back the result of the operation.
+   *
+   * @returns A Promise that resolves to void.
+   */
+  const sendBlastMessage = async (req: BlastMessageRequest, res: Response): Promise<void> => {
+    if (!isBlastMessageRequestValid(req)) {
+      res.status(400).send('Invalid blast message request body');
+      return;
+    }
+
+    const { uid, messageContent } = req.body;
+
+    if (!ObjectId.isValid(uid)) {
+      res.status(400).send('Invalid ID format');
+      return;
+    }
+
+    try {
+      // get the user associated with the id
+      const user = await fetchUserById(uid);
+
+      if ('error' in user) {
+        throw new Error(user.error as string);
+      }
+
+      // list of all user-follower conversation ids
+      const blastCids: ObjectId[] = [];
+
+      // logic for sending message to each follower
+      await Promise.all(
+        user.followers.map(async follower => {
+          // conversation between user and this follower
+          const userFollowerConvo = await createOrFetchConversation(user, follower);
+
+          // add cid to list
+          if (userFollowerConvo._id !== undefined) {
+            blastCids.push(userFollowerConvo._id);
+          }
+
+          // create and send the message
+          await saveAndAddMessage(userFollowerConvo, user, messageContent);
+        }),
+      );
+      res.json(blastCids);
+    } catch (err) {
+      res.status(500).send(`Error when blasting message: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router
   router.post('/addConversation', addConversation);
   router.get('/getConversation/:cid', getConversation);
   router.get('/getConversations/:uid', getConversations);
+  router.post('/sendBlastMessage', sendBlastMessage);
 
   return router;
 };

@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 import supertest from 'supertest';
 import { app } from '../app';
-import { User, MultipleConversationResponse } from '../types';
+import { User, MultipleConversationResponse, Conversation, Message } from '../types';
 import * as util from '../models/application';
 
 const saveConversationSpy = jest.spyOn(util, 'saveConversation');
@@ -29,6 +29,16 @@ const user2: User = {
   deleted: false,
   following: [],
   followers: [],
+};
+
+const user3: User = {
+  _id: new ObjectId('47e9b58910afe6e94fc6e6dc'),
+  username: 'user3',
+  email: 'user3@gmail.com',
+  password: 'password',
+  deleted: false,
+  following: [],
+  followers: [user1],
 };
 
 describe('POST /addConversation', () => {
@@ -296,6 +306,109 @@ describe('GET /getConversations', () => {
         ],
       },
     ];
+
+    expect(response.status).toBe(200);
+    expect(JSON.parse(response.text)).toEqual(expectedResponse);
+  });
+});
+
+describe('POST /sendBlastMessage', () => {
+  afterEach(async () => {
+    await mongoose.connection.close(); // Ensure the connection is properly closed
+    jest.resetAllMocks();
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
+  });
+
+  it('should return invalid request error if req body is empty', async () => {
+    const mockReqBody = {};
+
+    const response = await supertest(app).post('/conversation/sendBlastMessage').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid blast message request body');
+  });
+
+  it('should return invalid request error if missing uid', async () => {
+    const mockReqBody = {
+      messageContent: 'message',
+    };
+
+    const response = await supertest(app).post('/conversation/sendBlastMessage').send(mockReqBody);
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid blast message request body');
+  });
+
+  it('should return invalid request error if missing message content', async () => {
+    const mockReqBody = {
+      uid: new mongoose.Types.ObjectId(),
+    };
+
+    const response = await supertest(app).post('/conversation/sendBlastMessage').send(mockReqBody);
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid blast message request body');
+  });
+
+  it('should return invalid request error if message is an empty string', async () => {
+    const mockReqBody = {
+      uid: new mongoose.Types.ObjectId(),
+      messageContent: '   ',
+    };
+
+    const response = await supertest(app).post('/conversation/sendBlastMessage').send(mockReqBody);
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid blast message request body');
+  });
+
+  it('should return a list of conversation ids upon valid request', async () => {
+    jest.clearAllMocks();
+    const dateObj = new Date('December 17, 1995');
+    const mockConversation = {
+      _id: new mongoose.Types.ObjectId(),
+      users: [user3, user1],
+      messages: [],
+      updatedAt: dateObj,
+    };
+
+    const mockMessage = {
+      _id: new mongoose.Types.ObjectId(),
+      messageContent: 'Hello',
+      sender: user1,
+      sentAt: new Date('2024-11-03'),
+      readBy: [user1],
+      cid: mockConversation._id.toString(),
+    };
+
+    const mockConversationWithMessage = {
+      _id: new mongoose.Types.ObjectId(),
+      users: [user3, user1],
+      messages: [mockMessage],
+      updatedAt: dateObj,
+    };
+
+    jest.spyOn(util, 'fetchUserById').mockResolvedValueOnce(user3 as User);
+    jest
+      .spyOn(util, 'fetchConvosByParticipants')
+      .mockResolvedValueOnce([mockConversation] as Conversation[]);
+    jest
+      .spyOn(util, 'createOrFetchConversation')
+      .mockResolvedValueOnce(mockConversation as Conversation);
+    jest.spyOn(util, 'saveMessage').mockResolvedValueOnce(mockMessage as Message);
+    jest
+      .spyOn(util, 'addMessage')
+      .mockResolvedValueOnce(mockConversationWithMessage as Conversation);
+    jest.spyOn(util, 'saveAndAddMessage').mockResolvedValue();
+
+    const mockReqBody = {
+      uid: user3._id?.toString(),
+      messageContent: 'User 3 sending message!',
+    };
+
+    const response = await supertest(app).post('/conversation/sendBlastMessage').send(mockReqBody);
+
+    const expectedResponse = [mockConversation._id.toString()];
 
     expect(response.status).toBe(200);
     expect(JSON.parse(response.text)).toEqual(expectedResponse);

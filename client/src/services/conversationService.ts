@@ -35,4 +35,22 @@ const getConversations = async (uid: string): Promise<Conversation[]> => {
   return res.data;
 };
 
-export { addConversation, getConversations };
+/**
+ * Function to blast a message - i.e. send a message to every follower of a user.
+ *
+ * @param uid The id of the user.
+ * @param messageContent The message content to send.
+ * @throws Error if there is an issue sending the message.
+ */
+const sendBlastMessage = async (uid: string, messageContent: string): Promise<Conversation> => {
+  const data = { uid, messageContent };
+  const res = await api.post(`${CONVERSATION_API_URL}/sendBlastMessage`, data);
+
+  if (res.status !== 200) {
+    throw new Error('Error while sending message to all followers');
+  }
+
+  return res.data;
+};
+
+export { addConversation, getConversations, sendBlastMessage };

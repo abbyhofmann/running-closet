@@ -882,6 +882,48 @@ export const fetchConvosByParticipants = async (
 };
 
 /**
+ * Checks for an existing conversation between the provided users and returns
+ * it if it exists. If it does not exist, a new conversation is created and saved.
+ *
+ * @param user1 The first user in the conversation.
+ * @param user2 The second user in the conversation.
+ * @returns The conversation object between the two users.
+ */
+export const createOrFetchConversation = async (
+  user1: User,
+  user2: User,
+): Promise<Conversation> => {
+  // check for an existing conversation
+  const findConvo = await fetchConvosByParticipants([user1, user2], true);
+
+  if ('error' in findConvo) {
+    throw new Error(findConvo.error as string);
+  }
+
+  if (findConvo.length > 1) {
+    throw new Error('More than one conversation returned');
+  }
+
+  // no conversation exists, so we create a new one
+  if (findConvo.length === 0) {
+    const newConvo = {
+      users: [user1, user2],
+      messages: [],
+      updatedAt: new Date(),
+    };
+
+    // save the new conversation
+    const convoFromDb = await saveConversation(newConvo);
+    if ('error' in convoFromDb) {
+      throw new Error(convoFromDb.error as string);
+    }
+    return convoFromDb;
+  }
+
+  return findConvo[0];
+};
+
+/**
  * Checks if there exists a conversation in the db with the provided list of users.
  *
  * @param users The list of users involved in the conversation.
@@ -1104,5 +1146,42 @@ export const markMessageAsRead = async (mid: string, user: User): Promise<Messag
     return result;
   } catch (error) {
     return { error: `Error when marking message as read: ${(error as Error).message}` };
+  }
+};
+
+/**
+ * Function for handling the required aspects of sending a message, which involves 1) creating
+ * a message to send, 2) saving that message to the db, and 3) adding the message to the conversation.
+ *
+ * @param conversation The conversation to which the message will be added.
+ * @param user The sender of the message.
+ * @param messageContent The string content of the message.
+ */
+export const saveAndAddMessage = async (
+  conversation: Conversation,
+  user: User,
+  messageContent: string,
+): Promise<void> => {
+  // create message object
+  const message = {
+    messageContent,
+    sender: user,
+    sentAt: new Date(),
+    readBy: [user],
+    cid: conversation._id!.toString(),
+  };
+
+  // save message
+  const messageFromDb = await saveMessage(message);
+
+  if ('error' in messageFromDb) {
+    throw new Error(messageFromDb.error as string);
+  }
+
+  // add message to conversation
+  const updatedConvoFromDb = await addMessage(messageFromDb);
+
+  if ('error' in updatedConvoFromDb) {
+    throw new Error(updatedConvoFromDb.error as string);
   }
 };
