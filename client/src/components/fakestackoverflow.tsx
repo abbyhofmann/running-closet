@@ -12,6 +12,7 @@ import AnswerPage from './main/answerPage';
 import NewConversationPage from './main/messagesPage/newConversation';
 import ConversationsPage from './main/conversationsPage';
 import Register from './register';
+import ProfilePage from './main/profile';
 import useFakeStackOverflow from '../hooks/useFakeStackOverflow';
 
 const ProtectedRoute = ({
@@ -56,6 +57,7 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
             <Route path='/new/question' element={<NewQuestionPage />} />
             <Route path='/new/answer/:qid' element={<NewAnswerPage />} />
             <Route path='/new/conversation' element={<NewConversationPage />} />
+            <Route path='/profile/:username' element={<ProfilePage />} />
             <Route path='/conversations' element={<ConversationsPage />} />
           </Route>
         }

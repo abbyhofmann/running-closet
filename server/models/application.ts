@@ -23,8 +23,8 @@ import QuestionModel from './questions';
 import TagModel from './tags';
 import CommentModel from './comments';
 import UserModel from './users';
-import MessageModel from './messages';
 import ConversationModel from './conversations';
+import MessageModel from './messages';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
@@ -906,6 +906,85 @@ export const doesConversationExist = async (users: User[]): Promise<boolean | Er
   return convos.length === 1;
 };
 
+/**
+ * Makes the first user follow the second user. Adds the second user to the first's following list, and
+ * adds the first to the second's followers list.
+ * @param uid the user id of the user following another.
+ * @param userToFollowId the user id that is being followed
+ * @returns the user being followed with the follower in the follower list.
+ */
+export const followAnotherUser = async (
+  uid: string,
+  userToFollowId: string,
+): Promise<UserResponse> => {
+  try {
+    const userResult = await UserModel.findOneAndUpdate(
+      { _id: uid },
+      { $push: { following: userToFollowId } },
+      {
+        new: true,
+      },
+    );
+    const followingResult = await UserModel.findOneAndUpdate(
+      { _id: userToFollowId },
+      { $push: { followers: uid } },
+      {
+        new: true,
+      },
+    );
+    if (!userResult) {
+      return { error: 'User not found!' };
+    }
+    if (!followingResult) {
+      return { error: 'Following user not found!' };
+    }
+    return followingResult;
+  } catch (err) {
+    return {
+      error: `Error when ${uid} is following ${userToFollowId}`,
+    };
+  }
+};
+
+/**
+ * Makes the first user unfollow the second user. Removes the second user to the first's following list, and
+ * removes the first to the second's followers list.
+ * @param uid the user id of the user unfollowing another.
+ * @param userToFollowId the user id that is being unfollowed.
+ * @returns the user being unfollowed with the follower removed the follower list.
+ */
+export const unfollowAnotherUser = async (
+  uid: string,
+  userToFollowId: string,
+): Promise<UserResponse> => {
+  try {
+    const userResult = await UserModel.findOneAndUpdate(
+      { _id: uid },
+      { $pull: { following: userToFollowId } },
+      {
+        new: true,
+      },
+    );
+    const unfollowingResult = await UserModel.findOneAndUpdate(
+      { _id: userToFollowId },
+      { $pull: { followers: uid } },
+      {
+        new: true,
+      },
+    );
+    if (!userResult) {
+      return { error: 'User not found!' };
+    }
+    if (!unfollowingResult) {
+      return { error: 'Unfollowing user not found!' };
+    }
+    return unfollowingResult;
+  } catch (err) {
+    return {
+      error: `Error when ${uid} is unfollowing ${userToFollowId}`,
+    };
+  }
+};
 /**
  * Sets the the current user in the application to the given user.
  * @param user the user that will be set to the current user.

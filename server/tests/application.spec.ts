@@ -29,6 +29,8 @@ import {
   markMessageAsRead,
   doesConversationExist,
   fetchConvosByParticipants,
+  followAnotherUser,
+  unfollowAnotherUser,
   fetchConversationById,
 } from '../models/application';
 import { Answer, Question, Tag, Comment, User, Conversation, Message } from '../types';
@@ -1176,6 +1178,105 @@ describe('application module', () => {
       });
     });
 
+    describe('followAnotherUser', () => {
+      beforeEach(() => {
+        mockingoose.resetAll();
+      });
+
+      test('followAnotherUser throws error if there is no first user with the given id', async () => {
+        mockingoose(UserModel).toReturn(null, 'findOneAndUpdate');
+
+        const result = await followAnotherUser(
+          '45e9b58910afe6e94fc6e6d1', // no user has this id
+          '45e9b58910afe6e94fc6e6dc',
+        );
+        expect(result).toEqual({
+          error: `User not found!`,
+        });
+      });
+
+      test('followAnotherUser throws error if there is no second user with the given id', async () => {
+        mockingoose(UserModel).toReturn(null, 'findOneAndUpdate');
+
+        const result = await followAnotherUser(
+          '45e9b58910afe6e94fc6e6dc',
+          '45e9b58910afe6e94fc6e6d1', // no user has this id
+        );
+        expect(result).toEqual({
+          error: `User not found!`,
+        });
+      });
+
+      test('followAnotherUser follows user upon success', async () => {
+        const mockUserFromDb = {
+          _id: new ObjectId('65e9a5c2b26199dbcc3e6dc9'),
+          username: 'lily',
+          email: 'lily@example.com',
+          password: 'password!',
+          deleted: false,
+          followers: [],
+          following: [user1],
+        };
+        mockingoose(UserModel).toReturn(mockUserFromDb, 'findOneAndUpdate');
+
+        const result = await followAnotherUser(
+          '45e9b58910afe6e94fc6e6dc',
+          mockUserFromDb._id.toString(),
+        );
+        expect((result as User)._id?.toString()).toBe(mockUserFromDb._id.toString());
+        expect((result as User).following[0]._id?.toString()).toBe('45e9b58910afe6e94fc6e6dc');
+      });
+    });
+
+    describe('unfollowAnotherUser', () => {
+      beforeEach(() => {
+        mockingoose.resetAll();
+      });
+
+      test('unfollowAnotherUser throws error if there is no first user with the given id', async () => {
+        mockingoose(UserModel).toReturn(null, 'findOneAndUpdate');
+
+        const result = await unfollowAnotherUser(
+          '45e9b58910afe6e94fc6e6d1', // no user has this id
+          '45e9b58910afe6e94fc6e6dc',
+        );
+        expect(result).toEqual({
+          error: `User not found!`,
+        });
+      });
+
+      test('unfollowAnotherUser throws error if there is no second user with the given id', async () => {
+        mockingoose(UserModel).toReturn(null, 'findOneAndUpdate');
+
+        const result = await unfollowAnotherUser(
+          '45e9b58910afe6e94fc6e6dc',
+          '45e9b58910afe6e94fc6e6d1', // no user has this id
+        );
+        expect(result).toEqual({
+          error: `User not found!`,
+        });
+      });
+
+      test('unfollowAnotherUser follows user upon success', async () => {
+        const mockUserFromDb = {
+          _id: new ObjectId('65e9a5c2b26199dbcc3e6dc9'),
+          username: 'lily',
+          email: 'lily@example.com',
+          password: 'password!',
+          deleted: false,
+          followers: [],
+          following: [],
+        };
+        mockingoose(UserModel).toReturn(mockUserFromDb, 'findOneAndUpdate');
+
+        const result = await unfollowAnotherUser(
+          '45e9b58910afe6e94fc6e6dc',
+          mockUserFromDb._id.toString(),
+        );
+        expect((result as User)._id?.toString()).toBe(mockUserFromDb._id.toString());
+        expect((result as User).following.length).toBe(0);
+      });
+    });
     describe('fetchUserById', () => {
       test('fetchUserById returns user', async () => {
         const mockUser = {
@@ -1361,29 +1462,20 @@ describe('application module', () => {
         expect(result).toEqual({ error: 'Error when adding a message to conversation:  error' });
       });
     });
-
     describe('markMessageAsRead', () => {
       test('markMessageAsRead should return the updated message', async () => {
         mockingoose(MessageModel).toReturn(message1, 'findOneAndUpdate');
-
         const result = (await markMessageAsRead(message1._id?.toString(), user1)) as Message;
-
         expect(result._id?.toString()).toEqual(message1._id?.toString());
       });
-
       test('markMessageAsRead should return an object with error if findOneAndUpdate returns null', async () => {
         mockingoose(MessageModel).toReturn(null, 'findOneAndUpdate');
-
         const result = await markMessageAsRead(message1._id?.toString(), user1);
-
         expect(result).toEqual({ error: 'Error when marking message as read: No message found' });
       });
-
       test('markMessageAsRead should return an object with error if findOneAndUpdate throws an error', async () => {
         mockingoose(MessageModel).toReturn(new Error('error'), 'findOneAndUpdate');
-
         const result = await markMessageAsRead(message1._id?.toString(), user1);
-
         expect(result).toEqual({ error: 'Error when marking message as read: error' });
       });
     });
@@ -1602,64 +1694,64 @@ describe('application module', () => {
         expect(result).toEqual({ error: 'Error when fetching conversation: error' });
       });
     });
-  });
 
-  describe('fetchConversationById', () => {
-    beforeEach(() => {
-      mockingoose.resetAll();
-    });
-    test('fetchConversationById returns error if cid does not exist', async () => {
-      mockingoose(ConversationModel).toReturn(null, 'findOne');
-
-      const result = await fetchConversationById('dummyCid');
-      expect(result).toEqual({
-        error:
-          'Error when fetching conversation: input must be a 24 character hex string, 12 byte Uint8Array, or an integer',
+    describe('fetchConversationById', () => {
+      beforeEach(() => {
+        mockingoose.resetAll();
       });
-    });
+      test('fetchConversationById returns error if cid does not exist', async () => {
+        mockingoose(ConversationModel).toReturn(null, 'findOne');
 
-    test('fetchConversationById returns error if there is a DB error', async () => {
-      const mockConversation = {
-        _id: new ObjectId('65e9a5c2b26199dbcc3e6dc7'),
-        users: [user1, user2],
-        messages: [],
-        updatedAt: new Date(),
-      };
-
-      mockingoose(ConversationModel).toReturn(new Error('DB error'), 'findOne');
-
-      const result = await fetchConversationById(mockConversation._id.toString());
-      expect(result).toEqual({ error: 'Error when fetching conversation: DB error' });
-    });
-
-    test('fetchConversationById returns error if id is not a valid objectId string', async () => {
-      const mockConversation = {
-        _id: 'mockId',
-        users: [user1, user2],
-        messages: [],
-        updatedAt: new Date(),
-      };
-
-      mockingoose(ConversationModel).toReturn(mockConversation, 'findOne');
-
-      const result = await fetchConversationById(mockConversation._id);
-      expect(result).toEqual({
-        error:
-          'Error when fetching conversation: input must be a 24 character hex string, 12 byte Uint8Array, or an integer',
+        const result = await fetchConversationById('dummyCid');
+        expect(result).toEqual({
+          error:
+            'Error when fetching conversation: input must be a 24 character hex string, 12 byte Uint8Array, or an integer',
+        });
       });
-    });
 
-    test('fetchConversationById returns conversation with given cid', async () => {
-      const mockConversation = {
-        _id: new ObjectId('65e9a5c2b26199dbcc3e6dc7'),
-        users: [user1, user2],
-        messages: [],
-        updatedAt: new Date(),
-      };
+      test('fetchConversationById returns error if there is a DB error', async () => {
+        const mockConversation = {
+          _id: new ObjectId('65e9a5c2b26199dbcc3e6dc7'),
+          users: [user1, user2],
+          messages: [],
+          updatedAt: new Date(),
+        };
 
-      mockingoose(ConversationModel).toReturn(mockConversation, 'findOne');
-      const result = await fetchConversationById(mockConversation._id.toString());
-      expect((result as Conversation)._id?.toString()).toEqual(mockConversation._id.toString());
+        mockingoose(ConversationModel).toReturn(new Error('DB error'), 'findOne');
+
+        const result = await fetchConversationById(mockConversation._id.toString());
+        expect(result).toEqual({ error: 'Error when fetching conversation: DB error' });
+      });
+
+      test('fetchConversationById returns error if id is not a valid objectId string', async () => {
+        const mockConversation = {
+          _id: 'mockId',
+          users: [user1, user2],
+          messages: [],
+          updatedAt: new Date(),
+        };
+
+        mockingoose(ConversationModel).toReturn(mockConversation, 'findOne');
+
+        const result = await fetchConversationById(mockConversation._id);
+        expect(result).toEqual({
+          error:
+            'Error when fetching conversation: input must be a 24 character hex string, 12 byte Uint8Array, or an integer',
+        });
+      });
+
+      test('fetchConversationById returns conversation with given cid', async () => {
+        const mockConversation = {
+          _id: new ObjectId('65e9a5c2b26199dbcc3e6dc7'),
+          users: [user1, user2],
+          messages: [],
+          updatedAt: new Date(),
+        };
+
+        mockingoose(ConversationModel).toReturn(mockConversation, 'findOne');
+        const result = await fetchConversationById(mockConversation._id.toString());
+        expect((result as Conversation)._id?.toString()).toEqual(mockConversation._id.toString());
+      });
     });
   });
 });

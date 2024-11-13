@@ -1,10 +1,12 @@
 import express, { Request, Response } from 'express';
+import { ObjectId } from 'mongodb';
 import {
   FakeSOSocket,
   RegisterUserRequest,
   LoginUserRequest,
   DeleteUserRequest,
   GetUserRequest,
+  FollowUserRequest,
 } from '../types';
 import {
   saveUser,
@@ -14,6 +16,8 @@ import {
   fetchUserByUsername,
   comparePasswords,
   updateDeletedStatus,
+  followAnotherUser,
+  unfollowAnotherUser,
   getCurrentUser,
   setCurrentUser,
   logoutCurrentUser,
@@ -46,6 +50,16 @@ const userController = (socket: FakeSOSocket) => {
       req.body.username?.trim() !== '' &&
       req.body.password?.trim() !== ''
     );
+  }
+
+  /**
+   * Checks if the provided follow user request contains the required fields.
+   *
+   * @param req The request object containing the user's username and password.
+   * @returns `true` if the request is valid, otherwise `false`.
+   */
+  function isFollowUserRequestValid(req: FollowUserRequest): boolean {
+    return !!req.body.currentUserId && !!req.body.userToFollowId;
   }
 
   /**
@@ -231,6 +245,62 @@ const userController = (socket: FakeSOSocket) => {
   };
 
   /**
+   * Retrieves the user being followed with the following user in their following list from the database.
+   * If there is an error, the HTTP response's status is updated.
+   * @param req The request object with the user id of the user following another and the other's id.
+   * @param res The HTTP response object used to send back the result of the operation.
+   * @returns A promise that resolves to void
+   */
+  const followUser = async (req: FollowUserRequest, res: Response): Promise<void> => {
+    if (!isFollowUserRequestValid(req)) {
+      res.status(400).send('Invalid follow user request');
+      return;
+    }
+    const { currentUserId, userToFollowId } = req.body;
+    if (!ObjectId.isValid(currentUserId) || !ObjectId.isValid(userToFollowId)) {
+      res.status(400).send('Invalid ID format');
+      return;
+    }
+    try {
+      const userFromDb = await followAnotherUser(currentUserId, userToFollowId);
+      if ('error' in userFromDb) {
+        throw new Error(userFromDb.error as string);
+      }
+      res.json(userFromDb);
+    } catch (err) {
+      res.status(500).send(`Error when following user: ${(err as Error).message}`);
+    }
+  };
+
+  /**
+   * Retrieves the user being unfollowed with the unfollowing user removed from their following list from the database.
+   * If there is an error, the HTTP response's status is updated.
+   * @param req The request object with the user id of the user unfollowing another and the other's id.
+   * @param res The HTTP response object used to send back the result of the operation.
+   * @returns A promise that resolves to void
+   */
+  const unfollowUser = async (req: FollowUserRequest, res: Response): Promise<void> => {
+    if (!isFollowUserRequestValid(req)) {
+      res.status(400).send('Invalid unfollow user request');
+      return;
+    }
+    const { currentUserId, userToFollowId } = req.body;
+    if (!ObjectId.isValid(currentUserId) || !ObjectId.isValid(userToFollowId)) {
+      res.status(400).send('Invalid ID format');
+      return;
+    }
+    try {
+      const userFromDb = await unfollowAnotherUser(currentUserId, userToFollowId);
+      if ('error' in userFromDb) {
+        throw new Error(userFromDb.error as string);
+      }
+      res.json(userFromDb);
+    } catch (err) {
+      res.status(500).send(`Error when unfollowing user: ${(err as Error).message}`);
+    }
+  };
+
+  /**
    * Retrieves the current logged in user.
    *
    * @param req The request object needed for the route handlers.
@@ -277,6 +347,9 @@ const userController = (socket: FakeSOSocket) => {
   router.post('/loginUser', loginUser);
   router.get('/getAllUsers', getAllUsers);
   router.post('/deleteUser', deleteUser);
+  router.post('/followUser', followUser);
+  router.post('/unfollowUser', unfollowUser);
+  router.get('/getUserByUsername/:username', getUserByUsername);
   router.get('/getCurrentUser', currentUser);
   router.get('/getUserByUsername/:username', getUserByUsername);
   router.post('/logoutUser', logoutUser);

@@ -65,6 +65,23 @@ const deleteUser = async (uid: string) => {
   return res.data;
 };
 
+/**
+ * Gets the user object of the user with the given username.
+ * @param username the username of the user we are retrieving.
+ * @returns the user object of the user with the given username or throws if there is an error.
+ */
+const getUserByUsername = async (username: string): Promise<User> => {
+  const res = await api.get(`${USER_API_URL}/getUserByUsername/${username}`);
+  if (res.status !== 200) {
+    throw new Error('Error while fetching the user.');
+  }
+  return res.data;
+};
+
+/**
+ * Logs out the current user of fake stack overflow.
+ * @returns the user object of the user logged out.
+ */
 const logoutUser = async () => {
   const res = await api.post(`${USER_API_URL}/logoutUser`);
   if (res.status !== 200) {
@@ -73,4 +90,47 @@ const logoutUser = async () => {
   return res.data;
 };
 
-export { registerUser, loginUser, getAllUsers, deleteUser, logoutUser };
+/**
+ * Sets the first user as a follower of the second user. Also adds the second user to the following list
+ * of the current user
+ *
+ * @param currentUserId The uid of the user following the other.
+ * @param userToFollowId The uid of the user being followed.
+ * @returns Error Throws an error if the request fails or the response status is not 200.
+ */
+const followUser = async (currentUserId: string, userToFollowId: string) => {
+  const data = { currentUserId, userToFollowId };
+  const res = await api.post(`${USER_API_URL}/followUser`, data);
+  if (res.status !== 200) {
+    throw new Error(`Error while ${currentUserId} was attempting to following ${userToFollowId}`);
+  }
+  return res.data;
+};
+
+/**
+ * Removes the first user as a follower of the second user. Also removes the second user from the following list
+ * of the current user
+ *
+ * @param currentUserId The uid of the user unfollowing the other.
+ * @param userToFollowId The uid of the user being unfollowed.
+ * @returns Error Throws an error if the request fails or the response status is not 200.
+ */
+const unfollowUser = async (currentUserId: string, userToFollowId: string) => {
+  const data = { currentUserId, userToFollowId };
+  const res = await api.post(`${USER_API_URL}/unfollowUser`, data);
+  if (res.status !== 200) {
+    throw new Error(`Error while ${currentUserId} was attempting to unfollowing ${userToFollowId}`);
+  }
+  return res.data;
+};
+
+export {
+  registerUser,
+  loginUser,
+  getAllUsers,
+  deleteUser,
+  getUserByUsername,
+  followUser,
+  unfollowUser,
+  logoutUser,
+};

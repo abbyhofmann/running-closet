@@ -11,6 +11,8 @@ const hashPasswordSpy = jest.spyOn(util, 'hashPassword');
 const fetchUserByUsernameSpy = jest.spyOn(util, 'fetchUserByUsername');
 const comparePasswordsSpy = jest.spyOn(util, 'comparePasswords');
 const fetchAllUsersSpy = jest.spyOn(util, 'fetchAllUsers');
+const followAnotherUserSpy = jest.spyOn(util, 'followAnotherUser');
+const unfollowAnotherUserSpy = jest.spyOn(util, 'unfollowAnotherUser');
 const getCurrentUserSpy = jest.spyOn(util, 'getCurrentUser');
 
 const user1: User = {
@@ -441,6 +443,227 @@ describe('GET /getUserByUsername', () => {
 
     expect(response.status).toBe(500);
     expect(response.text).toBe('Error when fetching user: error');
+  });
+});
+
+describe('POST /followUser', () => {
+  afterEach(async () => {
+    await mongoose.connection.close(); // Ensure the connection is properly closed
+    jest.resetAllMocks();
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
+  });
+
+  it('should return the user with updated followers list from the database', async () => {
+    const mockReqBody = {
+      currentUserId: '45e9b58910afe6e94fc6e6dc',
+      userToFollowId: '46e9b58910afe6e94fc6e6dd',
+    };
+
+    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
+    followAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+
+    const response = await supertest(app).post('/user/followUser').send(mockReqBody);
+
+    expect(response.status).toBe(200);
+    expect((response.body as User)._id).toEqual('45e9b58910afe6e94fc6e6dc');
+    expect((response.body as User).followers[0]._id).toEqual('46e9b58910afe6e94fc6e6dd');
+  });
+
+  it('should return error when currentUserId is missing', async () => {
+    const mockReqBody = {
+      userToFollowId: '46e9b58910afe6e94fc6e6dd',
+    };
+
+    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
+    followAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+
+    const response = await supertest(app).post('/user/followUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid follow user request');
+  });
+
+  it('should return error when userToFollowId is missing', async () => {
+    const mockReqBody = {
+      userToFollowId: '46e9b58910afe6e94fc6e6dd',
+    };
+
+    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
+    followAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+
+    const response = await supertest(app).post('/user/followUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid follow user request');
+  });
+
+  it('should return error when request body is empty', async () => {
+    const mockReqBody = {};
+
+    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
+    followAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+
+    const response = await supertest(app).post('/user/followUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid follow user request');
+  });
+
+  it('should return error when currentUserId is invalid', async () => {
+    const mockReqBody = {
+      currentUserId: 'invalidFormat',
+      userToFollowId: '45e9b58910afe6e94fc6e6dc',
+    };
+
+    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
+    followAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+
+    const response = await supertest(app).post('/user/followUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid ID format');
+  });
+
+  it('should return error when userToFollowId is invalid', async () => {
+    const mockReqBody = {
+      currentUserId: '45e9b58910afe6e94fc6e6dc',
+      userToFollowId: 'invalidFormat',
+    };
+
+    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
+    followAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+
+    const response = await supertest(app).post('/user/followUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid ID format');
+  });
+
+  it('should return error when currentUserId is empty', async () => {
+    const mockReqBody = {
+      currentUserId: '',
+      userToFollowId: '45e9b58910afe6e94fc6e6dc',
+    };
+
+    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
+    followAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+
+    const response = await supertest(app).post('/user/followUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid follow user request');
+  });
+
+  it('should return error when userToFollowId is empty', async () => {
+    const mockReqBody = {
+      currentUserId: '45e9b58910afe6e94fc6e6dc',
+      userToFollowId: '',
+    };
+
+    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
+    followAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+
+    const response = await supertest(app).post('/user/followUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid follow user request');
+  });
+
+  it('should return database error in response if followAnotherUser method throws an error', async () => {
+    const mockReqBody = {
+      currentUserId: '45e9b58910afe6e94fc6e6dc',
+      userToFollowId: '46e9b58910afe6e94fc6e6dd',
+    };
+
+    followAnotherUserSpy.mockResolvedValue({ error: 'error' });
+
+    const response = await supertest(app).post('/user/followUser').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Error when following user: error');
+  });
+});
+describe('POST /unfollowUser', () => {
+  afterEach(async () => {
+    await mongoose.connection.close(); // Ensure the connection is properly closed
+    jest.resetAllMocks();
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
+  });
+
+  it('should return the user with updated followers list from the database', async () => {
+    const mockReqBody = {
+      currentUserId: '45e9b58910afe6e94fc6e6dc',
+      userToFollowId: '46e9b58910afe6e94fc6e6dd',
+    };
+
+    unfollowAnotherUserSpy.mockResolvedValueOnce(user1);
+
+    const response = await supertest(app).post('/user/unfollowUser').send(mockReqBody);
+
+    expect(response.status).toBe(200);
+    expect((response.body as User)._id).toEqual('45e9b58910afe6e94fc6e6dc');
+    expect((response.body as User).followers.length).toEqual(0);
+  });
+
+  it('should return error when currentUserId is missing', async () => {
+    const mockReqBody = {
+      userToFollowId: '46e9b58910afe6e94fc6e6dd',
+    };
+
+    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
+    unfollowAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+
+    const response = await supertest(app).post('/user/unfollowUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid unfollow user request');
+  });
+
+  it('should return error when userToFollowId is missing', async () => {
+    const mockReqBody = {
+      userToFollowId: '46e9b58910afe6e94fc6e6dd',
+    };
+
+    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
+    unfollowAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+
+    const response = await supertest(app).post('/user/unfollowUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid unfollow user request');
+  });
+
+  it('should return error when request body is empty', async () => {
+    const mockReqBody = {};
+
+    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
+    unfollowAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+
+    const response = await supertest(app).post('/user/unfollowUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid unfollow user request');
+  });
+
+  it('should return error when currentUserId is invalid', async () => {
+    const mockReqBody = {
+      currentUserId: 'invalidFormat',
+      userToFollowId: '45e9b58910afe6e94fc6e6dc',
+    };
+
+    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
+    unfollowAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+
+    const response = await supertest(app).post('/user/unfollowUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid ID format');
   });
 });
 

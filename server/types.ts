@@ -247,6 +247,18 @@ export interface GetUserRequest {
 }
 
 /**
+ * Interface for the request body when a user is following/unfollowing another.
+ * - username - The id of the user following/unfollowing the other.
+ * - userToFollowUsername - The id of the user being followed/unfollowed.
+ */
+export interface FollowUserRequest {
+  body: {
+    currentUserId: string;
+    userToFollowId: string;
+  };
+}
+
+/**
  * Type representing the possible responses for a User-related operation.
  */
 export type UserResponse = User | { error: string };
@@ -404,9 +416,9 @@ export interface GetConversationRequest {
  * their user ID.
  * - uid - The unique identifier of the user.
  */
+
 export interface FindConversationsByUserIdRequest extends Request {
   params: {
     uid: string;
   };
 }
-
