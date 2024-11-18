@@ -33,6 +33,16 @@ const getDateHelper = (date: Date): string => {
 };
 
 /**
+ * Helper function to get the day of the week from the given date.
+ *
+ * @param date - The date object from which to extract the day of the week.
+ */
+const getDayOfWeek = (date: Date): string => {
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  return days[date.getDay()];
+};
+
+/**
  * Function to get a human-readable metadata string representing the time difference
  * between now and the given date.
  *
@@ -60,6 +70,34 @@ const getMetaData = (date: Date): string => {
   return `${MONTHS[date.getMonth()]} ${getDateHelper(
     date,
   )}, ${date.getFullYear()} at ${date.toTimeString().slice(0, 8)}`;
+};
+
+/**
+ * Function to format the date object into a human readable format where it says today if the message was sent today, the day of the week if the message
+ * was sent in the last week or the full date if the message was sent more than a week ago. All of them include the time the message was sent at.
+ * @param date the date object for the message sent
+ * @returns the string for the date
+ */
+const getMessageDate = (date: Date): string => {
+  const now = new Date();
+  const diffs = Math.floor(Math.abs(now.getTime() - date.getTime()) / 1000);
+
+  if (diffs < 60 * 60 * 24) {
+    return `Today at ${date.toTimeString().slice(0, 5)}`;
+  }
+
+  if (diffs < 60 * 60 * 24 * 7) {
+    return `${getDayOfWeek(date)} at ${date.toTimeString().slice(0, 5)}`;
+  }
+
+  if (diffs < 60 * 60 * 24 * 365) {
+    return `${MONTHS[date.getMonth()]} ${getDateHelper(date)} at ${date
+      .toTimeString()
+      .slice(0, 5)}`;
+  }
+  return `${MONTHS[date.getMonth()]} ${getDateHelper(
+    date,
+  )}, ${date.getFullYear()} at ${date.toTimeString().slice(0, 5)}`;
 };
 
 /**
@@ -131,4 +169,4 @@ const handleHyperlink = (text: string) => {
   return <div>{content}</div>;
 };
 
-export { getMetaData, handleHyperlink, validateHyperlink };
+export { getMetaData, handleHyperlink, validateHyperlink, getMessageDate };

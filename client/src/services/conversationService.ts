@@ -36,6 +36,21 @@ const getConversations = async (uid: string): Promise<Conversation[]> => {
 };
 
 /**
+ * Gets a conversation by its ID.
+ *
+ * @param cid The ID of the conversation to fetch.
+ * @throws Error if there is an issue fetching the conversation by ID.
+ */
+const getConversation = async (cid: string): Promise<Conversation> => {
+  const res = await api.get(`${CONVERSATION_API_URL}/getConversation/${cid}`);
+
+  if (res.status !== 200) {
+    throw new Error('Error while fetching conversation');
+  }
+  return res.data;
+};
+
+/**
  * Function to blast a message - i.e. send a message to every follower of a user.
  *
  * @param uid The id of the user.
@@ -53,4 +68,4 @@ const sendBlastMessage = async (uid: string, messageContent: string): Promise<Co
   return res.data;
 };
 
-export { addConversation, getConversations, sendBlastMessage };
+export { addConversation, getConversations, sendBlastMessage, getConversation };

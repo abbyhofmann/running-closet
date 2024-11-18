@@ -9,7 +9,7 @@ const saveConversationSpy = jest.spyOn(util, 'saveConversation');
 const areUsersRegisteredSpy = jest.spyOn(util, 'areUsersRegistered');
 const doesConversationExistSpy = jest.spyOn(util, 'doesConversationExist');
 const fetchConvosByParticipantsSpy = jest.spyOn(util, 'fetchConvosByParticipants');
-const fetchConversationById = jest.spyOn(util, 'fetchConversationById');
+const fetchConversationByIdSpy = jest.spyOn(util, 'fetchConversationById');
 
 const user1: User = {
   _id: new ObjectId('45e9b58910afe6e94fc6e6dc'),
@@ -198,7 +198,7 @@ describe('GET /conversation/:cid', () => {
       updatedAt: new Date('2023-11-18T09:24:00'),
     };
 
-    fetchConversationById.mockResolvedValueOnce(mockConvoFromDb);
+    fetchConversationByIdSpy.mockResolvedValueOnce(mockConvoFromDb);
 
     const response = await supertest(app).get(`/conversation/getConversation/${mockReqParams.cid}`);
 
@@ -215,7 +215,9 @@ describe('GET /conversation/:cid', () => {
       cid: 'invalidId',
     };
 
-    fetchConversationById.mockResolvedValueOnce({ error: 'Error when fetching the conversation' });
+    fetchConversationByIdSpy.mockResolvedValueOnce({
+      error: 'Error when fetching the conversation',
+    });
 
     const response = await supertest(app).get(`/conversation/getConversation/${mockReqParams.cid}`);
 
@@ -228,7 +230,9 @@ describe('GET /conversation/:cid', () => {
       cid: '65e9a5c2b26199dbcc3e6dc7',
     };
 
-    fetchConversationById.mockResolvedValueOnce({ error: 'Error when fetching the conversation' });
+    fetchConversationByIdSpy.mockResolvedValueOnce({
+      error: 'Error when fetching the conversation',
+    });
 
     const response = await supertest(app).get(`/conversation/getConversation/${mockReqParams.cid}`);
 

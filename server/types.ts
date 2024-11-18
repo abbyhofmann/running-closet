@@ -347,10 +347,10 @@ export type ConversationResponse = Conversation | { error: string };
 export interface Message {
   _id?: ObjectId;
   messageContent: string;
-  cid: string;
   sender: User;
   sentAt: Date;
   readBy: User[];
+  cid: string;
 }
 
 export interface BlastMessageRequest extends Request {

@@ -872,7 +872,14 @@ export const fetchConvosByParticipants = async (
       users: findQuery,
     }).populate([
       { path: 'users', model: UserModel },
-      { path: 'messages', model: MessageModel },
+      {
+        path: 'messages',
+        model: MessageModel,
+        populate: [
+          { path: 'sender', model: UserModel },
+          { path: 'readBy', model: UserModel },
+        ],
+      },
     ]);
 
     return convos;
@@ -1112,7 +1119,14 @@ export const fetchConversationById = async (cid: string): Promise<ConversationRe
   try {
     const conversation = await ConversationModel.findOne({ _id: new ObjectId(cid) }).populate([
       { path: 'users', model: UserModel },
-      { path: 'messages', model: MessageModel },
+      {
+        path: 'messages',
+        model: MessageModel,
+        populate: [
+          { path: 'sender', model: UserModel },
+          { path: 'readBy', model: UserModel },
+        ],
+      },
     ]);
 
     if (!conversation) {

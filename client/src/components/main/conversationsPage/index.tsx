@@ -13,9 +13,9 @@ import blue from '@mui/material/colors/blue';
 import React from 'react';
 import { TextField, Tooltip } from '@mui/material';
 import useConversationPage from '../../../hooks/useConversationsPage';
+import IndividualConversation from './individualConversation';
 
-// can be removed once inidividual conversation page is in. displays routing. from MUI
-function DemoPageContent({ pathname }: { pathname: string }) {
+function NoConversationLayout() {
   return (
     <Box
       sx={{
@@ -25,7 +25,7 @@ function DemoPageContent({ pathname }: { pathname: string }) {
         alignItems: 'center',
         textAlign: 'center',
       }}>
-      <Typography>Dashboard content for {pathname}</Typography>
+      <Typography>No conversation selected</Typography>
     </Box>
   );
 }
@@ -63,7 +63,7 @@ function Search() {
             sx: { pr: 0.5 },
           },
         }}
-        sx={{ display: { xs: 'none', md: 'inline-block' }, marginLeft: 3, marginTop: 2 }}
+        sx={{ display: { xs: 'none', md: 'inline-block' }, marginLeft: 3 }}
       />
     </React.Fragment>
   );
@@ -85,10 +85,11 @@ export default function ConversationsPage() {
       .map(u => ' '.concat(u.username))
       .toString(),
     icon:
-      c.messages.filter(m => m.readBy.map(n => n.username).includes(user.username)).length > 0 ? (
+      c.messages.findIndex(m => m.readBy.findIndex(u => u.username === user.username) === -1) ===
+      -1 ? (
         <MessageIcon />
       ) : (
-        <MarkUnreadChatAltIcon />
+        <MarkUnreadChatAltIcon style={{ color: 'blue' }} />
       ),
   }));
 
@@ -125,8 +126,12 @@ export default function ConversationsPage() {
         title: 'Messages',
       }}
       router={router}>
-      <DashboardLayout>
-        <DemoPageContent pathname={router.pathname} />
+      <DashboardLayout sx={{ height: 1, width: 1 }}>
+        {router.pathname.includes('conversation') ? (
+          <IndividualConversation cidPath={router.pathname} />
+        ) : (
+          <NoConversationLayout />
+        )}
       </DashboardLayout>
     </AppProvider>
   );
