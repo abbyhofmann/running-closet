@@ -54,13 +54,14 @@ const loginUser = async (username: string, password: string): Promise<User> => {
 /**
  * Deletes a user from the database.
  *
- * @param uid The uid of the user to delete.
+ * @param username The username of the user to delete.
  * @returns Error Throws an error if the request fails or the response status is not 200.
  */
-const deleteUser = async (uid: string) => {
-  const res = await api.post(`${USER_API_URL}/deleteUser`, uid);
+const deleteUser = async (username: string) => {
+  const data = { username };
+  const res = await api.post(`${USER_API_URL}/deleteUser`, data);
   if (res.status !== 200) {
-    throw new Error(`Error while deleteing a user ${uid}`);
+    throw new Error(`Error while deleteing user ${username}`);
   }
   return res.data;
 };

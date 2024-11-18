@@ -810,10 +810,10 @@ export const fetchUserByUsername = async (username: string): Promise<UserRespons
 /**
  * Deletes a user by setting the user's deleted field to true.
  *
- * @param uid The id of the user being deleted.
+ * @param username The username of the user being deleted.
  * @returns A Promise that resolves to the deleted user, or an error message if the operation fails.
  */
-export const updateDeletedStatus = async (uid: string): Promise<UserResponse> => {
+export const updateDeletedStatus = async (username: string): Promise<UserResponse> => {
   const updateOperation = [
     {
       $set: {
@@ -823,7 +823,7 @@ export const updateDeletedStatus = async (uid: string): Promise<UserResponse> =>
   ];
 
   try {
-    const result = await UserModel.findOneAndUpdate({ _id: uid }, updateOperation, {
+    const result = await UserModel.findOneAndUpdate({ username }, updateOperation, {
       new: true,
     });
 
@@ -838,7 +838,7 @@ export const updateDeletedStatus = async (uid: string): Promise<UserResponse> =>
     return result;
   } catch (err) {
     return {
-      error: `Error when deleting user with id ${uid}`,
+      error: `Error when deleting user with username ${username}`,
     };
   }
 };
@@ -960,7 +960,8 @@ export const doesConversationExist = async (users: User[]): Promise<boolean | Er
  * adds the first to the second's followers list.
  * @param uid the user id of the user following another.
  * @param userToFollowId the user id that is being followed
- * @returns the user being followed with the follower in the follower list.
+ * @returns Both users in a list format, where the user doing the following is at index 0 and the user being followed is
+ * at index 1. Their respective following/followers lists are updated in these user objects being returned.
  */
 export const followAnotherUser = async (
   uid: string,
@@ -973,19 +974,28 @@ export const followAnotherUser = async (
       {
         new: true,
       },
-    );
+    ).populate([
+      { path: 'following', model: UserModel },
+      { path: 'followers', model: UserModel },
+    ]);
     const followingResult = await UserModel.findOneAndUpdate(
       { _id: userToFollowId },
       { $push: { followers: uid } },
       {
         new: true,
       },
-    );
+    ).populate([
+      { path: 'following', model: UserModel },
+      { path: 'followers', model: UserModel },
+    ]);
     if (!userResult) {
       return { error: 'User not found!' };
     }
     if (!followingResult) {
       return { error: 'Following user not found!' };
+    }
+    if (currentUser?.username === userResult.username) {
+      currentUser = userResult;
     }
     return followingResult;
   } catch (err) {
@@ -1000,7 +1010,8 @@ export const followAnotherUser = async (
  * removes the first to the second's followers list.
  * @param uid the user id of the user unfollowing another.
  * @param userToFollowId the user id that is being unfollowed.
- * @returns the user being unfollowed with the follower removed the follower list.
+ * @returns Both users in a list format, where the user doing the unfollowing is at index 0 and the user being
+ * unfollowed is at index 1. Their respective following/followers lists are updated in these user objects being returned.
  */
 export const unfollowAnotherUser = async (
   uid: string,
@@ -1013,19 +1024,28 @@ export const unfollowAnotherUser = async (
       {
         new: true,
       },
-    );
+    ).populate([
+      { path: 'following', model: UserModel },
+      { path: 'followers', model: UserModel },
+    ]);
     const unfollowingResult = await UserModel.findOneAndUpdate(
       { _id: userToFollowId },
       { $pull: { followers: uid } },
       {
         new: true,
       },
-    );
+    ).populate([
+      { path: 'following', model: UserModel },
+      { path: 'followers', model: UserModel },
+    ]);
     if (!userResult) {
       return { error: 'User not found!' };
     }
     if (!unfollowingResult) {
       return { error: 'Unfollowing user not found!' };
+    }
+    if (currentUser?.username === userResult.username) {
+      currentUser = userResult;
     }
     return unfollowingResult;
   } catch (err) {

@@ -228,11 +228,11 @@ export interface LoginUserRequest {
 
 /**
  * Interface for the request body when deleting a user.
- * - uid - The unique id of the user being deleted.
+ * - username - The unique username of the user being deleted.
  */
 export interface DeleteUserRequest {
   body: {
-    uid: string;
+    username: string;
   };
 }
 

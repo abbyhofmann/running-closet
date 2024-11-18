@@ -4,7 +4,13 @@ import useUserContext from '../../../hooks/useUserContext';
 import OtherUserProfilePage from './otherUserProfile';
 import { getUserByUsername } from '../../../services/userService';
 import UserNotFoundPage from './userNotFound';
+import LoggedInUserProfilePage from './loggedInUserProfile';
 
+/**
+ * Represents the profile page component. Routes to the right view based on the
+ * logged in user and profile user relationship.
+ * @returns the ProfilePage component.
+ */
 const ProfilePage = () => {
   const { username } = useParams();
   const { user } = useUserContext();
@@ -26,7 +32,7 @@ const ProfilePage = () => {
 
   return (
     <div>
-      {user.username === username && <div>Current User Profile</div>}
+      {user.username === username && <LoggedInUserProfilePage></LoggedInUserProfilePage>}
       {user.username !== username && notFound && <UserNotFoundPage></UserNotFoundPage>}
       {user.username !== username && !notFound && <OtherUserProfilePage></OtherUserProfilePage>}
     </div>

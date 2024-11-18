@@ -1149,7 +1149,7 @@ describe('application module', () => {
         const result = await updateDeletedStatus('someUserId');
 
         expect(result).toEqual({
-          error: `Error when deleting user with id someUserId`,
+          error: `Error when deleting user with username someUserId`,
         });
       });
 

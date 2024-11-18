@@ -11,6 +11,8 @@ const useOtherProfilePage = () => {
   const [followedBy, setFollowedBy] = useState<User[]>([]);
   const [profileUser, setProfileUser] = useState<User>();
   const [currentUserFollowingThisUser, setCurrentUserFollowingThisUser] = useState<boolean>(false);
+  // state variable for when following/follower lists get updated to prevent over-rendering
+  const [followListsUpdated, setFollowListsUpdated] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,7 +32,8 @@ const useOtherProfilePage = () => {
       }
     };
     fetchData();
-  }, [user.username, username, profileUser?.following, profileUser?.followers, navigate]);
+    setFollowListsUpdated(false);
+  }, [user.username, username, followListsUpdated, navigate]);
 
   /**
    * Makes the current user follow the profile user.
@@ -44,6 +47,7 @@ const useOtherProfilePage = () => {
       const profUser = await followUser(user._id, profileUser?._id);
       setProfileUser(profUser);
       setCurrentUserFollowingThisUser(true);
+      setFollowListsUpdated(true);
     } catch (err) {
       setCurrentUserFollowingThisUser(false);
     }
@@ -61,6 +65,7 @@ const useOtherProfilePage = () => {
       const profUser = await unfollowUser(user._id, profileUser?._id);
       setProfileUser(profUser);
       setCurrentUserFollowingThisUser(false);
+      setFollowListsUpdated(true);
     } catch (err) {
       setCurrentUserFollowingThisUser(true);
     }

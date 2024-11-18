@@ -370,7 +370,7 @@ describe('POST /deleteUser', () => {
 
   it('should return error if updateDeletedStatus errors', async () => {
     const mockReqBody = {
-      uid: 'someUid',
+      username: 'someUid',
     };
 
     updateDeletedStatusSpy.mockResolvedValueOnce({ error: 'User not found!' });
@@ -384,7 +384,7 @@ describe('POST /deleteUser', () => {
   it('should return user with deleted field updated upon successful deletion', async () => {
     const validUid = new mongoose.Types.ObjectId();
     const mockReqBody = {
-      uid: validUid.toString(),
+      username: 'humptydumpty',
     };
 
     const updatedUser = {

@@ -6,6 +6,8 @@ import useHeader from '../../hooks/useHeader';
 import NotificationDropdown from './notificationDropdown';
 import './index.css';
 import LogoutButton from './logoutButton';
+import CurrentUserProfile from './currentUserProfile';
+
 /**
  * Header component that renders the main title and a search bar.
  * The search bar allows the user to input a query and navigate to the search results page
@@ -21,8 +23,18 @@ const Header = () => {
           <strong>Fake Stack Overflow</strong>
         </Typography>
       </Grid>
+
       <Grid size={2}>
-        <Box sx={{ justifyContent: 'flex-end', display: 'flex', marginTop: 2 }}>
+        <Box
+          sx={{
+            justifyContent: 'flex-end',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            marginTop: 1,
+            paddingRight: 2,
+          }}>
+          <CurrentUserProfile />
           <input
             id='searchBar'
             placeholder='Search ...'

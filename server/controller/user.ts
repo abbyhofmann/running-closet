@@ -194,20 +194,20 @@ const userController = (socket: FakeSOSocket) => {
   /**
    * Deletes the requested user from the db; here, deleting involves updating the user's deleted field to
    * be true.
-   * @param req The DeleteUserRequest object containing the uid of the user to delete.
+   * @param req The DeleteUserRequest object containing the username of the user to delete.
    * @param res The HTTP response object used to send back the result of the operation.
    * @returns A Promise that resolves to void.
    */
   const deleteUser = async (req: DeleteUserRequest, res: Response): Promise<void> => {
-    if (!req.body.uid) {
+    if (!req.body.username) {
       res.status(400).send('Invalid request');
       return;
     }
 
-    const { uid } = req.body;
+    const { username } = req.body;
 
     try {
-      const result = await updateDeletedStatus(uid);
+      const result = await updateDeletedStatus(username);
 
       if (result && 'error' in result) {
         throw new Error(result.error as string);
@@ -215,7 +215,7 @@ const userController = (socket: FakeSOSocket) => {
 
       res.json(result);
     } catch (err) {
-      res.status(500).send(`Error when deleting user ${uid}: ${(err as Error).message}`);
+      res.status(500).send(`Error when deleting user ${username}: ${(err as Error).message}`);
     }
   };
 
@@ -245,7 +245,8 @@ const userController = (socket: FakeSOSocket) => {
   };
 
   /**
-   * Retrieves the user being followed with the following user in their following list from the database.
+   * Retrieves the user doing the following and the user being followed from the database, where
+   * both their following/followers lists are updated.
    * If there is an error, the HTTP response's status is updated.
    * @param req The request object with the user id of the user following another and the other's id.
    * @param res The HTTP response object used to send back the result of the operation.
@@ -262,18 +263,19 @@ const userController = (socket: FakeSOSocket) => {
       return;
     }
     try {
-      const userFromDb = await followAnotherUser(currentUserId, userToFollowId);
-      if ('error' in userFromDb) {
-        throw new Error(userFromDb.error as string);
+      const usersFromDb = await followAnotherUser(currentUserId, userToFollowId);
+      if ('error' in usersFromDb) {
+        throw new Error(usersFromDb.error as string);
       }
-      res.json(userFromDb);
+      res.json(usersFromDb);
     } catch (err) {
       res.status(500).send(`Error when following user: ${(err as Error).message}`);
     }
   };
 
   /**
-   * Retrieves the user being unfollowed with the unfollowing user removed from their following list from the database.
+   * Retrieves the user doing the unfollowing and the user being unfollowed from the database, where
+   * both their following/followers lists are updated.
    * If there is an error, the HTTP response's status is updated.
    * @param req The request object with the user id of the user unfollowing another and the other's id.
    * @param res The HTTP response object used to send back the result of the operation.
@@ -290,11 +292,11 @@ const userController = (socket: FakeSOSocket) => {
       return;
     }
     try {
-      const userFromDb = await unfollowAnotherUser(currentUserId, userToFollowId);
-      if ('error' in userFromDb) {
-        throw new Error(userFromDb.error as string);
+      const usersFromDb = await unfollowAnotherUser(currentUserId, userToFollowId);
+      if ('error' in usersFromDb) {
+        throw new Error(usersFromDb.error as string);
       }
-      res.json(userFromDb);
+      res.json(usersFromDb);
     } catch (err) {
       res.status(500).send(`Error when unfollowing user: ${(err as Error).message}`);
     }

@@ -26,7 +26,7 @@ const ProfileCard = (props: ProfileCardProps) => {
         marginX: 2,
         minWidth: 150,
         height: 150,
-        marginY: 'auto',
+        marginY: 2,
       }}
       key={username}>
       <Avatar
