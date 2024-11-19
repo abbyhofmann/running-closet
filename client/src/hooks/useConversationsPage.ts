@@ -15,6 +15,11 @@ import { getConversations } from '../services/conversationService';
 const useConversationPage = () => {
   const { user, socket } = useUserContext();
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [searchInput, setSearchInput] = useState('');
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [filteredConversationsBySearchInput, setFilteredConversationsBySearchInput] = useState<
+    Conversation[]
+  >([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -45,6 +50,25 @@ const useConversationPage = () => {
   }, [user._id, socket]);
 
   /**
+   * Update filtered conversations based on search input and user context.
+   */
+  useEffect(() => {
+    if (!searchInput) {
+      setFilteredConversationsBySearchInput(conversations);
+    } else {
+      const filtered = conversations.filter(
+        conversation =>
+          conversation.users
+            .filter(u => u.username !== user.username) // exclude the logged-in user
+            .some(convoUser =>
+              convoUser.username.toLowerCase().includes(searchInput.toLowerCase()),
+            ), // match the search input username
+      );
+      setFilteredConversationsBySearchInput(filtered);
+    }
+  }, [conversations, searchInput, user.username]);
+
+  /**
    * Determines whether the first conversation is newer than the second one.
    * @param conversation1 the first conversation.
    * @param conversation2 the second conversation.
@@ -63,7 +87,18 @@ const useConversationPage = () => {
 
   const router = useDemoRouter('/dashboard');
 
-  return { user, conversations, setConversations, sortByUpdatedAt, router };
+  return {
+    user,
+    conversations,
+    setConversations,
+    sortByUpdatedAt,
+    router,
+    searchInput,
+    setSearchInput,
+    filteredConversationsBySearchInput,
+    showSearchResults,
+    setShowSearchResults,
+  };
 };
 
 export default useConversationPage;

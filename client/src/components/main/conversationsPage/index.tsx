@@ -10,7 +10,7 @@ import ForumIcon from '@mui/icons-material/Forum';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import './index.css';
 import blue from '@mui/material/colors/blue';
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { TextField, Tooltip } from '@mui/material';
 import useConversationPage from '../../../hooks/useConversationsPage';
 import IndividualConversation from './individualConversation';
@@ -34,7 +34,16 @@ function NoConversationLayout() {
  * Search function from MUI. Displays a search bar and handles input.
  * @returns the search bar component.
  */
-function Search() {
+function Search(
+  searchInput: string,
+  setSearchInput: React.Dispatch<React.SetStateAction<string>>,
+  setShowSearchResults: React.Dispatch<React.SetStateAction<boolean>>,
+) {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
+    setShowSearchResults(true);
+  };
+
   return (
     <React.Fragment>
       <Tooltip title='Search' enterDelay={1000} sx={{ margin: 'auto' }}>
@@ -64,6 +73,8 @@ function Search() {
           },
         }}
         sx={{ display: { xs: 'none', md: 'inline-block' }, marginLeft: 3 }}
+        value={searchInput}
+        onChange={handleInputChange}
       />
     </React.Fragment>
   );
@@ -75,9 +86,19 @@ function Search() {
  * @returns the conversations page object.
  */
 export default function ConversationsPage() {
-  const { user, conversations, sortByUpdatedAt, router } = useConversationPage();
+  const {
+    user,
+    conversations,
+    sortByUpdatedAt,
+    router,
+    searchInput,
+    setSearchInput,
+    filteredConversationsBySearchInput,
+    showSearchResults,
+    setShowSearchResults,
+  } = useConversationPage();
 
-  // Creates the navigation item objects for the individual covnersations for the nav bar
+  // Creates the navigation item objects for the individual conversations for the nav bar.
   const messagesNav: NavigationItem[] = conversations.sort(sortByUpdatedAt).map(c => ({
     segment: `conversation/${c._id}`,
     title: c.users
@@ -93,11 +114,35 @@ export default function ConversationsPage() {
       ),
   }));
 
-  // Sets up the navigation bar on the side that links to the new conversations page,
-  // and individual conversations.
-  let navigation: Navigation = [
+  /**
+   * Creates the navigation item objects for the conversations resulting from the search, where
+   * the search returns the conversations that include the input string as another user in the conversation.
+   */
+  const searchResultsNav: NavigationItem[] = filteredConversationsBySearchInput.map(c => ({
+    segment: `conversation/${c._id}`,
+    title: c.users
+      .filter(u => user.username !== u.username)
+      .map(u => u.username)
+      .join(', '),
+    icon: <MessageIcon />,
+  }));
+
+  /**
+   * Creates the default navigation component for when a user is not searching for a conversation by username.
+   * @param input The input string from the search bar.
+   * @param setInput Function to set the input string state variable.
+   * @param setShowResults Function to set the boolean indicating whether or not to display search results.
+   * @param msgNav Function to create the navigation item objects to create individual convos in the nav bar.
+   * @returns Navigation objects.
+   */
+  const defaultNavigation = (
+    input: string,
+    setInput: React.Dispatch<React.SetStateAction<string>>,
+    setShowResults: React.Dispatch<React.SetStateAction<boolean>>,
+    msgNav: NavigationItem[],
+  ): Navigation => [
     {
-      icon: Search(),
+      icon: Search(input, setInput, setShowResults),
     },
     {
       kind: 'divider',
@@ -114,9 +159,35 @@ export default function ConversationsPage() {
       kind: 'header',
       title: 'Messages',
     },
+    ...msgNav,
   ];
 
-  navigation = navigation.concat(messagesNav);
+  /**
+   * Creates the navigation component for displaying the search results after a user searches for a conversation by username.
+   * @param input The input string from the search bar.
+   * @param setInput Function to set the input string state variable.
+   * @param setShowResults Function to set the boolean indicating whether or not to display search results.
+   * @param searchNav Function to create the navigation item objects to create individual convos in the nav bar.
+   * @returns Navigation objects.
+   */
+  const searchNavigation = (
+    input: string,
+    setInput: React.Dispatch<React.SetStateAction<string>>,
+    setShowResults: React.Dispatch<React.SetStateAction<boolean>>,
+    searchNav: NavigationItem[],
+  ): Navigation => [
+    {
+      icon: Search(input, setInput, setShowResults),
+    },
+    ...searchNav,
+  ];
+
+  // Sets up the navigation bar on the side that links to the new conversations page,
+  // and individual conversations.
+  const navigation: Navigation =
+    showSearchResults && searchInput.trim() !== ''
+      ? searchNavigation(searchInput, setSearchInput, setShowSearchResults, searchResultsNav)
+      : defaultNavigation(searchInput, setSearchInput, setShowSearchResults, messagesNav);
 
   return (
     <AppProvider
