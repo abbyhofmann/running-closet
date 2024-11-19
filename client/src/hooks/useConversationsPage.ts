@@ -85,6 +85,16 @@ const useConversationPage = () => {
     return 0;
   };
 
+  useEffect(() => {
+    async function fetchData() {
+      if (user._id) {
+        const convos = (await getConversations(user._id)).sort(sortByUpdatedAt);
+        setConversations(convos);
+      }
+    }
+    fetchData();
+  }, [user._id]);
+
   const router = useDemoRouter('/dashboard');
 
   return {

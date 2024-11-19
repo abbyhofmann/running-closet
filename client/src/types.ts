@@ -208,3 +208,29 @@ export interface Message {
   readBy: User[];
   cid: string;
 }
+
+/**
+ * Represents the inputs for SearchUser component
+ * - setAlert: function that sets the alert text for an error.
+ * - navigate: function that allows to set the router navigation within the dashboard layout
+ * - setConversations: function sets conversations displayed on conversation page.
+ * - conversations: conversations displayed on conversation page.
+ */
+export interface SearchUsersProps {
+  setAlert: (alert: string) => void;
+  navigate: (path: string | URL) => void;
+  setConversations: (conversations: Conversation[]) => void;
+  conversations: Conversation[];
+}
+
+/**
+ * Represent the inputs for DashboardNavigation
+ * - navigate: function that allows to set the router navigation within the dashboard layout
+ * - setConversations: function sets conversations displayed on conversation page.
+ * - conversations: conversations displayed on conversation page.
+ */
+export interface DashboardNavigationProps {
+  navigate: (path: string | URL) => void;
+  setConversations: (conversations: Conversation[]) => void;
+  conversations: Conversation[];
+}

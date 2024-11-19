@@ -361,6 +361,13 @@ export interface BlastMessageRequest extends Request {
   }
 }
 
+export interface BlastMessageRequest extends Request {
+  body: {
+    uid: string, 
+    messageContent: string,
+  }
+}
+
 /**
  * Interface representing the request body when sending a message, which contains:
  * - sentBy: The username of who sent the message.

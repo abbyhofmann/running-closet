@@ -160,9 +160,8 @@ const userController = (socket: FakeSOSocket) => {
         res.status(401).send('Incorrect password');
         return;
       }
-
+      await setCurrentUser(user);
       res.json(user);
-      setCurrentUser(user);
     } catch (err) {
       res.status(500).send(`Error when logging in user: ${(err as Error).message}`);
     }

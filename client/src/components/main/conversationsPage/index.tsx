@@ -13,6 +13,7 @@ import blue from '@mui/material/colors/blue';
 import React, { ChangeEvent } from 'react';
 import { TextField, Tooltip } from '@mui/material';
 import useConversationPage from '../../../hooks/useConversationsPage';
+import NewConversationPage from './newConversation';
 import IndividualConversation from './individualConversation';
 
 function NoConversationLayout() {
@@ -91,6 +92,7 @@ export default function ConversationsPage() {
     conversations,
     sortByUpdatedAt,
     router,
+    setConversations,
     searchInput,
     setSearchInput,
     filteredConversationsBySearchInput,
@@ -148,8 +150,8 @@ export default function ConversationsPage() {
       kind: 'divider',
     },
     {
-      segment: 'newMessage',
-      title: 'new message',
+      segment: 'new/convo',
+      title: 'Create new conversation',
       icon: <AddCircleIcon sx={{ color: 'green' }} />,
     },
     {
@@ -198,9 +200,16 @@ export default function ConversationsPage() {
       }}
       router={router}>
       <DashboardLayout sx={{ height: 1, width: 1 }}>
-        {router.pathname.includes('conversation') ? (
+        {router.pathname.includes('new/convo') && (
+          <NewConversationPage
+            navigate={router.navigate}
+            setConversations={setConversations}
+            conversations={conversations}></NewConversationPage>
+        )}
+        {router.pathname.includes('conversation') && (
           <IndividualConversation cidPath={router.pathname} />
-        ) : (
+        )}
+        {!router.pathname.includes('new/convo') && !router.pathname.includes('conversation') && (
           <NoConversationLayout />
         )}
       </DashboardLayout>
