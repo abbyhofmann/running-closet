@@ -278,6 +278,7 @@ export interface ServerToClientEvents {
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (comment: CommentUpdatePayload) => void;
   conversationUpdate: (conversation: Conversation) => void;
+  notificationsUpdate: (notification: Notification) => void;
 }
 
 /**
@@ -354,6 +355,11 @@ export interface Message {
   cid: string;
 }
 
+/**
+ * Interface representing the blast message request body when sending a blast message to followers, which contains:
+ * - uid: The user id of the user sending the blsat message.
+ * - messageContent: The content of the message.
+ */
 export interface BlastMessageRequest extends Request {
   body: {
     uid: string, 
@@ -435,5 +441,37 @@ export interface GetConversationRequest {
 export interface FindConversationsByUserIdRequest extends Request {
   params: {
     uid: string;
+  };
+}
+
+/**
+ * Interface representing the delete notification request body when deleting a notification, which contains:
+ * - nid: The id of the notification being deleted.
+ */
+export interface DeleteNotificationRequest extends Request {
+  body: {
+    nid: string, 
+  }
+}
+
+/**
+ * Interface representing the possible responses for a Notification-related operation.
+ */
+export type NotificationResponse = Notification | { error: string };
+
+/**
+ * Type representing the possible responses for fetching numerous notifications.
+ */
+export type MultipleNotificationResponse = Notification[] | { error: string };
+
+/**
+ * Interface for the request parameter when fetching the notifications associated with a user given
+ * their username.
+ * - username - The unique identifier of the user.
+ */
+
+export interface FindNotificationsByUsernameRequest extends Request {
+  params: {
+    username: string;
   };
 }

@@ -33,18 +33,32 @@ import {
   createOrFetchConversation,
   followAnotherUser,
   unfollowAnotherUser,
+  deleteNotificationById,
+  saveNotification,
+  fetchNotifsByUsername,
 } from '../models/application';
-import { Answer, Question, Tag, Comment, User, Conversation, Message } from '../types';
+import {
+  Answer,
+  Question,
+  Tag,
+  Comment,
+  User,
+  Conversation,
+  Message,
+  Notification,
+} from '../types';
 import { T1_DESC, T2_DESC, T3_DESC } from '../data/posts_strings';
 import AnswerModel from '../models/answers';
 import UserModel from '../models/users';
 import ConversationModel from '../models/conversations';
 import MessageModel from '../models/messages';
+import NotificationModel from '../models/notifications';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mockingoose = require('mockingoose');
 
 const createMessageSpy = jest.spyOn(MessageModel, 'create');
+const createNotificationSpy = jest.spyOn(NotificationModel, 'create');
 
 const tag1: Tag = {
   _id: new ObjectId('507f191e810c19729de860ea'),
@@ -218,6 +232,18 @@ const conversation2 = {
   _id: new ObjectId('55e9b58910afe6e94fc6e6ab'),
   users: [user1, user2],
   messages: [],
+};
+
+const notification1 = {
+  _id: new ObjectId('88e9b58910afe6e94fc6e688'),
+  user: user1.username,
+  message: message1,
+};
+
+const notification2 = {
+  _id: new ObjectId('88e9b58910afe6e94fc6e689'),
+  user: user2.username,
+  message: message2,
 };
 
 describe('application module', () => {
@@ -1776,6 +1802,159 @@ describe('application module', () => {
         expect(convo.users).toEqual(mockConversation.users);
         expect(convo.messages).toEqual(mockConversation.messages);
         expect(convo.updatedAt).toBeInstanceOf(Date);
+      });
+    });
+  });
+
+  describe('Notification model', () => {
+    beforeEach(() => {
+      mockingoose.resetAll();
+      jest.clearAllMocks();
+    });
+    describe('deleteNotificationById', () => {
+      test('deleteNotificationById deletes a notification with the given id and returns true', async () => {
+        const mockMessage = {
+          _id: new ObjectId(),
+          messageContent: 'Hello',
+          sender: user1,
+          sentAt: new Date('2024-11-03'),
+          readBy: [user1],
+          cid: new ObjectId(),
+        };
+        const mockNotification = {
+          _id: new ObjectId(),
+          user: user3.username,
+          message: mockMessage,
+        };
+        mockingoose(NotificationModel).toReturn(
+          { acknowledged: true, deletedCount: 1 },
+          'deleteOne',
+        );
+
+        const result = await deleteNotificationById(mockNotification._id.toString());
+
+        expect(result).toEqual(true);
+      });
+      test('deleteNotificationById returns false if ack is false', async () => {
+        const mockMessage = {
+          _id: new ObjectId(),
+          messageContent: 'Hello',
+          sender: user1,
+          sentAt: new Date('2024-11-03'),
+          readBy: [user1],
+          cid: new ObjectId(),
+        };
+        const mockNotification = {
+          _id: new ObjectId(),
+          user: user3.username,
+          message: mockMessage,
+        };
+        mockingoose(NotificationModel).toReturn(
+          { acknowledged: false, deletedCount: 0 },
+          'deleteOne',
+        );
+
+        const result = await deleteNotificationById(mockNotification._id.toString());
+
+        expect(result).toEqual(false);
+      });
+      test('deleteNotificationById returns false if deleted count is 0', async () => {
+        const mockMessage = {
+          _id: new ObjectId(),
+          messageContent: 'Hello',
+          sender: user1,
+          sentAt: new Date('2024-11-03'),
+          readBy: [user1],
+          cid: new ObjectId(),
+        };
+        const mockNotification = {
+          _id: new ObjectId(),
+          user: user3.username,
+          message: mockMessage,
+        };
+        mockingoose(NotificationModel).toReturn(
+          { acknowledged: true, deletedCount: 0 },
+          'deleteOne',
+        );
+
+        const result = await deleteNotificationById(mockNotification._id.toString());
+
+        expect(result).toEqual(false);
+      });
+      test('deleteNotificationById returns false if there is a db error', async () => {
+        const mockMessage = {
+          _id: new ObjectId(),
+          messageContent: 'Hello',
+          sender: user1,
+          sentAt: new Date('2024-11-03'),
+          readBy: [user1],
+          cid: new ObjectId(),
+        };
+        const mockNotification = {
+          _id: new ObjectId(),
+          user: user3.username,
+          message: mockMessage,
+        };
+        mockingoose(NotificationModel).toReturn(new Error('db error'));
+
+        const result = await deleteNotificationById(mockNotification._id.toString());
+
+        expect(result).toEqual(false);
+      });
+    });
+
+    describe('saveNotification', () => {
+      test('saveNotification saves notification', async () => {
+        const mockNotification = {
+          user: user1.username,
+          message: message1,
+        };
+        const result = (await saveNotification(mockNotification)) as Notification;
+
+        expect(result._id).toBeDefined();
+        expect(result.user).toEqual(mockNotification.user);
+        expect(result.message._id?.toString()).toEqual(message1._id?.toString());
+      });
+
+      test('saveNotification returns error if there is a db error', async () => {
+        const mockMessage = {
+          _id: new ObjectId(),
+          messageContent: 'Hello',
+          sender: user1,
+          sentAt: new Date('2024-11-03'),
+          readBy: [user1],
+          cid: new ObjectId().toString(),
+        };
+        const mockNotification = {
+          _id: new ObjectId(),
+          user: user3.username,
+          message: mockMessage,
+        };
+        createNotificationSpy.mockRejectedValueOnce(new Error('error'));
+
+        const result = await saveNotification(mockNotification);
+
+        expect(result).toEqual({ error: 'Error when saving a notification' });
+      });
+    });
+
+    describe('fetchNotifsByUsername', () => {
+      test('fetchNotifsByUsername returns a list of Notifications', async () => {
+        mockingoose(NotificationModel).toReturn([notification1, notification2], 'find');
+
+        const result = (await fetchNotifsByUsername(user3.username)) as Notification[];
+
+        expect(result.length).toEqual(2);
+        expect(result[0]._id).toEqual(notification1._id);
+        expect(result[1]._id).toEqual(notification2._id);
+      });
+
+      test('fetchNotifsByUsername returns error response if error during find', async () => {
+        mockingoose(NotificationModel).toReturn(new Error('Error during find'), 'find');
+
+        const result = await fetchNotifsByUsername('user1');
+
+        expect(result).toEqual({ error: 'Error when fetching the notifications' });
       });
     });
   });

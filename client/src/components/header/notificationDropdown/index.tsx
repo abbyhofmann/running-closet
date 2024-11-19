@@ -8,22 +8,34 @@ import Paper from '@mui/material/Paper';
 import useNotificationDropdown from '../../../hooks/useNotificationDropdown';
 import NotificationComponent from './notification';
 
+/**
+ * Represents the Notification Dropdown component that displays all notifications for the user.
+ * @returns the NotificationDropdown component.
+ */
 export default function NotificationDropdown() {
-  const { notifications, dropdown, anyUnreadNotifications, open, handleClick, handleClose } =
-    useNotificationDropdown();
+  const {
+    notifications,
+    dropdown,
+    anyUnreadNotifications,
+    open,
+    handleClick,
+    handleClose,
+    handleDeleteNotification,
+  } = useNotificationDropdown();
 
   return (
     <div>
       <Button
+        sx={{ justifyContent: 'center', marginX: 1 }}
         id='notification-icon'
         aria-controls={open ? 'notification-display-menu' : undefined}
         aria-haspopup='true'
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}>
-        <ListItemIcon>
+        <ListItemIcon sx={{ marginX: 'auto' }}>
           <NotificationsIcon
-            fontSize='small'
-            sx={{ color: anyUnreadNotifications ? 'red' : 'grey' }}
+            fontSize='large'
+            sx={{ color: anyUnreadNotifications ? 'red' : 'grey', marginX: 'auto' }}
           />
         </ListItemIcon>
       </Button>
@@ -41,7 +53,7 @@ export default function NotificationDropdown() {
               <NotificationComponent
                 key={notification._id}
                 notification={notification}
-                handleClose={handleClose}></NotificationComponent>
+                handleDeleteNotification={handleDeleteNotification}></NotificationComponent>
             ))}
           {notifications.length === 0 && (
             <MenuItem onClick={handleClose}>

@@ -17,6 +17,9 @@ import {
   Conversation,
   Message,
   MessageResponse,
+  NotificationResponse,
+  Notification,
+  MultipleNotificationResponse,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -25,6 +28,7 @@ import CommentModel from './comments';
 import UserModel from './users';
 import ConversationModel from './conversations';
 import MessageModel from './messages';
+import NotificationModel from './notifications';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
@@ -1220,5 +1224,68 @@ export const saveAndAddMessage = async (
 
   if ('error' in updatedConvoFromDb) {
     throw new Error(updatedConvoFromDb.error as string);
+  }
+};
+
+/**
+ * Attempts to delete the notification with the given id from the mongo db.
+ * @param nid the id of the notification.
+ * @returns a boolean promise representing if the notification was successfully deleted.
+ */
+export const deleteNotificationById = async (nid: string): Promise<boolean> => {
+  try {
+    const result = await NotificationModel.deleteOne({ _id: new ObjectId(nid) });
+
+    if (!result.acknowledged || result.deletedCount < 1) {
+      throw new Error('Notification not deleted.');
+    }
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
+
+/**
+ * Saves a new notification to the database.
+ *
+ * @param {Notification} notification - The notification to save
+ *
+ * @returns {Promise<NotificationResponse>} - The saved notification, or an error notification if the save failed
+ */
+export const saveNotification = async (
+  notification: Notification,
+): Promise<NotificationResponse> => {
+  try {
+    const result = await NotificationModel.create(notification);
+    return result;
+  } catch (error) {
+    return { error: 'Error when saving a notification' };
+  }
+};
+
+/**
+ * Fetches the notifications in the db for the given user, no matter the order.
+ *
+ * @param username The username of the user.
+ * @returns A Promise that resolves to the list of Notifications, or an error message if an error occurs.
+ */
+export const fetchNotifsByUsername = async (
+  username: string,
+): Promise<MultipleNotificationResponse> => {
+  try {
+    const notifs = await NotificationModel.find({
+      user: username,
+    }).populate({
+      path: 'message',
+      model: MessageModel,
+      populate: [
+        { path: 'sender', model: UserModel },
+        { path: 'readBy', model: UserModel },
+      ],
+    });
+
+    return notifs;
+  } catch (error) {
+    return { error: 'Error when fetching the notifications' };
   }
 };

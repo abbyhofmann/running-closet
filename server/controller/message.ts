@@ -7,6 +7,7 @@ import {
   MarkMessageAsReadRequest,
   Message,
   User,
+  Notification,
 } from '../types';
 import {
   addMessage,
@@ -16,6 +17,7 @@ import {
   markMessageAsRead,
   fetchUserByUsername,
   saveMessage,
+  saveNotification,
 } from '../models/application';
 
 const messageController = (socket: FakeSOSocket) => {
@@ -108,7 +110,25 @@ const messageController = (socket: FakeSOSocket) => {
         throw new Error(updatedConversation.error);
       }
 
+      // adds notifications for all users that were sent the message.
+      const filteredUsers = updatedConversation.users.filter(u => u.username !== user.username);
+
+      const promises: Promise<void>[] = filteredUsers.map(async u => {
+        const notification: Notification = {
+          user: u.username,
+          message: msgFromDb,
+        };
+        const notificationFromDb = await saveNotification(notification);
+        if (notificationFromDb && 'error' in notificationFromDb) {
+          throw new Error(notificationFromDb.error);
+        }
+        socket.emit('notificationsUpdate', notificationFromDb);
+      });
+
+      await Promise.all(promises);
+
       socket.emit('conversationUpdate', updatedConversation);
+
       res.json(msgFromDb);
     } catch (err) {
       res.status(500).send(`Error when adding message: ${(err as Error).message}`);
