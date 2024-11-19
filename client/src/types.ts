@@ -160,6 +160,7 @@ export interface ServerToClientEvents {
   viewsUpdate: (question: Question) => void;
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (update: CommentUpdatePayload) => void;
+  conversationUpdate: (conversation: Conversation) => void;
 }
 
 /**

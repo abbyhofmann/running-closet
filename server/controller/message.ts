@@ -102,15 +102,13 @@ const messageController = (socket: FakeSOSocket) => {
         throw new Error(msgFromDb.error);
       }
 
-      const status = await addMessage(msgFromDb);
+      const updatedConversation = await addMessage(msgFromDb);
 
-      if (status && 'error' in status) {
-        throw new Error(status.error);
+      if (updatedConversation && 'error' in updatedConversation) {
+        throw new Error(updatedConversation.error);
       }
 
-      // For socket implementation ticket, populate the conversation that the message
-      // was added to and emit the updated object
-
+      socket.emit('conversationUpdate', updatedConversation);
       res.json(msgFromDb);
     } catch (err) {
       res.status(500).send(`Error when adding message: ${(err as Error).message}`);
@@ -159,6 +157,12 @@ const messageController = (socket: FakeSOSocket) => {
 
       if (status && 'error' in status) {
         throw new Error(status.error);
+      }
+
+      const conversation = await fetchConversationById(status.cid);
+
+      if (conversation && !('error' in conversation)) {
+        socket.emit('conversationUpdate', conversation);
       }
 
       res.json(status);

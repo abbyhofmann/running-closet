@@ -1118,7 +1118,10 @@ export const addMessage = async (message: Message): Promise<ConversationResponse
       { _id: new ObjectId(message.cid) },
       { $push: { messages: { $each: [message._id] } }, $set: { updatedAt: message.sentAt } },
       { new: true },
-    );
+    ).populate([
+      { path: 'users', model: UserModel },
+      { path: 'messages', model: MessageModel, populate: { path: 'sender', model: UserModel } },
+    ]);
 
     if (result === null) {
       throw new Error('Error when adding message to conversation');

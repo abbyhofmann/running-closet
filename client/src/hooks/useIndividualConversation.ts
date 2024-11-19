@@ -1,7 +1,7 @@
 import { useState, ChangeEvent, useEffect, useRef } from 'react';
 import { getConversation } from '../services/conversationService';
 import { sendMessage, markMessageAsRead } from '../services/messageService';
-import { Message } from '../types';
+import { Conversation, Message } from '../types';
 import useUserContext from './useUserContext';
 
 /**
@@ -16,7 +16,7 @@ import useUserContext from './useUserContext';
  * @returns listRef - Reference to the message list elements (necessary for scrolling)
  */
 const useIndividualConversation = (cidpath: string) => {
-  const { user } = useUserContext();
+  const { user, socket } = useUserContext();
   const [conversationId, setConversationId] = useState<string>(cidpath.split('/')[2]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversationName, setConversationName] = useState<string>('');
@@ -56,8 +56,26 @@ const useIndividualConversation = (cidpath: string) => {
         }
       }
     }
+
+    /**
+     * Function that handles updating the conversation when a new message is sent by
+     * replacing the current conversation with the updated one if the conversation ids match
+     * @param conversation - the updated conversation object
+     */
+    const handleConversationUpdate = (conversation: Conversation) => {
+      if (conversation._id?.toString() === conversationId) {
+        setMessages(conversation.messages.sort((a, b) => (a.sentAt > b.sentAt ? 1 : -1)));
+      }
+    };
+
     fetchData();
-  }, [conversationId, user.username]);
+
+    socket.on('conversationUpdate', handleConversationUpdate);
+
+    return () => {
+      socket.off('conversationUpdate', handleConversationUpdate);
+    };
+  }, [conversationId, user.username, socket]);
 
   useEffect(() => {
     setConversationId(cidpath.split('/')[2]);

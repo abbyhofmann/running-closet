@@ -13,7 +13,7 @@ import { getConversations } from '../services/conversationService';
  * @returns router - router that manages navigation.
  */
 const useConversationPage = () => {
-  const { user } = useUserContext();
+  const { user, socket } = useUserContext();
   const [conversations, setConversations] = useState<Conversation[]>([]);
 
   useEffect(() => {
@@ -24,7 +24,25 @@ const useConversationPage = () => {
       }
     }
     fetchData();
-  }, [user._id]);
+
+    /**
+     * Function to handle updating the conversation list when a new message is added.
+     * The main purpose is to ensure that the conversation list is sorted by the most recent message
+     * and the unread message indicator is updated.
+     * @param conversation The updated conversation object.
+     */
+    const handleConversationUpdate = (conversation: Conversation) => {
+      setConversations(prevClist =>
+        prevClist.map(c => (c._id === conversation._id ? conversation : c)),
+      );
+    };
+
+    socket.on('conversationUpdate', handleConversationUpdate);
+
+    return () => {
+      socket.off('conversationUpdate', handleConversationUpdate);
+    };
+  }, [user._id, socket]);
 
   /**
    * Determines whether the first conversation is newer than the second one.
