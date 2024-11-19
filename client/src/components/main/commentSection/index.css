@@ -74,6 +74,10 @@
   font-size: 0.85rem;
 }
 
+.underline-name {
+  text-decoration: underline;
+}
+
 .comment-username:focus {
   border-color: #007bff;
   outline: none;

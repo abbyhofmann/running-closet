@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getMetaData } from '../../../tool';
 import { Comment } from '../../../types';
 import './index.css';
@@ -26,6 +27,7 @@ const CommentSection = ({ comments, handleAddComment }: CommentSectionProps) => 
   const [text, setText] = useState<string>('');
   const [textErr, setTextErr] = useState<string>('');
   const [showComments, setShowComments] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   /**
    * Function to handle the addition of a new comment.
@@ -60,10 +62,12 @@ const CommentSection = ({ comments, handleAddComment }: CommentSectionProps) => 
               comments.map((comment, index) => (
                 <li key={index} className='comment-item'>
                   <p className='comment-text'>{comment.text}</p>
-                  <small className='comment-meta'>
-                    <a className='comment-meta' href={`/profile/${comment.commentBy}`}>
-                      {comment.commentBy}
-                    </a>
+                  <small
+                    className='comment-meta'
+                    onClick={() => {
+                      navigate(`/profile/${comment.commentBy}`);
+                    }}>
+                    <span className='underline-name'>{comment.commentBy}</span>
                     {', '}
                     {getMetaData(new Date(comment.commentDateTime))}
                   </small>

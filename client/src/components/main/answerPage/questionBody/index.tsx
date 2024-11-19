@@ -1,5 +1,5 @@
-import React from 'react';
 import './index.css';
+import { useNavigate } from 'react-router-dom';
 import { handleHyperlink } from '../../../../tool';
 
 /**
@@ -27,19 +27,24 @@ interface QuestionBodyProps {
  * @param askby The username of the question's author.
  * @param meta Additional metadata related to the question.
  */
-const QuestionBody = ({ views, text, askby, meta }: QuestionBodyProps) => (
-  <div id='questionBody' className='questionBody right_padding'>
-    <div className='bold_title answer_question_view'>{views} views</div>
-    <div className='answer_question_text'>{handleHyperlink(text)}</div>
-    <div className='answer_question_right'>
-      <div className='question_author'>
-        <a href={`/profile/${askby}`} className='question_author'>
+const QuestionBody = ({ views, text, askby, meta }: QuestionBodyProps) => {
+  const navigate = useNavigate();
+  return (
+    <div id='questionBody' className='questionBody right_padding'>
+      <div className='bold_title answer_question_view'>{views} views</div>
+      <div className='answer_question_text'>{handleHyperlink(text)}</div>
+      <div className='answer_question_right'>
+        <div
+          className='question_author'
+          onClick={() => {
+            navigate(`/profile/${askby}`);
+          }}>
           {askby}
-        </a>
+        </div>
+        <div className='answer_question_meta'>asked {meta}</div>
       </div>
-      <div className='answer_question_meta'>asked {meta}</div>
     </div>
-  </div>
-);
+  );
+};
 
 export default QuestionBody;
