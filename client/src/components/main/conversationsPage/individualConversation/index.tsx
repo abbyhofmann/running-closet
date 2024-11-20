@@ -59,7 +59,7 @@ export default function IndividualConversation({ cidPath }: IndividualConversati
         <ProfileAvatar profileGraphic={profileGraphic} size={40}></ProfileAvatar>
         <div>
           {/* Each name of the other user(s) in the convo is clickable */}
-          <Typography>
+          <Typography variant='h6'>
             {conversationNames.map((name, index) => (
               <React.Fragment key={name}>
                 <span

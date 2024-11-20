@@ -50,16 +50,9 @@ function Search(
   return (
     <React.Fragment>
       <Tooltip title='Search' enterDelay={1000} sx={{ margin: 'auto' }}>
-        <div>
-          <IconButton
-            type='button'
-            aria-label='search'
-            sx={{
-              display: { xs: 'inline', md: 'none' },
-            }}>
-            <SearchIcon />
-          </IconButton>
-        </div>
+        <IconButton type='button' aria-label='search' size='small'>
+          <SearchIcon />
+        </IconButton>
       </Tooltip>
       <TextField
         label='Search'
@@ -67,11 +60,6 @@ function Search(
         size='small'
         slotProps={{
           input: {
-            endAdornment: (
-              <IconButton type='button' aria-label='search' size='small'>
-                <SearchIcon />
-              </IconButton>
-            ),
             sx: { pr: 0.5 },
           },
         }}
