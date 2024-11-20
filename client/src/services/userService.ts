@@ -7,12 +7,22 @@ const USER_API_URL = `${process.env.REACT_APP_SERVER_URL}/user`;
  * Registers a new user.
  *
  * @param username - The username of the user being registered.
+ * @param firstName - The first name of the user being registered.
+ * @param lastName - The last name of the user being registered.
  * @param email - The email of the user being registered.
  * @param password - The password of the user being regiestered.
+ * @param profileGraphic - The number corresponding to the graphic selected.
  * @throws Error Throws an error if the request fails or the response status is not 200.
  */
-const registerUser = async (username: string, email: string, password: string): Promise<User> => {
-  const data = { username, email, password };
+const registerUser = async (
+  username: string,
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string,
+  profileGraphic: number,
+): Promise<User> => {
+  const data = { username, firstName, lastName, email, password, profileGraphic };
 
   const res = await api.post(`${USER_API_URL}/registerUser`, data);
   if (res.status !== 200) {

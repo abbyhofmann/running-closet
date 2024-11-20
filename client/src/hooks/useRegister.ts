@@ -18,8 +18,11 @@ import { registerUser } from '../services/userService';
  */
 const useRegister = () => {
   const [username, setUsername] = useState<string>('');
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
   const [pass, setPass] = useState<string>('');
   const [email, setEmail] = useState<string>('');
+  const [profileGraphic, setProfileGraphic] = useState<number>(-1);
   const [registrationError, setRegistrationError] = useState<string>('');
   const [showRegistrationError, setShowRegistrationError] = useState<boolean>(false);
 
@@ -33,6 +36,24 @@ const useRegister = () => {
    */
   const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
+  };
+
+  /**
+   * Function to handle the first name input change event.
+   *
+   * @param e - the event object.
+   */
+  const handleFirstNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFirstName(e.target.value);
+  };
+
+  /**
+   * Function to handle the last name input change event.
+   *
+   * @param e - the event object.
+   */
+  const handleLastNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setLastName(e.target.value);
   };
 
   /**
@@ -54,6 +75,15 @@ const useRegister = () => {
   };
 
   /**
+   * Function to handle the profile graphic change event.
+   *
+   * @param num - the number associated with the photo selected.
+   */
+  const handleProfileGraphicSelect = (num: number) => {
+    setProfileGraphic(num);
+  };
+
+  /**
    * Function to handle the form submission event.
    *
    * @param event - the form event object.
@@ -63,7 +93,7 @@ const useRegister = () => {
     try {
       setRegistrationError('');
       setShowRegistrationError(false);
-      const u = await registerUser(username, email, pass);
+      const u = await registerUser(username, firstName, lastName, email, pass, profileGraphic);
       setUser(u);
       navigate('/home');
     } catch (err) {
@@ -79,14 +109,20 @@ const useRegister = () => {
 
   return {
     username,
+    firstName,
+    lastName,
     pass,
     email,
+    profileGraphic,
     registrationError,
     showRegistrationError,
     handleEmailChange,
     handleUsernameChange,
     handlePassChange,
     handleSubmit,
+    handleFirstNameChange,
+    handleLastNameChange,
+    handleProfileGraphicSelect,
   };
 };
 

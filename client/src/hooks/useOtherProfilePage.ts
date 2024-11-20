@@ -14,6 +14,7 @@ const useOtherProfilePage = () => {
   // state variable for when following/follower lists get updated to prevent over-rendering
   const [followListsUpdated, setFollowListsUpdated] = useState(false);
   const navigate = useNavigate();
+  const [otherUserProfileGraphic, setOtherUserProfileGraphic] = useState<number>(-1);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,6 +27,7 @@ const useOtherProfilePage = () => {
           setFollowing(profUser.following);
           setFollowedBy(profUser.followers);
           setProfileUser(profUser);
+          setOtherUserProfileGraphic(profUser.profileGraphic);
         } catch (err) {
           navigate(`/profile/${username}`);
         }
@@ -105,6 +107,7 @@ const useOtherProfilePage = () => {
     setCurrentUserFollowingThisUser,
     follow,
     unfollow,
+    otherUserProfileGraphic,
   };
 };
 export default useOtherProfilePage;

@@ -1,9 +1,10 @@
-import { ListItem, Avatar, Typography, ListItemAvatar, ListItemText } from '@mui/material';
+import { ListItem, ListItemAvatar, ListItemText } from '@mui/material';
 import { Box } from '@mui/system';
 import { useState } from 'react';
 import { Message } from '../../../../types';
 import useUserContext from '../../../../hooks/useUserContext';
 import { getMessageDate } from '../../../../tool';
+import ProfileAvatar from '../../../profileAvatar';
 
 /**
  * Interface represeting the props of the MessageComponent
@@ -12,6 +13,7 @@ import { getMessageDate } from '../../../../tool';
  */
 interface MessageComponentProps {
   message: Message;
+  groupConvo: boolean;
 }
 
 /**
@@ -20,7 +22,7 @@ interface MessageComponentProps {
  */
 export default function MessageComponent(props: MessageComponentProps) {
   const { user } = useUserContext();
-  const { message } = props;
+  const { message, groupConvo } = props;
   const [userSent] = useState<boolean>(message.sender.username === user.username);
 
   return (
@@ -38,11 +40,11 @@ export default function MessageComponent(props: MessageComponentProps) {
         <Box mr={2}>
           {!userSent && (
             <ListItemAvatar>
-              <Avatar>
-                <Typography variant='h5'>
-                  {message.sender.username?.charAt(0).toUpperCase()}
-                </Typography>
-              </Avatar>
+              <ProfileAvatar
+                profileGraphic={message.sender.profileGraphic}
+                size={40}></ProfileAvatar>
+              {/* if this is a group conversation, we need to display the username of the sender of each message */}
+              {groupConvo ? message.sender.username : ''}
             </ListItemAvatar>
           )}
         </Box>
@@ -58,9 +60,7 @@ export default function MessageComponent(props: MessageComponentProps) {
         <Box ml={2}>
           {userSent && (
             <ListItemAvatar>
-              <Avatar>
-                <Typography variant='h5'>{user.username?.charAt(0).toUpperCase()}</Typography>
-              </Avatar>
+              <ProfileAvatar profileGraphic={user.profileGraphic} size={40}></ProfileAvatar>
             </ListItemAvatar>
           )}
         </Box>

@@ -6,8 +6,11 @@ export type FakeSOSocket = Socket<ServerToClientEvents>;
  * Interface representing a User, which contains:
  * - id - The id of the user.
  * - username - The unique identifier of the user.
+ * - firstName: The first name of the user.
+ * - lastName: The last name of the user.
  * - email - The email of the user.
  * - password - The password of the user.
+ * - profileGraphic: The number corresponding to which profile graphic they choose upon registering.
  * - deleted - Boolean inidicating if this user has been deleted.
  * - following - Usernames of users that this user is following.
  * - followers - Usernames of users that are following this user.
@@ -15,8 +18,11 @@ export type FakeSOSocket = Socket<ServerToClientEvents>;
 export interface User {
   _id?: string;
   username: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
+  profileGraphic: number;
   deleted: boolean;
   following: User[];
   followers: User[];

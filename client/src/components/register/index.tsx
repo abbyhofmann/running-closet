@@ -10,14 +10,20 @@ import useRegister from '../../hooks/useRegister';
 const Register = () => {
   const {
     username,
+    firstName,
+    lastName,
     pass,
     email,
+    profileGraphic,
     registrationError,
     showRegistrationError,
     handleSubmit,
     handleEmailChange,
     handleUsernameChange,
     handlePassChange,
+    handleFirstNameChange,
+    handleLastNameChange,
+    handleProfileGraphicSelect,
   } = useRegister();
 
   return (
@@ -25,6 +31,52 @@ const Register = () => {
       <h2>Welcome to FakeStackOverflow!</h2>
       <h4>Please enter registration details below.</h4>
       <form onSubmit={handleSubmit}>
+        <div className='row'>
+          <label className='profileLabel' htmlFor='profileGraphic'>
+            Select Profile Photo:
+          </label>
+        </div>
+        <div className='profile-photo-grid'>
+          {[1, 2, 3, 4, 5, 6].map(num => (
+            <img
+              key={num}
+              src={`/profileGraphics/image${num}.jpeg`}
+              alt={`Profile option ${num}`}
+              className={`profile-photo ${profileGraphic === num ? 'selected' : ''}`}
+              onClick={() => handleProfileGraphicSelect(num)}
+            />
+          ))}
+        </div>
+        <div className='row'>
+          <label className='labels' htmlFor='firstName'>
+            First Name:
+          </label>
+          <input
+            type='text'
+            value={firstName}
+            onChange={handleFirstNameChange}
+            placeholder='First Name'
+            required
+            className='input-text'
+            key='firstName'
+            id={'firstNameInput'}
+          />
+        </div>
+        <div className='row'>
+          <label className='labels' htmlFor='lastName'>
+            Last Name:
+          </label>
+          <input
+            type='text'
+            value={lastName}
+            onChange={handleLastNameChange}
+            placeholder='Last Name'
+            required
+            className='input-text'
+            key='lastName'
+            id={'lastNameInput'}
+          />
+        </div>
         <div className='row'>
           <label className='labels' htmlFor='username'>
             Username:

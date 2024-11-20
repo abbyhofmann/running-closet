@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { AppProvider, NavigationItem, type Navigation } from '@toolpad/core/AppProvider';
-import MessageIcon from '@mui/icons-material/Message';
 import SearchIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
 import MarkUnreadChatAltIcon from '@mui/icons-material/MarkUnreadChatAlt';
@@ -15,6 +14,8 @@ import { TextField, Tooltip } from '@mui/material';
 import useConversationPage from '../../../hooks/useConversationsPage';
 import NewConversationPage from './newConversation';
 import IndividualConversation from './individualConversation';
+import ProfileAvatar from '../../profileAvatar';
+import { Conversation, User } from '../../../types';
 
 function NoConversationLayout() {
   return (
@@ -100,6 +101,20 @@ export default function ConversationsPage() {
     setShowSearchResults,
   } = useConversationPage();
 
+  /**
+   * Gets the number of the associated profile graphic for the conversation. If there is one other user in
+   * the conversation, get their profileGraphic field. If it is a group conversation, return 0.
+   *
+   * @param conversation The conversation in need of profile graphic.
+   * @param currentUser The logged-in user part of the conversation.
+   * @returns Number corresponding to the profile graphic to use. 0 corresponds to group conversation graphic.
+   */
+  const getConversationGraphicNumber = (conversation: Conversation, currentUser: User) => {
+    const otherUsers = conversation.users.filter(u => currentUser.username !== u.username);
+
+    return otherUsers.length === 1 ? otherUsers[0].profileGraphic : 0;
+  };
+
   // Creates the navigation item objects for the individual conversations for the nav bar.
   const messagesNav: NavigationItem[] = conversations.sort(sortByUpdatedAt).map(c => ({
     segment: `conversation/${c._id}`,
@@ -110,8 +125,9 @@ export default function ConversationsPage() {
     icon:
       c.messages.findIndex(m => m.readBy.findIndex(u => u.username === user.username) === -1) ===
       -1 ? (
-        <MessageIcon />
+        <ProfileAvatar profileGraphic={getConversationGraphicNumber(c, user)} size={40} />
       ) : (
+        // TODO - use a different icon for unread
         <MarkUnreadChatAltIcon style={{ color: 'blue' }} />
       ),
   }));
@@ -126,7 +142,7 @@ export default function ConversationsPage() {
       .filter(u => user.username !== u.username)
       .map(u => u.username)
       .join(', '),
-    icon: <MessageIcon />,
+    icon: <ProfileAvatar profileGraphic={getConversationGraphicNumber(c, user)} size={40} />,
   }));
 
   /**

@@ -1,6 +1,6 @@
-import { Avatar, Card, Typography } from '@mui/material';
-import { blue } from '@mui/material/colors';
+import { Card, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import ProfileAvatar from '../../../profileAvatar';
 
 /**
  * Represents the props for the ProfileCard component.
@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
  */
 interface ProfileCardProps {
   username: string;
+  profileGraphic: number;
 }
 
 /**
@@ -15,7 +16,7 @@ interface ProfileCardProps {
  * @returns the profile card element.
  */
 const ProfileCard = (props: ProfileCardProps) => {
-  const { username } = props;
+  const { username, profileGraphic } = props;
   const navigate = useNavigate();
   return (
     <Card
@@ -29,16 +30,16 @@ const ProfileCard = (props: ProfileCardProps) => {
         marginY: 2,
       }}
       key={username}>
-      <Avatar
-        sx={{
-          marginX: 'auto',
-          marginY: 2,
-          bgcolor: blue[500],
-          width: 75,
-          height: 75,
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingTop: '20px', // this may need to change but I couldn't figure out how to dynamically get it centered on the card
         }}>
-        {<Typography variant='h3'>{username?.charAt(0).toUpperCase()}</Typography>}
-      </Avatar>
+        <ProfileAvatar profileGraphic={profileGraphic} size={75}></ProfileAvatar>
+      </div>
       <Typography variant='h5' sx={{ textAlign: 'center' }} noWrap>
         {username}
       </Typography>

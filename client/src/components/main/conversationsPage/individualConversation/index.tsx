@@ -1,7 +1,10 @@
 import { Alert, Button, List, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
+import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import MessageComponent from '../messageComponent';
 import useIndividualConversation from '../../../../hooks/useIndividualConversation';
+import ProfileAvatar from '../../../profileAvatar';
 
 /**
  * Interface represents the props for the IndividualConversation.
@@ -20,14 +23,16 @@ interface IndividualConversationProps {
  */
 export default function IndividualConversation({ cidPath }: IndividualConversationProps) {
   const {
-    conversationName,
+    conversationNames,
     messages,
     newMessage,
     alert,
     handleNewMessageChange,
     handleSendMessage,
     listRef,
+    profileGraphic,
   } = useIndividualConversation(cidPath);
+  const navigate = useNavigate();
 
   return (
     <Box
@@ -41,8 +46,32 @@ export default function IndividualConversation({ cidPath }: IndividualConversati
         maxWidth: 1,
         minWidth: 1,
       }}>
-      <Box sx={{ p: 2, borderBottom: '1px solid lightgray' }}>
-        <Typography variant='h6'>{conversationName}</Typography>
+      <Box
+        sx={{
+          p: 2,
+          borderBottom: '1px solid lightgray',
+          justifyContent: 'flex-start',
+          gap: 1,
+          alignItems: 'center',
+          display: 'flex',
+          flexDirection: 'row',
+        }}>
+        <ProfileAvatar profileGraphic={profileGraphic} size={40}></ProfileAvatar>
+        <div>
+          {/* Each name of the other user(s) in the convo is clickable */}
+          <Typography>
+            {conversationNames.map((name, index) => (
+              <React.Fragment key={name}>
+                <span
+                  style={{ cursor: 'pointer', color: 'black', fontWeight: 'bold' }}
+                  onClick={() => navigate(`/profile/${name}`)}>
+                  {name}
+                </span>
+                {index < conversationNames.length - 1 && ', '}
+              </React.Fragment>
+            ))}
+          </Typography>
+        </div>
       </Box>
 
       <Box
@@ -50,7 +79,11 @@ export default function IndividualConversation({ cidPath }: IndividualConversati
         ref={listRef}>
         <List>
           {messages.map(msg => (
-            <MessageComponent key={msg._id} message={msg} />
+            <MessageComponent
+              key={msg._id}
+              message={msg}
+              groupConvo={conversationNames.length > 1}
+            />
           ))}
         </List>
       </Box>

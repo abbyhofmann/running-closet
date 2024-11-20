@@ -203,14 +203,20 @@ export interface AnswerUpdatePayload {
 /**
  * Interface for the request body when registering a new user.
  * - username - The username of the user registering.
+ * - firstName - The first name of the user registering.
+ * - lastName - The last name of the user registering.
  * - email - The email address of the user registering.
  * - password - The password of the user registering.
+ * - profileGraphic: The number corresponding to which profile graphic they choose upon registering.
  */
 export interface RegisterUserRequest {
   body: {
     username: string;
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
+    profileGraphic: number;
   };
 }
 
@@ -298,8 +304,11 @@ export interface ServerToClientEvents {
  * Interface representing an User document, which contains:
  * - id: The unique identifier for the user.
  * - username: The unique username for each user.
+ * - firstName: The first name of the user.
+ * - lastName: The last name of the user.
  * - email: The email associated with the account.
  * - password: The an ecrypted version of the user's password for the account.
+ * - profileGraphic: The number corresponding to which profile graphic they choose upon registering.
  * - deleted: A boolean value representing if the account has been deleted. 
  * - following: A list of of users that the user follows.
  * - followers: A list of of users that follow the user.
@@ -307,8 +316,11 @@ export interface ServerToClientEvents {
 export interface User {
   _id?: ObjectId;
   username: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
+  profileGraphic: number;
   deleted: boolean;
   following: User[];
   followers: User[];

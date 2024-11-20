@@ -11,8 +11,11 @@ const deleteNotificationByIdSpy = jest.spyOn(util, 'deleteNotificationById');
 const user1: User = {
   _id: new ObjectId('45e9b58910afe6e94fc6e6dc'),
   username: 'user1',
+  firstName: 'Chris',
+  lastName: 'Hemsworth',
   email: 'user1@gmail.com',
   password: 'password',
+  profileGraphic: 3,
   deleted: false,
   following: [],
   followers: [],
@@ -21,8 +24,11 @@ const user1: User = {
 const user3: User = {
   _id: new ObjectId('47e9b58910afe6e94fc6e6dc'),
   username: 'user3',
+  firstName: 'Captain',
+  lastName: 'America',
   email: 'user3@gmail.com',
   password: 'password',
+  profileGraphic: 2,
   deleted: false,
   following: [],
   followers: [user1],

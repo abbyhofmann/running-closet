@@ -73,7 +73,7 @@ const Login = () => {
             />
           </FormControl>
 
-          <Button variant='contained' type='submit' sx={{ mt: 2 }}>
+          <Button variant='contained' type='submit' sx={{ mt: 2, width: '25ch' }}>
             Sign In
           </Button>
         </div>

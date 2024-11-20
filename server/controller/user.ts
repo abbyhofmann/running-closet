@@ -34,7 +34,14 @@ const userController = (socket: FakeSOSocket) => {
    * @returns `true` if the request is valid, otherwise `false`.
    */
   function isRegisterRequestValid(req: RegisterUserRequest): boolean {
-    return !!req.body.username && !!req.body.email && !!req.body.password;
+    return (
+      !!req.body.username &&
+      !!req.body.firstName &&
+      !!req.body.lastName &&
+      !!req.body.email &&
+      !!req.body.password &&
+      !!req.body.profileGraphic
+    );
   }
 
   /**
@@ -98,14 +105,17 @@ const userController = (socket: FakeSOSocket) => {
       return;
     }
 
-    const { username, email, password } = req.body;
+    const { username, firstName, lastName, email, password, profileGraphic } = req.body;
 
     const hash = (await hashPassword(password)) as string;
 
     const newUser = {
       username,
+      firstName,
+      lastName,
       email,
       password: hash,
+      profileGraphic,
       deleted: false,
       following: [],
       followers: [],

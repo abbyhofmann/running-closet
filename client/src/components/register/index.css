@@ -14,6 +14,7 @@
   text-align: center;
   width: 100%;
   margin: 10px 0;
+  max-width: 400px;
 }
 
 .input-text {
@@ -54,6 +55,16 @@
 
 .labels {
   margin-right: 10px;
+  flex: 1; 
+  text-align: left; 
+  font-weight: bold;
+}
+
+.profileLabel {
+  margin-right: 10px;
+  flex: 1; 
+  text-align: center; 
+  font-weight: bold;
 }
 
 .error-alert {
@@ -69,3 +80,35 @@
   justify-content: center;
   align-items: center;
 }
+
+.row {
+  display: flex; 
+  align-items: center; 
+  margin-bottom: 10px; 
+}
+
+.profile-photo-grid {
+  display: flex;
+  justify-content: center; 
+  flex-wrap: nowrap; 
+  gap: 10px;
+  margin-bottom: 20px; 
+}
+
+.profile-photo {
+  width: 80px; 
+  height: 80px; 
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent; 
+  border-radius: 10px; 
+}
+
+.profile-photo:hover {
+  border-color: #007bff;
+}
+
+.profile-photo.selected {
+  border-color: #007bff;
+}
+

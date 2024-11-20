@@ -1,10 +1,10 @@
-import { Avatar, Typography, Button } from '@mui/material';
-import { blue } from '@mui/material/colors';
+import { Typography, Button } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import './index.css';
 import useDeleteProfile from '../../../../hooks/useDeleteProfile';
 import useUserContext from '../../../../hooks/useUserContext';
 import ProfileCard from '../otherUserProfile/profileCard';
+import ProfileAvatar from '../../../profileAvatar';
 
 /**
  * Represents the profile page of the logged in user.
@@ -16,10 +16,10 @@ const LoggedInUserProfilePage = () => {
 
   return (
     <Grid container rowSpacing={1} columnSpacing={1}>
-      <Grid size={{ xs: 6, sm: 6, md: 4, lg: 2 }}>
-        <Avatar sx={{ bgcolor: blue[700], width: 150, height: 150, marginTop: 5, marginLeft: 4 }}>
-          {<Typography variant='h1'>{user.username?.charAt(0).toUpperCase()}</Typography>}
-        </Avatar>
+      <Grid size={2}>
+        <div style={{ marginTop: 45, marginLeft: 30 }}>
+          <ProfileAvatar profileGraphic={user.profileGraphic} size={150}></ProfileAvatar>
+        </div>
       </Grid>
       <Grid size={{ xs: 6, sm: 6, md: 8, lg: 10 }}>
         <Typography sx={{ marginTop: 8, marginLeft: 2 }} variant='h4'>
@@ -45,7 +45,7 @@ const LoggedInUserProfilePage = () => {
         <div className='following-box'>
           {user.followers.map(u => (
             <div key={u.username}>
-              <ProfileCard username={u.username}></ProfileCard>
+              <ProfileCard username={u.username} profileGraphic={u.profileGraphic}></ProfileCard>
             </div>
           ))}
         </div>
@@ -59,7 +59,7 @@ const LoggedInUserProfilePage = () => {
         <div className='following-box'>
           {user.following.map(u => (
             <div key={u.username}>
-              <ProfileCard username={u.username}></ProfileCard>
+              <ProfileCard username={u.username} profileGraphic={u.profileGraphic}></ProfileCard>
             </div>
           ))}
         </div>

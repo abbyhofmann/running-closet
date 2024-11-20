@@ -18,8 +18,11 @@ const getCurrentUserSpy = jest.spyOn(util, 'getCurrentUser');
 const user1: User = {
   _id: new ObjectId('45e9b58910afe6e94fc6e6dc'),
   username: 'user1',
+  firstName: 'Abby',
+  lastName: 'Hofmann',
   email: 'user1@gmail.com',
   password: 'password',
+  profileGraphic: 1,
   deleted: false,
   following: [],
   followers: [],
@@ -28,8 +31,11 @@ const user1: User = {
 const user2: User = {
   _id: new ObjectId('46e9b58910afe6e94fc6e6dd'),
   username: 'user2',
+  firstName: 'Kate',
+  lastName: 'Stuntz',
   email: 'user2@gmail.com',
   password: 'password',
+  profileGraphic: 2,
   deleted: false,
   following: [],
   followers: [],
@@ -38,8 +44,11 @@ const user2: User = {
 const user3: User = {
   _id: new ObjectId('47e9b58910afe6e94fc6e6dd'),
   username: 'user3',
+  firstName: 'Elizabeth',
+  lastName: 'Jamison',
   email: 'user3@gmail.com',
   password: 'password',
+  profileGraphic: 3,
   deleted: false,
   following: [],
   followers: [],
@@ -48,8 +57,11 @@ const user3: User = {
 const user4: User = {
   _id: new ObjectId('46e9b58910afe6e94fc6e6dd'),
   username: 'user1',
+  firstName: 'Phineas',
+  lastName: 'Flynn',
   email: 'user1@gmail.com',
   password: 'password',
+  profileGraphic: 6,
   deleted: false,
   following: [],
   followers: [user1],
@@ -68,8 +80,11 @@ describe('POST /registerUser', () => {
 
   it('should return invalid request error if username is missing', async () => {
     const mockReqBody = {
+      firstName: 'Hum',
+      lastName: 'Dum',
       email: 'fairytalechar@gmail.com',
       password: 'x1x2x33*',
+      profileGraphic: 4,
     };
 
     const response = await supertest(app).post('/user/registerUser').send(mockReqBody);
@@ -81,7 +96,10 @@ describe('POST /registerUser', () => {
   it('should return invalid request error if email is missing', async () => {
     const mockReqBody = {
       username: 'humptydumpty',
+      firstName: 'Hum',
+      lastName: 'Dum',
       password: 'x1x2x33*',
+      profileGraphic: 4,
     };
 
     const response = await supertest(app).post('/user/registerUser').send(mockReqBody);
@@ -93,7 +111,55 @@ describe('POST /registerUser', () => {
   it('should return invalid request error if password is missing', async () => {
     const mockReqBody = {
       username: 'humptydumpty',
+      firstName: 'Hum',
+      lastName: 'Dum',
       email: 'fairytalechar@gmail.com',
+      profileGraphic: 4,
+    };
+
+    const response = await supertest(app).post('/user/registerUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid register request');
+  });
+
+  it('should return invalid request error if firstName is missing', async () => {
+    const mockReqBody = {
+      username: 'humptydumpty',
+      lastName: 'Dum',
+      email: 'fairytalechar@gmail.com',
+      password: 'x1x2x33*',
+      profileGraphic: 4,
+    };
+
+    const response = await supertest(app).post('/user/registerUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid register request');
+  });
+
+  it('should return invalid request error if lastName is missing', async () => {
+    const mockReqBody = {
+      username: 'humptydumpty',
+      firstName: 'Hum',
+      email: 'fairytalechar@gmail.com',
+      password: 'x1x2x33*',
+      profileGraphic: 4,
+    };
+
+    const response = await supertest(app).post('/user/registerUser').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid register request');
+  });
+
+  it('should return invalid request error if profileGraphic is missing', async () => {
+    const mockReqBody = {
+      username: 'humptydumpty',
+      firstName: 'Hum',
+      lastName: 'Dum',
+      email: 'fairytalechar@gmail.com',
+      password: 'x1x2x33*',
     };
 
     const response = await supertest(app).post('/user/registerUser').send(mockReqBody);
@@ -105,8 +171,11 @@ describe('POST /registerUser', () => {
   it('should return invalid email error if email is improperly formatted', async () => {
     const mockReqBody = {
       username: 'humptydumpty',
+      firstName: 'Hum',
+      lastName: 'Dum',
       email: 'bad email',
       password: 'x1x2x33*',
+      profileGraphic: 3,
     };
 
     const response = await supertest(app).post('/user/registerUser').send(mockReqBody);
@@ -119,15 +188,21 @@ describe('POST /registerUser', () => {
     const validUid = new mongoose.Types.ObjectId();
     const mockReqBody = {
       username: 'humptydumpty',
+      firstName: 'Hum',
+      lastName: 'Dum',
       email: 'fairytalechar@gmail.com',
       password: 'x1x2x33*',
+      profileGraphic: 4,
     };
 
     const mockUserFromDb = {
       _id: validUid,
       username: 'humptydumpty',
+      firstName: 'Humpty',
+      lastName: 'Dumpty',
       email: 'fairytalechar@gmail.com',
       password: 'hashedPassworddddd',
+      profileGraphic: 3,
       deleted: false,
       following: [],
       followers: [],
@@ -142,8 +217,11 @@ describe('POST /registerUser', () => {
     expect(response.body).toEqual({
       _id: validUid.toString(),
       username: 'humptydumpty',
+      firstName: 'Humpty',
+      lastName: 'Dumpty',
       email: 'fairytalechar@gmail.com',
       password: 'hashedPassworddddd',
+      profileGraphic: 3,
       deleted: false,
       following: [],
       followers: [],
@@ -153,8 +231,11 @@ describe('POST /registerUser', () => {
   it('should return unavailable username message if username is already in use', async () => {
     const mockReqBody = {
       username: 'humptydumpty',
+      firstName: 'H',
+      lastName: 'D',
       email: 'fairytalechar@gmail.com',
       password: 'x1x2x33*',
+      profileGraphic: 4,
     };
 
     isUsernameAvailableSpy.mockResolvedValue(false);
@@ -167,8 +248,11 @@ describe('POST /registerUser', () => {
   it('should return database error in response if saveUser method throws an error', async () => {
     const mockReqBody = {
       username: 'user1',
+      firstName: 'Amanda',
+      lastName: 'Nighengale',
       email: 'this.is.an.email@gmail.com',
       password: '1234abcd',
+      profileGraphic: 2,
     };
 
     isUsernameAvailableSpy.mockResolvedValueOnce(true);
@@ -280,8 +364,11 @@ describe('POST /loginUser', () => {
     const mockUserFromDb = {
       _id: validUid,
       username: 'jack_sparrow',
+      firstName: 'Jack',
+      lastName: 'Sparrow',
       email: 'i_am_a_pirate@hotmail.com',
       password: 'hashedPassworddddd',
+      profileGraphic: 5,
       deleted: false,
       following: [],
       followers: [],
@@ -296,8 +383,11 @@ describe('POST /loginUser', () => {
     expect(response.body).toEqual({
       _id: validUid.toString(),
       username: 'jack_sparrow',
+      firstName: 'Jack',
+      lastName: 'Sparrow',
       email: 'i_am_a_pirate@hotmail.com',
       password: 'hashedPassworddddd',
+      profileGraphic: 5,
       deleted: false,
       following: [],
       followers: [],
@@ -314,8 +404,11 @@ describe('POST /loginUser', () => {
     const mockUserFromDb = {
       _id: validUid,
       username: 'jack_sparrow',
+      firstName: 'Jack',
+      lastName: 'Sparrow',
       email: 'i_am_a_pirate@hotmail.com',
       password: 'hashedPassworddddd',
+      profileGraphic: 4,
       deleted: false,
       following: [],
       followers: [],
@@ -401,8 +494,11 @@ describe('POST /deleteUser', () => {
     const updatedUser = {
       _id: validUid,
       username: 'humptydumpty',
+      firstName: 'Humpyyy',
+      lastName: 'Dumpyyy',
       email: 'fairytalechar@gmail.com',
       password: 'hashedPassworddddd',
+      profileGraphic: 2,
       deleted: true,
       following: [],
       followers: [],
@@ -415,8 +511,11 @@ describe('POST /deleteUser', () => {
     expect(response.body).toEqual({
       _id: validUid.toString(),
       username: 'humptydumpty',
+      firstName: 'Humpyyy',
+      lastName: 'Dumpyyy',
       email: 'fairytalechar@gmail.com',
       password: 'hashedPassworddddd',
+      profileGraphic: 2,
       deleted: true,
       following: [],
       followers: [],
@@ -506,7 +605,7 @@ describe('POST /followUser', () => {
       userToFollowId: '45e9b58910afe6e94fc6e6dc',
     };
 
-    followAnotherUserSpy.mockResolvedValueOnce(user4);
+    followAnotherUserSpy.mockResolvedValueOnce([user1, user4]);
 
     const response = await supertest(app).post('/user/followUser').send(mockReqBody);
 

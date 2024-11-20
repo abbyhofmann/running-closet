@@ -7,7 +7,7 @@ import useUserContext from './useUserContext';
 /**
  * A custom hook with the logic for an individual conversation component
  * @param cidpath the pathname for the current conversation (e.g. /conversation/123)
- * @returns conversationName - The name of the conversation
+ * @returns conversationNames - The name(s) of the conversation
  * @returns messages - The messages in the conversation
  * @returns newMessage - The current value of the new message input
  * @returns alert - The alert message to display
@@ -19,10 +19,11 @@ const useIndividualConversation = (cidpath: string) => {
   const { user, socket } = useUserContext();
   const [conversationId, setConversationId] = useState<string>(cidpath.split('/')[2]);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [conversationName, setConversationName] = useState<string>('');
+  const [conversationNames, setConversationNames] = useState<string[]>([]);
   const [newMessage, setNewMessage] = useState<string>('');
   const [alert, setAlert] = useState<string | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const [profileGraphic, setProfileGraphic] = useState<number>(-1);
 
   /**
    * Ensures that the message list scrolls to the bottom when new messages are added (so the most recent is viewed first)
@@ -44,13 +45,17 @@ const useIndividualConversation = (cidpath: string) => {
           if (!conversation) {
             throw new Error('Conversation not found');
           }
-          setConversationName(
+          setConversationNames(
             conversation.users
               .filter(u => user.username !== u.username)
-              .map(u => ' '.concat(u.username))
-              .toString(),
+              .map(u => u.username.toString()),
           );
           setMessages(conversation.messages.sort((a, b) => (a.sentAt > b.sentAt ? 1 : -1)));
+          setProfileGraphic(
+            conversation.users.filter(u => user.username !== u.username).length > 1
+              ? 0
+              : conversation.users.filter(u => user.username !== u.username)[0].profileGraphic,
+          );
         } catch (err) {
           setAlert('There was an issue loading the conversation. Please try again.');
         }
@@ -137,13 +142,14 @@ const useIndividualConversation = (cidpath: string) => {
   };
 
   return {
-    conversationName,
+    conversationNames,
     messages,
     newMessage,
     alert,
     handleNewMessageChange,
     handleSendMessage,
     listRef,
+    profileGraphic,
   };
 };
 

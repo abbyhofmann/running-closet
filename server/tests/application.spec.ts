@@ -175,8 +175,11 @@ const QUESTIONS: Question[] = [
 const user1: User = {
   _id: new ObjectId('45e9b58910afe6e94fc6e6dc'),
   username: 'user1',
+  firstName: 'Abby',
+  lastName: 'Hofmann',
   email: 'user1@gmail.com',
   password: 'password',
+  profileGraphic: 1,
   deleted: false,
   following: [],
   followers: [],
@@ -185,8 +188,11 @@ const user1: User = {
 const user2: User = {
   _id: new ObjectId('46e9b58910afe6e94fc6e6dd'),
   username: 'user2',
+  firstName: 'Sally',
+  lastName: 'Smith',
   email: 'user2@gmail.com',
   password: 'password',
+  profileGraphic: 2,
   deleted: false,
   following: [user1],
   followers: [user1],
@@ -195,8 +201,11 @@ const user2: User = {
 const user3: User = {
   _id: new ObjectId('47e9b58910afe6e94fc6e6dd'),
   username: 'user3',
+  firstName: 'Serena',
+  lastName: 'Williams',
   email: 'user3@gmail.com',
   password: 'password',
+  profileGraphic: 3,
   deleted: false,
   following: [user1, user2],
   followers: [],
@@ -1001,8 +1010,11 @@ describe('application module', () => {
       test('saveUser returns new user', async () => {
         const mockUser = {
           username: 'husky009',
+          firstName: 'Joseph',
+          lastName: 'Aoun',
           email: 'neuStudent@northeastern.edu',
           password: 'strongPassword',
+          profileGraphic: 1,
           deleted: false,
           followers: [],
           following: [],
@@ -1012,8 +1024,11 @@ describe('application module', () => {
 
         expect(result._id).toBeDefined();
         expect(result.username).toEqual(mockUser.username);
+        expect(result.firstName).toEqual(mockUser.firstName);
+        expect(result.lastName).toEqual(mockUser.lastName);
         expect(result.email).toEqual(mockUser.email);
         expect(result.password).toEqual(mockUser.password);
+        expect(result.profileGraphic).toEqual(mockUser.profileGraphic);
         expect(result.deleted).toEqual(mockUser.deleted);
         expect(result.followers).toEqual(mockUser.followers);
         expect(result.following).toEqual(mockUser.following);
@@ -1092,8 +1107,11 @@ describe('application module', () => {
         const mockUser = {
           _id: new ObjectId('507f191e810c19729de860ea'),
           username: 'husky009',
+          firstName: 'Husky',
+          lastName: 'Dog',
           email: 'neuStudent@northeastern.edu',
           password: 'strongPassword',
+          profileGraphic: 3,
           deleted: false,
           followers: [],
           following: [],
@@ -1104,8 +1122,11 @@ describe('application module', () => {
         const result = (await fetchUserByUsername('husky009')) as User;
         expect(result._id?.toString()).toEqual(mockUser._id.toString());
         expect(result.username).toEqual(mockUser.username);
+        expect(result.firstName).toEqual(mockUser.firstName);
+        expect(result.lastName).toEqual(mockUser.lastName);
         expect(result.email).toEqual(mockUser.email);
         expect(result.password).toEqual(mockUser.password);
+        expect(result.profileGraphic).toEqual(mockUser.profileGraphic);
         expect(result.deleted).toEqual(mockUser.deleted);
         expect(result.followers).toEqual(mockUser.followers);
         expect(result.following).toEqual(mockUser.following);
@@ -1136,10 +1157,13 @@ describe('application module', () => {
     describe('updateDeletedStatus', () => {
       test('update deleted status should return user with deleted field set to true', async () => {
         const mockUserFromDb = {
-          _id: new ObjectId('65e9a5c2b26199dbcc3e6dc8'),
-          username: 'husky101',
+          _id: new ObjectId('507f191e810c19729de860ea'),
+          username: 'husky009',
+          firstName: 'Husky',
+          lastName: 'Dog',
           email: 'neuStudent@northeastern.edu',
           password: 'strongPassword',
+          profileGraphic: 3,
           deleted: false,
           followers: [],
           following: [],
@@ -1149,8 +1173,11 @@ describe('application module', () => {
           {
             _id: mockUserFromDb._id.toString(),
             username: 'husky101',
+            firstName: 'Husky',
+            lastName: 'Dog',
             email: 'neuStudent@northeastern.edu',
             password: 'strongPassword',
+            profileGraphic: 3,
             deleted: true,
             followers: [],
             following: [],
@@ -1162,8 +1189,11 @@ describe('application module', () => {
 
         expect(result._id?.toString()).toBe(mockUserFromDb._id.toString());
         expect(result.username).toBe('husky101');
+        expect(result.firstName).toBe('Husky');
+        expect(result.lastName).toBe('Dog');
         expect(result.email).toBe('neuStudent@northeastern.edu');
         expect(result.password).toBe('strongPassword');
+        expect(result.profileGraphic).toBe(3);
         expect(result.deleted).toBe(true);
         expect(result.followers).toEqual([]);
         expect(result.following).toEqual([]);
@@ -1181,10 +1211,13 @@ describe('application module', () => {
 
       test('updateDeletedStatus should return an error if the deleted field is not true after db update', async () => {
         const mockUserFromDb = {
-          _id: new ObjectId('65e9a5c2b26199dbcc3e6dc8'),
-          username: 'husky101',
+          _id: new ObjectId('507f191e810c19729de860ea'),
+          username: 'husky009',
+          firstName: 'Husky',
+          lastName: 'Dog',
           email: 'neuStudent@northeastern.edu',
           password: 'strongPassword',
+          profileGraphic: 3,
           deleted: false,
           followers: [],
           following: [],
@@ -1288,8 +1321,11 @@ describe('application module', () => {
         const mockUserFromDb = {
           _id: new ObjectId('65e9a5c2b26199dbcc3e6dc9'),
           username: 'lily',
+          firstName: 'Lily',
+          lastName: 'Dean',
           email: 'lily@example.com',
           password: 'password!',
+          profileGraphic: 4,
           deleted: false,
           followers: [],
           following: [],
@@ -1310,8 +1346,11 @@ describe('application module', () => {
         const mockUser = {
           _id: new ObjectId('507f191e810c19729de860ea'),
           username: 'husky009',
+          firstName: 'Husky',
+          lastName: 'Dog',
           email: 'neuStudent@northeastern.edu',
           password: 'strongPassword',
+          profileGraphic: 3,
           deleted: false,
           followers: [],
           following: [],
@@ -1322,8 +1361,11 @@ describe('application module', () => {
         const result = (await fetchUserById('507f191e810c19729de860ea')) as User;
         expect(result._id?.toString()).toEqual(mockUser._id.toString());
         expect(result.username).toEqual(mockUser.username);
+        expect(result.firstName).toEqual(mockUser.firstName);
+        expect(result.lastName).toEqual(mockUser.lastName);
         expect(result.email).toEqual(mockUser.email);
         expect(result.password).toEqual(mockUser.password);
+        expect(result.profileGraphic).toEqual(mockUser.profileGraphic);
         expect(result.deleted).toEqual(mockUser.deleted);
         expect(result.followers).toEqual(mockUser.followers);
         expect(result.following).toEqual(mockUser.following);

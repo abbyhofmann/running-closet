@@ -1,23 +1,30 @@
-import { Avatar, Button, Typography } from '@mui/material';
-import { blue } from '@mui/material/colors';
+import { Button, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import './index.css';
 import useOtherProfilePage from '../../../../hooks/useOtherProfilePage';
 import ProfileCard from './profileCard';
+import ProfileAvatar from '../../../profileAvatar';
 
 /**
  * Represents the profile page of a user that is not the user logged in.
  * @returns the other user profile page component.
  */
 const OtherUserProfilePage = () => {
-  const { username, following, followedBy, currentUserFollowingThisUser, follow, unfollow } =
-    useOtherProfilePage();
+  const {
+    username,
+    following,
+    followedBy,
+    currentUserFollowingThisUser,
+    follow,
+    unfollow,
+    otherUserProfileGraphic,
+  } = useOtherProfilePage();
   return (
     <Grid container rowSpacing={1} columnSpacing={1}>
-      <Grid size={{ xs: 6, sm: 6, md: 4, lg: 2 }}>
-        <Avatar sx={{ bgcolor: blue[700], width: 150, height: 150, marginTop: 5, marginLeft: 4 }}>
-          {<Typography variant='h1'>{username?.charAt(0).toUpperCase()}</Typography>}
-        </Avatar>
+      <Grid size={2}>
+        <div style={{ marginTop: 45, marginLeft: 30 }}>
+          <ProfileAvatar profileGraphic={otherUserProfileGraphic} size={150}></ProfileAvatar>
+        </div>
       </Grid>
       <Grid size={{ xs: 6, sm: 6, md: 8, lg: 10 }}>
         <Typography sx={{ marginTop: 8, marginLeft: 2 }} variant='h4'>
@@ -48,7 +55,7 @@ const OtherUserProfilePage = () => {
         <div className='following-box'>
           {followedBy.map(u => (
             <div key={u.username}>
-              <ProfileCard username={u.username}></ProfileCard>
+              <ProfileCard username={u.username} profileGraphic={u.profileGraphic}></ProfileCard>
             </div>
           ))}
         </div>
@@ -62,7 +69,7 @@ const OtherUserProfilePage = () => {
         <div className='following-box'>
           {following.map(u => (
             <div key={u.username}>
-              <ProfileCard username={u.username}></ProfileCard>
+              <ProfileCard username={u.username} profileGraphic={u.profileGraphic}></ProfileCard>
             </div>
           ))}
         </div>

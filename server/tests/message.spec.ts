@@ -16,8 +16,11 @@ const fetchUserByUsernameSpy = jest.spyOn(util, 'fetchUserByUsername');
 const user1: User = {
   _id: new ObjectId('45e9b58910afe6e94fc6e6dc'),
   username: 'user1',
+  firstName: 'Lily',
+  lastName: 'Flower',
   email: 'user1@gmail.com',
   password: 'password',
+  profileGraphic: 1,
   deleted: false,
   following: [],
   followers: [],
@@ -26,8 +29,11 @@ const user1: User = {
 const user2: User = {
   _id: new ObjectId('46e9b58910afe6e94fc6e6dd'),
   username: 'user2',
+  firstName: 'Carson',
+  lastName: 'Brown',
   email: 'user2@gmail.com',
   password: 'password',
+  profileGraphic: 6,
   deleted: false,
   following: [],
   followers: [],
