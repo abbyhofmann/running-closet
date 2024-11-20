@@ -1,18 +1,25 @@
 import { useDemoRouter } from '@toolpad/core/internal';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Conversation } from '../types';
 import useUserContext from './useUserContext';
 import { getConversations } from '../services/conversationService';
 
 /**
  * Custom hook for managing the conversation page.
+ * @param {string | undefined} cid - the cid passed in through routing within the website (come from the params of the URL)
  * @returns user - the current user logged in.
  * @returns conversations - the list of conversations being displayed.
  * @returns setConversations - a function that sets the conversations being displayed.
  * @returns sortByUpdatedAt - a function that sorts conversations by the most recently updated conversation.
  * @returns router - router that manages navigation.
+ * @returns searchInput - the current input within the search bar
+ * @returns setSearchInput - a function that sets the searchInput to be the value typed
+ * @returns filteredConversationsBySearchInput - an array of conversations that have been filtered based upon the search input
+ * @returns showSearchResults - a boolean to determine whether the search results should be shown
+ * @returns setShowSearchResults - a function that updates whether the search results should be shown
  */
-const useConversationPage = () => {
+const useConversationPage = (cid: string | undefined) => {
   const { user, socket } = useUserContext();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [searchInput, setSearchInput] = useState('');
@@ -20,6 +27,8 @@ const useConversationPage = () => {
   const [filteredConversationsBySearchInput, setFilteredConversationsBySearchInput] = useState<
     Conversation[]
   >([]);
+  const router = useDemoRouter('/dashboard');
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
@@ -48,6 +57,16 @@ const useConversationPage = () => {
       socket.off('conversationUpdate', handleConversationUpdate);
     };
   }, [user._id, socket]);
+
+  useEffect(() => {
+    if (cid) {
+      const conversationExists = conversations.some(c => c._id ?? c._id === cid);
+      if (conversationExists) {
+        navigate(`/conversations/`);
+        router.navigate(`/conversation/${cid}`);
+      }
+    }
+  }, [cid, conversations, router, navigate]);
 
   /**
    * Update filtered conversations based on search input and user context.
@@ -94,8 +113,6 @@ const useConversationPage = () => {
     }
     fetchData();
   }, [user._id]);
-
-  const router = useDemoRouter('/dashboard');
 
   return {
     user,

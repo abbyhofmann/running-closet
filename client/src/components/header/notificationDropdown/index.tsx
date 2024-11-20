@@ -53,7 +53,8 @@ export default function NotificationDropdown() {
               <NotificationComponent
                 key={notification._id}
                 notification={notification}
-                handleDeleteNotification={handleDeleteNotification}></NotificationComponent>
+                handleDeleteNotification={handleDeleteNotification}
+                handleClose={handleClose}></NotificationComponent>
             ))}
           {notifications.length === 0 && (
             <MenuItem onClick={handleClose}>

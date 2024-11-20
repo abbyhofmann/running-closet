@@ -11,6 +11,7 @@ import './index.css';
 import blue from '@mui/material/colors/blue';
 import React, { ChangeEvent } from 'react';
 import { TextField, Tooltip } from '@mui/material';
+import { useParams } from 'react-router-dom';
 import useConversationPage from '../../../hooks/useConversationsPage';
 import NewConversationPage from './newConversation';
 import IndividualConversation from './individualConversation';
@@ -88,6 +89,8 @@ function Search(
  * @returns the conversations page object.
  */
 export default function ConversationsPage() {
+  const { cid } = useParams();
+
   const {
     user,
     conversations,
@@ -99,7 +102,7 @@ export default function ConversationsPage() {
     filteredConversationsBySearchInput,
     showSearchResults,
     setShowSearchResults,
-  } = useConversationPage();
+  } = useConversationPage(cid);
 
   /**
    * Gets the number of the associated profile graphic for the conversation. If there is one other user in

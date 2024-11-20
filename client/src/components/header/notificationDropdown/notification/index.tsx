@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button } from '@mui/material';
 import { blue, grey } from '@mui/material/colors';
+import { useNavigate } from 'react-router-dom';
 import { Notification } from '../../../../types';
 import useUserContext from '../../../../hooks/useUserContext';
 
@@ -15,17 +16,25 @@ import useUserContext from '../../../../hooks/useUserContext';
 interface NotificationComponentProps {
   notification: Notification;
   handleDeleteNotification: (nid: string | undefined) => void;
+  handleClose: () => void;
 }
 
 /**
  * Represents the Notification Component.
  */
 const NotificationComponent = (props: NotificationComponentProps) => {
-  const { notification, handleDeleteNotification } = props;
+  const { notification, handleDeleteNotification, handleClose } = props;
   const { user } = useUserContext();
+  const navigate = useNavigate();
+
+  const handleOnClick = () => {
+    navigate(`/conversations/${notification.message.cid}`);
+    handleDeleteNotification(notification._id);
+    handleClose();
+  };
 
   return (
-    <MenuItem key={notification._id}>
+    <MenuItem key={notification._id} onClick={handleOnClick}>
       {/* Displaying an unread icon if unread, read icon if read */}
       {notification.message.readBy.map(n => n.username).includes(user.username) ? (
         <ListItemIcon sx={{ color: 'gray' }}>
