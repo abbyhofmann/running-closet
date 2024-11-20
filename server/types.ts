@@ -279,6 +279,7 @@ export interface ServerToClientEvents {
   commentUpdate: (comment: CommentUpdatePayload) => void;
   conversationUpdate: (conversation: Conversation) => void;
   notificationsUpdate: (notification: Notification) => void;
+  followingUpdate: (user: User, user2: User) => void;
 }
 
 /**

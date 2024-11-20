@@ -18,13 +18,19 @@ const Header = () => {
 
   return (
     <Grid container sx={{ bgcolor: grey[300], height: 75 }}>
-      <Grid size={10}>
-        <Typography variant='h4' sx={{ textAlign: 'center', marginTop: 2 }}>
+      <Grid size={{ xs: 0, md: 10 }} sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>
+        <Typography
+          variant='h4'
+          sx={{
+            textAlign: 'center',
+            marginTop: 2,
+            display: { xs: 'none', sm: 'none', md: 'block' },
+          }}>
           <strong>Fake Stack Overflow</strong>
         </Typography>
       </Grid>
 
-      <Grid size={2}>
+      <Grid size={{ xs: 12, md: 2 }}>
         <Box
           sx={{
             justifyContent: 'flex-end',

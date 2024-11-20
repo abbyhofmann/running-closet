@@ -261,12 +261,15 @@ const userController = (socket: FakeSOSocket) => {
       res.status(400).send('Invalid ID format');
       return;
     }
+
     try {
       const usersFromDb = await followAnotherUser(currentUserId, userToFollowId);
       if ('error' in usersFromDb) {
         throw new Error(usersFromDb.error as string);
       }
-      res.json(usersFromDb);
+
+      socket.emit('followingUpdate', usersFromDb[0], usersFromDb[1]);
+      res.json(usersFromDb[1]);
     } catch (err) {
       res.status(500).send(`Error when following user: ${(err as Error).message}`);
     }
@@ -295,6 +298,7 @@ const userController = (socket: FakeSOSocket) => {
       if ('error' in usersFromDb) {
         throw new Error(usersFromDb.error as string);
       }
+      socket.emit('followingUpdate', usersFromDb[0], usersFromDb[1]);
       res.json(usersFromDb);
     } catch (err) {
       res.status(500).send(`Error when unfollowing user: ${(err as Error).message}`);

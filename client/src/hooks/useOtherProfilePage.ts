@@ -5,7 +5,7 @@ import { User } from '../types';
 import { followUser, getUserByUsername, unfollowUser } from '../services/userService';
 
 const useOtherProfilePage = () => {
-  const { user } = useUserContext();
+  const { user, socket } = useUserContext();
   const { username } = useParams();
   const [following, setFollowing] = useState<User[]>([]);
   const [followedBy, setFollowedBy] = useState<User[]>([]);
@@ -34,6 +34,28 @@ const useOtherProfilePage = () => {
     fetchData();
     setFollowListsUpdated(false);
   }, [user.username, username, followListsUpdated, navigate]);
+
+  useEffect(() => {
+    /**
+     * Handles when users are followed or unfollowed..
+     * @param user1 the user that followed/unfollowed the other.
+     * @param user2 the user that was followed/unfollowed.
+     */
+    const handleFollowingUpdate = (user1: User, user2: User) => {
+      if (user1.username === username) {
+        const followingList: User[] = user1.following;
+        setFollowing(followingList);
+      } else if (user2.username === username) {
+        const followersList: User[] = user2.followers;
+        setFollowedBy(followersList);
+      }
+      setFollowListsUpdated(true);
+    };
+    socket.on('followingUpdate', handleFollowingUpdate);
+    return () => {
+      socket.off('followingUpdate', handleFollowingUpdate);
+    };
+  }, [socket, username]);
 
   /**
    * Makes the current user follow the profile user.

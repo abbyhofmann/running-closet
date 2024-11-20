@@ -1250,8 +1250,8 @@ describe('application module', () => {
           '45e9b58910afe6e94fc6e6dc',
           mockUserFromDb._id.toString(),
         );
-        expect((result as User)._id?.toString()).toBe(mockUserFromDb._id.toString());
-        expect((result as User).following[0]._id?.toString()).toBe('45e9b58910afe6e94fc6e6dc');
+        expect((result as User[])[0]._id?.toString()).toBe(mockUserFromDb._id.toString());
+        expect((result as User[])[0].following[0]._id?.toString()).toBe('45e9b58910afe6e94fc6e6dc');
       });
     });
 
@@ -1300,8 +1300,8 @@ describe('application module', () => {
           '45e9b58910afe6e94fc6e6dc',
           mockUserFromDb._id.toString(),
         );
-        expect((result as User)._id?.toString()).toBe(mockUserFromDb._id.toString());
-        expect((result as User).following.length).toBe(0);
+        expect((result as User[])[0]._id?.toString()).toBe(mockUserFromDb._id.toString());
+        expect((result as User[])[0].following.length).toBe(0);
       });
     });
 

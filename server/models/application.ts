@@ -970,7 +970,7 @@ export const doesConversationExist = async (users: User[]): Promise<boolean | Er
 export const followAnotherUser = async (
   uid: string,
   userToFollowId: string,
-): Promise<UserResponse> => {
+): Promise<MultipleUserResponse> => {
   try {
     const userResult = await UserModel.findOneAndUpdate(
       { _id: uid },
@@ -1001,7 +1001,7 @@ export const followAnotherUser = async (
     if (currentUser?.username === userResult.username) {
       currentUser = userResult;
     }
-    return followingResult;
+    return [userResult, followingResult];
   } catch (err) {
     return {
       error: `Error when ${uid} is following ${userToFollowId}`,
@@ -1020,7 +1020,7 @@ export const followAnotherUser = async (
 export const unfollowAnotherUser = async (
   uid: string,
   userToFollowId: string,
-): Promise<UserResponse> => {
+): Promise<MultipleUserResponse> => {
   try {
     const userResult = await UserModel.findOneAndUpdate(
       { _id: uid },
@@ -1051,7 +1051,7 @@ export const unfollowAnotherUser = async (
     if (currentUser?.username === userResult.username) {
       currentUser = userResult;
     }
-    return unfollowingResult;
+    return [userResult, unfollowingResult];
   } catch (err) {
     return {
       error: `Error when ${uid} is unfollowing ${userToFollowId}`,

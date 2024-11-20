@@ -14,12 +14,12 @@ const OtherUserProfilePage = () => {
     useOtherProfilePage();
   return (
     <Grid container rowSpacing={1} columnSpacing={1}>
-      <Grid size={2}>
+      <Grid size={{ xs: 6, sm: 6, md: 4, lg: 2 }}>
         <Avatar sx={{ bgcolor: blue[700], width: 150, height: 150, marginTop: 5, marginLeft: 4 }}>
           {<Typography variant='h1'>{username?.charAt(0).toUpperCase()}</Typography>}
         </Avatar>
       </Grid>
-      <Grid size={10}>
+      <Grid size={{ xs: 6, sm: 6, md: 8, lg: 10 }}>
         <Typography sx={{ marginTop: 8, marginLeft: 2 }} variant='h4'>
           {username}
         </Typography>
@@ -39,12 +39,12 @@ const OtherUserProfilePage = () => {
           </Button>
         )}
       </Grid>
-      <Grid size={2} sx={{ marginTop: 5 }}>
+      <Grid size={{ xs: 4, sm: 4, md: 2, lg: 2 }} sx={{ marginTop: 5 }}>
         <Typography variant='h6' sx={{ marginTop: 8, marginLeft: 5 }}>
           Followed By:
         </Typography>
       </Grid>
-      <Grid size={10} sx={{ marginTop: 5 }}>
+      <Grid size={{ xs: 8, sm: 8, md: 10, lg: 10 }} sx={{ marginTop: 5 }}>
         <div className='following-box'>
           {followedBy.map(u => (
             <div key={u.username}>
@@ -53,12 +53,12 @@ const OtherUserProfilePage = () => {
           ))}
         </div>
       </Grid>
-      <Grid size={2} sx={{ marginTop: 2 }}>
+      <Grid size={{ xs: 4, sm: 4, md: 2, lg: 2 }} sx={{ marginTop: 2 }}>
         <Typography variant='h6' sx={{ marginTop: 8, marginLeft: 5 }}>
           Following:
         </Typography>
       </Grid>
-      <Grid size={10} sx={{ marginY: 2 }}>
+      <Grid size={{ xs: 8, sm: 8, md: 10, lg: 10 }} sx={{ marginY: 2 }}>
         <div className='following-box'>
           {following.map(u => (
             <div key={u.username}>

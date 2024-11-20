@@ -467,20 +467,21 @@ describe('POST /followUser', () => {
     await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
   });
 
-  it('should return the user with updated followers list from the database', async () => {
+  it('should return the users with updated followers list from the database', async () => {
     const mockReqBody = {
       currentUserId: '45e9b58910afe6e94fc6e6dc',
       userToFollowId: '46e9b58910afe6e94fc6e6dd',
     };
-
-    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
-    followAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+    const mockUser1: User = { ...user1, following: user1.following.concat(user2) };
+    const mockUser2: User = { ...user2, followers: user2.followers.concat(user1) };
+    const users: User[] = [mockUser1, mockUser2];
+    followAnotherUserSpy.mockResolvedValueOnce(users);
 
     const response = await supertest(app).post('/user/followUser').send(mockReqBody);
 
     expect(response.status).toBe(200);
-    expect((response.body as User)._id).toEqual('45e9b58910afe6e94fc6e6dc');
-    expect((response.body as User).followers[0]._id).toEqual('46e9b58910afe6e94fc6e6dd');
+    expect((response.body as User)._id).toEqual('46e9b58910afe6e94fc6e6dd');
+    expect((response.body as User).followers[0]._id).toEqual('45e9b58910afe6e94fc6e6dc');
   });
 
   it('should return error when currentUserId is missing', async () => {
@@ -488,8 +489,10 @@ describe('POST /followUser', () => {
       userToFollowId: '46e9b58910afe6e94fc6e6dd',
     };
 
-    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
-    followAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+    const mockUser1: User = { ...user1, following: user1.following.concat(user2) };
+    const mockUser2: User = { ...user2, followers: user2.followers.concat(user1) };
+    const users: User[] = [mockUser1, mockUser2];
+    followAnotherUserSpy.mockResolvedValueOnce(users);
 
     const response = await supertest(app).post('/user/followUser').send(mockReqBody);
 
@@ -518,8 +521,10 @@ describe('POST /followUser', () => {
       userToFollowId: '46e9b58910afe6e94fc6e6dd',
     };
 
-    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
-    followAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+    const mockUser1: User = { ...user1, following: user1.following.concat(user2) };
+    const mockUser2: User = { ...user2, followers: user2.followers.concat(user1) };
+    const users: User[] = [mockUser1, mockUser2];
+    followAnotherUserSpy.mockResolvedValueOnce(users);
 
     const response = await supertest(app).post('/user/followUser').send(mockReqBody);
 
@@ -530,8 +535,10 @@ describe('POST /followUser', () => {
   it('should return error when request body is empty', async () => {
     const mockReqBody = {};
 
-    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
-    followAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+    const mockUser1: User = { ...user1, following: user1.following.concat(user2) };
+    const mockUser2: User = { ...user2, followers: user2.followers.concat(user1) };
+    const users: User[] = [mockUser1, mockUser2];
+    followAnotherUserSpy.mockResolvedValueOnce(users);
 
     const response = await supertest(app).post('/user/followUser').send(mockReqBody);
 
@@ -545,8 +552,10 @@ describe('POST /followUser', () => {
       userToFollowId: '45e9b58910afe6e94fc6e6dc',
     };
 
-    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
-    followAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+    const mockUser1: User = { ...user1, following: user1.following.concat(user2) };
+    const mockUser2: User = { ...user2, followers: user2.followers.concat(user1) };
+    const users: User[] = [mockUser1, mockUser2];
+    followAnotherUserSpy.mockResolvedValueOnce(users);
 
     const response = await supertest(app).post('/user/followUser').send(mockReqBody);
 
@@ -560,8 +569,10 @@ describe('POST /followUser', () => {
       userToFollowId: 'invalidFormat',
     };
 
-    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
-    followAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+    const mockUser1: User = { ...user1, following: user1.following.concat(user2) };
+    const mockUser2: User = { ...user2, followers: user2.followers.concat(user1) };
+    const users: User[] = [mockUser1, mockUser2];
+    followAnotherUserSpy.mockResolvedValueOnce(users);
 
     const response = await supertest(app).post('/user/followUser').send(mockReqBody);
 
@@ -575,8 +586,10 @@ describe('POST /followUser', () => {
       userToFollowId: '45e9b58910afe6e94fc6e6dc',
     };
 
-    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
-    followAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+    const mockUser1: User = { ...user1, following: user1.following.concat(user2) };
+    const mockUser2: User = { ...user2, followers: user2.followers.concat(user1) };
+    const users: User[] = [mockUser1, mockUser2];
+    followAnotherUserSpy.mockResolvedValueOnce(users);
 
     const response = await supertest(app).post('/user/followUser').send(mockReqBody);
 
@@ -590,8 +603,10 @@ describe('POST /followUser', () => {
       userToFollowId: '',
     };
 
-    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
-    followAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+    const mockUser1: User = { ...user1, following: user1.following.concat(user2) };
+    const mockUser2: User = { ...user2, followers: user2.followers.concat(user1) };
+    const users: User[] = [mockUser1, mockUser2];
+    followAnotherUserSpy.mockResolvedValueOnce(users);
 
     const response = await supertest(app).post('/user/followUser').send(mockReqBody);
 
@@ -629,13 +644,13 @@ describe('POST /unfollowUser', () => {
       userToFollowId: '46e9b58910afe6e94fc6e6dd',
     };
 
-    unfollowAnotherUserSpy.mockResolvedValueOnce(user1);
+    unfollowAnotherUserSpy.mockResolvedValueOnce([user1, user2]);
 
     const response = await supertest(app).post('/user/unfollowUser').send(mockReqBody);
 
     expect(response.status).toBe(200);
-    expect((response.body as User)._id).toEqual('45e9b58910afe6e94fc6e6dc');
-    expect((response.body as User).followers.length).toEqual(0);
+    expect((response.body as User[])[0]._id).toEqual('45e9b58910afe6e94fc6e6dc');
+    expect((response.body as User[])[0].followers.length).toEqual(0);
   });
 
   it('should return error when currentUserId is missing', async () => {
@@ -643,8 +658,7 @@ describe('POST /unfollowUser', () => {
       userToFollowId: '46e9b58910afe6e94fc6e6dd',
     };
 
-    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
-    unfollowAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+    unfollowAnotherUserSpy.mockResolvedValueOnce([user1, user2]);
 
     const response = await supertest(app).post('/user/unfollowUser').send(mockReqBody);
 
@@ -657,8 +671,7 @@ describe('POST /unfollowUser', () => {
       userToFollowId: '46e9b58910afe6e94fc6e6dd',
     };
 
-    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
-    unfollowAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+    unfollowAnotherUserSpy.mockResolvedValueOnce([user1, user2]);
 
     const response = await supertest(app).post('/user/unfollowUser').send(mockReqBody);
 
@@ -669,8 +682,7 @@ describe('POST /unfollowUser', () => {
   it('should return error when request body is empty', async () => {
     const mockReqBody = {};
 
-    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
-    unfollowAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+    unfollowAnotherUserSpy.mockResolvedValueOnce([user1, user2]);
 
     const response = await supertest(app).post('/user/unfollowUser').send(mockReqBody);
 
@@ -684,8 +696,7 @@ describe('POST /unfollowUser', () => {
       userToFollowId: '45e9b58910afe6e94fc6e6dc',
     };
 
-    const user1WithNewFollowers: User = { ...user1, followers: user1.followers.concat(user2) };
-    unfollowAnotherUserSpy.mockResolvedValueOnce(user1WithNewFollowers);
+    unfollowAnotherUserSpy.mockResolvedValueOnce([user1, user2]);
 
     const response = await supertest(app).post('/user/unfollowUser').send(mockReqBody);
 
