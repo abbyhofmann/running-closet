@@ -44,6 +44,17 @@ const user3: User = {
   following: [],
   followers: [],
 };
+
+const user4: User = {
+  _id: new ObjectId('46e9b58910afe6e94fc6e6dd'),
+  username: 'user1',
+  email: 'user1@gmail.com',
+  password: 'password',
+  deleted: false,
+  following: [],
+  followers: [user1],
+};
+
 const updateDeletedStatusSpy = jest.spyOn(util, 'updateDeletedStatus');
 
 describe('POST /registerUser', () => {
@@ -484,6 +495,22 @@ describe('POST /followUser', () => {
 
     expect(response.status).toBe(400);
     expect(response.text).toBe('Invalid follow user request');
+  });
+
+  it('should return the user with same followers list when trying to follow the same user - no duplicates', async () => {
+    const mockReqBody = {
+      currentUserId: '46e9b58910afe6e94fc6e6dd',
+      userToFollowId: '45e9b58910afe6e94fc6e6dc',
+    };
+
+    followAnotherUserSpy.mockResolvedValueOnce(user4);
+
+    const response = await supertest(app).post('/user/followUser').send(mockReqBody);
+
+    expect(response.status).toBe(200);
+    expect((response.body as User)._id).toEqual('46e9b58910afe6e94fc6e6dd');
+    expect((response.body as User).followers.length).toEqual(1);
+    expect((response.body as User).followers[0]._id).toEqual('45e9b58910afe6e94fc6e6dc');
   });
 
   it('should return error when userToFollowId is missing', async () => {

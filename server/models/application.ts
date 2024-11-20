@@ -974,7 +974,7 @@ export const followAnotherUser = async (
   try {
     const userResult = await UserModel.findOneAndUpdate(
       { _id: uid },
-      { $push: { following: userToFollowId } },
+      { $addToSet: { following: userToFollowId } },
       {
         new: true,
       },
@@ -984,7 +984,7 @@ export const followAnotherUser = async (
     ]);
     const followingResult = await UserModel.findOneAndUpdate(
       { _id: userToFollowId },
-      { $push: { followers: uid } },
+      { $addToSet: { followers: uid } },
       {
         new: true,
       },

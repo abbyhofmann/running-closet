@@ -67,7 +67,12 @@ const useRegister = () => {
       setUser(u);
       navigate('/home');
     } catch (err) {
-      setRegistrationError((err as Error).message);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      if (errorMessage === 'Request failed with status code 400') {
+        setRegistrationError('Registration failed with provided credentials. Please try again.');
+      } else {
+        setRegistrationError('There was an issue registering. Please try again.');
+      }
       setShowRegistrationError(true);
     }
   };
