@@ -177,10 +177,13 @@ async function questionCreate(
 async function userCreate(
   username: string,
   email: string,
+  firstName: string,
+  lastName: string,
   password: string,
   deleted: boolean,
   following: User[],
   followers: User[],
+  profileGraphic: number
 ): Promise<User> {
   if (
     username === '' ||
@@ -191,10 +194,13 @@ async function userCreate(
   const userDetail: User = {
     username: username,
     email: email,
+    firstName: firstName,
+    lastName: lastName,
     password: password,
     deleted: deleted,
     following: following,
     followers: followers,
+    profileGraphic: profileGraphic,
   }; 
   return await UserModel.create(userDetail);
 }
@@ -289,10 +295,13 @@ const populate = async () => {
     await userCreate(
       'dogLover123',
       'dogsaresuperior@gmail.com',
+      'John',
+      'Doe',
       '1234',
       false,
       [],
-      []
+      [],
+      1
     );
 
     console.log('Database populated');
