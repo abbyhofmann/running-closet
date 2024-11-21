@@ -780,7 +780,10 @@ export const fetchAllUsers = async (): Promise<MultipleUserResponse> => {
  */
 export const fetchUserById = async (uid: string): Promise<UserResponse> => {
   try {
-    const user = await UserModel.findOne({ _id: uid, deleted: false });
+    const user = await UserModel.findOne({ _id: uid, deleted: false }).populate([
+      { path: 'following', model: UserModel },
+      { path: 'followers', model: UserModel },
+    ]);
     if (!user) {
       throw new Error(`Failed to fetch user with id ${uid}`);
     }
@@ -1202,7 +1205,7 @@ export const saveAndAddMessage = async (
   conversation: Conversation,
   user: User,
   messageContent: string,
-): Promise<void> => {
+): Promise<Message> => {
   // create message object
   const message = {
     messageContent,
@@ -1225,6 +1228,8 @@ export const saveAndAddMessage = async (
   if ('error' in updatedConvoFromDb) {
     throw new Error(updatedConvoFromDb.error as string);
   }
+
+  return messageFromDb;
 };
 
 /**

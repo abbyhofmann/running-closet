@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 import supertest from 'supertest';
 import { app } from '../app';
-import { User, MultipleConversationResponse, Conversation, Message } from '../types';
+import { User, MultipleConversationResponse, Conversation, Message, Notification } from '../types';
 import * as util from '../models/application';
 
 const saveConversationSpy = jest.spyOn(util, 'saveConversation');
@@ -413,6 +413,12 @@ describe('POST /sendBlastMessage', () => {
       updatedAt: dateObj,
     };
 
+    const mockNotification = {
+      _id: new mongoose.Types.ObjectId(),
+      user: user1.username,
+      message: mockMessage,
+    };
+
     jest.spyOn(util, 'fetchUserById').mockResolvedValueOnce(user3 as User);
     jest
       .spyOn(util, 'fetchConvosByParticipants')
@@ -424,7 +430,8 @@ describe('POST /sendBlastMessage', () => {
     jest
       .spyOn(util, 'addMessage')
       .mockResolvedValueOnce(mockConversationWithMessage as Conversation);
-    jest.spyOn(util, 'saveAndAddMessage').mockResolvedValue();
+    jest.spyOn(util, 'saveAndAddMessage').mockResolvedValue(mockMessage as Message);
+    jest.spyOn(util, 'saveNotification').mockResolvedValue(mockNotification as Notification);
 
     const mockReqBody = {
       uid: user3._id?.toString(),

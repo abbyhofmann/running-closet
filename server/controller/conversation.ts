@@ -7,6 +7,8 @@ import {
   GetConversationRequest,
   FindConversationsByUserIdRequest,
   BlastMessageRequest,
+  Notification,
+  NotificationUpdatePayload,
 } from '../types';
 import {
   areUsersRegistered,
@@ -17,6 +19,7 @@ import {
   fetchConvosByParticipants,
   createOrFetchConversation,
   saveAndAddMessage,
+  saveNotification,
 } from '../models/application';
 
 const conversationController = (socket: FakeSOSocket) => {
@@ -204,7 +207,25 @@ const conversationController = (socket: FakeSOSocket) => {
           }
 
           // create and send the message
-          await saveAndAddMessage(userFollowerConvo, user, messageContent);
+          const sentMessage = await saveAndAddMessage(userFollowerConvo, user, messageContent);
+
+          // create notification for each message sent
+          const notification: Notification = {
+            user: follower.username,
+            message: sentMessage,
+          };
+
+          const notificationFromDb = await saveNotification(notification);
+          if (notificationFromDb && 'error' in notificationFromDb) {
+            throw new Error(notificationFromDb.error);
+          }
+
+          const notificationUpdate: NotificationUpdatePayload = {
+            notification: notificationFromDb,
+            type: 'add',
+          };
+
+          socket.emit('notificationsUpdate', notificationUpdate);
         }),
       );
       res.json(blastCids);
