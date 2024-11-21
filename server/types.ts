@@ -284,7 +284,7 @@ export interface ServerToClientEvents {
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (comment: CommentUpdatePayload) => void;
   conversationUpdate: (conversation: Conversation) => void;
-  notificationsUpdate: (notification: Notification) => void;
+  notificationsUpdate: (notification: NotificationUpdatePayload) => void;
   followingUpdate: (user: User, user2: User) => void;
 }
 
@@ -487,4 +487,14 @@ export interface FindNotificationsByUsernameRequest extends Request {
   params: {
     username: string;
   };
+}
+
+/**
+ * Interface representing the payload when there is an update made to a notification
+ * - notification: the notification being updated
+ * - type: whether the notification is being added or removed
+ */
+export interface NotificationUpdatePayload {
+  notification: Notification;
+  type: 'add' | 'remove';
 }

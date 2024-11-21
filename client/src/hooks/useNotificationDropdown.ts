@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import useUserContext from './useUserContext';
-import { Notification } from '../types';
+import { Notification, NotificationUpdatePayload } from '../types';
 import { deleteNotification, getNotifications } from '../services/notificationService';
 
 /**
@@ -41,6 +41,19 @@ const useNotificationDropdown = () => {
     return 0;
   };
 
+  /**
+   * Handles deleting the notification with the given id. Updates the displayed notifications upon success.
+   * @param nid the id for the notification to be deleted.
+   */
+  const handleDeleteNotification = async (nid: string | undefined): Promise<void> => {
+    if (nid) {
+      const success = await deleteNotification(nid);
+      if (success) {
+        setNotifications(prevNlist => prevNlist.filter(n => n._id !== nid));
+      }
+    }
+  };
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -60,10 +73,19 @@ const useNotificationDropdown = () => {
      * Adds the new notification to the list of notifications when it is recieved.
      * @param notification the notification to add.
      */
-    const handleNotificationUpdate = (notification: Notification) => {
-      setNotifications(prevNlist =>
-        prevNlist.map(n => (n._id === notification._id ? notification : n)),
-      );
+    const handleNotificationUpdate = (updatePayload: NotificationUpdatePayload) => {
+      const { notification, type } = updatePayload;
+      if (user.username === notification.user) {
+        setNotifications(prevNotifications => {
+          if (type === 'add' && !prevNotifications.find(n => n._id === notification._id)) {
+            return [...prevNotifications, notification];
+          }
+          if (type === 'remove') {
+            return prevNotifications.filter(n => n.message._id !== notification.message._id);
+          }
+          return prevNotifications;
+        });
+      }
     };
 
     socket.on('notificationsUpdate', handleNotificationUpdate);
@@ -72,19 +94,6 @@ const useNotificationDropdown = () => {
       socket.off('notificationsUpdate', handleNotificationUpdate);
     };
   }, [user.username, socket]);
-
-  /**
-   * Handles deleting the notification with the given id. Updates the displayed notifications upon success.
-   * @param nid the id for the notification to be deleted.
-   */
-  const handleDeleteNotification = async (nid: string | undefined): Promise<void> => {
-    if (nid) {
-      const success = await deleteNotification(nid);
-      if (success) {
-        setNotifications(prevNlist => prevNlist.filter(n => n._id !== nid));
-      }
-    }
-  };
 
   /**
    * Handles click. From MUI.

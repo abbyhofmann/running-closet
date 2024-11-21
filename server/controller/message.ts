@@ -8,6 +8,7 @@ import {
   Message,
   User,
   Notification,
+  NotificationUpdatePayload,
 } from '../types';
 import {
   addMessage,
@@ -122,7 +123,13 @@ const messageController = (socket: FakeSOSocket) => {
         if (notificationFromDb && 'error' in notificationFromDb) {
           throw new Error(notificationFromDb.error);
         }
-        socket.emit('notificationsUpdate', notificationFromDb);
+
+        const notificationUpdate: NotificationUpdatePayload = {
+          notification: notificationFromDb,
+          type: 'add',
+        };
+
+        socket.emit('notificationsUpdate', notificationUpdate);
       });
 
       await Promise.all(promises);
@@ -178,6 +185,18 @@ const messageController = (socket: FakeSOSocket) => {
       if (status && 'error' in status) {
         throw new Error(status.error);
       }
+
+      const notification: Notification = {
+        user: user.username,
+        message: status,
+      };
+
+      const notificationUpdate: NotificationUpdatePayload = {
+        notification,
+        type: 'remove',
+      };
+
+      socket.emit('notificationsUpdate', notificationUpdate);
 
       const conversation = await fetchConversationById(status.cid);
 
