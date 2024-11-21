@@ -34,9 +34,39 @@ const Login = () => {
 
   return (
     <div className='container'>
-      <Typography variant='h3' gutterBottom>
-        Welcome to FakeStackOverflow!
-      </Typography>
+      <Box
+        sx={{
+          textAlign: 'center',
+          marginBottom: 1,
+          marginX: 'auto',
+          color: '#32292F',
+          display: 'flex',
+        }}>
+        <Box
+          sx={{
+            marginTop: 0.5,
+            paddingRight: 3,
+          }}>
+          <img
+            src='/logos/blue-logo.png'
+            style={{
+              height: '50px',
+            }}
+            alt='code connect logo'
+            loading='lazy'
+          />
+        </Box>
+        <Box>
+          <img
+            src='/logos/blue-name.png'
+            style={{
+              height: '50px',
+            }}
+            alt='code connect logo'
+            loading='lazy'
+          />
+        </Box>
+      </Box>
       <Box
         component='form'
         sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}
@@ -73,7 +103,10 @@ const Login = () => {
             />
           </FormControl>
 
-          <Button variant='contained' type='submit' sx={{ mt: 2, width: '25ch' }}>
+          <Button
+            variant='contained'
+            type='submit'
+            sx={{ mt: 2, width: '25ch', bgcolor: '#5171A5' }}>
             Sign In
           </Button>
         </div>
@@ -89,7 +122,13 @@ const Login = () => {
         </Typography>
         <Button
           variant='text'
-          sx={{ ml: 1, fontWeight: 'bold', textTransform: 'none', whiteSpace: 'nowrap' }}
+          sx={{
+            ml: 1,
+            fontWeight: 'bold',
+            textTransform: 'none',
+            whiteSpace: 'nowrap',
+            color: '#5171A5',
+          }}
           onClick={handleSignUp}>
           Sign Up Here!
         </Button>

@@ -12,6 +12,7 @@ export default function LogoutButton() {
       <Button
         id='logout-button'
         variant='contained'
+        sx={{ bgcolor: '#5171A5', color: '#EDE6E3' }}
         startIcon={<LogoutIcon />}
         onClick={handleLogout}>
         Logout

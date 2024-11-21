@@ -1,5 +1,5 @@
 import './index.css';
-import { Alert } from '@mui/material';
+import { Alert, Box } from '@mui/material';
 import useRegister from '../../hooks/useRegister';
 
 /**
@@ -28,7 +28,39 @@ const Register = () => {
 
   return (
     <div className='container'>
-      <h2>Welcome to FakeStackOverflow!</h2>
+      <Box
+        sx={{
+          textAlign: 'center',
+          marginBottom: 1,
+          marginX: 'auto',
+          color: '#32292F',
+          display: 'flex',
+        }}>
+        <Box
+          sx={{
+            marginTop: 0.5,
+            paddingRight: 3,
+          }}>
+          <img
+            src='/logos/blue-logo.png'
+            style={{
+              height: '50px',
+            }}
+            alt='code connect logo'
+            loading='lazy'
+          />
+        </Box>
+        <Box>
+          <img
+            src='/logos/blue-name.png'
+            style={{
+              height: '50px',
+            }}
+            alt='code connect logo'
+            loading='lazy'
+          />
+        </Box>
+      </Box>
       <h4>Please enter registration details below.</h4>
       <form onSubmit={handleSubmit}>
         <div className='row'>
@@ -134,7 +166,10 @@ const Register = () => {
         </button>
       </form>
       <h4>
-        Already registered? <a href='/'>Login</a>
+        Already registered?{' '}
+        <a href='/' style={{ color: '#E77963' }}>
+          Login
+        </a>
       </h4>
     </div>
   );

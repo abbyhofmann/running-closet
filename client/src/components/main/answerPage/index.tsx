@@ -1,4 +1,6 @@
 import React from 'react';
+import { Button } from '@mui/material';
+import { Box } from '@mui/system';
 import { getMetaData } from '../../../tool';
 import AnswerView from './answer';
 import AnswerHeader from './header';
@@ -21,7 +23,7 @@ const AnswerPage = () => {
   }
 
   return (
-    <>
+    <Box sx={{ marginTop: 2 }}>
       <VoteComponent question={question} />
       <AnswerHeader ansCount={question.answers.length} title={question.title} />
       <QuestionBody
@@ -44,14 +46,15 @@ const AnswerPage = () => {
           handleAddComment={(comment: Comment) => handleNewComment(comment, 'answer', a._id)}
         />
       ))}
-      <button
-        className='bluebtn ansButton'
+      <Button
+        variant='contained'
+        sx={{ bgcolor: '#5171A5', margin: 2, width: '98%' }}
         onClick={() => {
           handleNewAnswer();
         }}>
         Answer Question
-      </button>
-    </>
+      </Button>
+    </Box>
   );
 };
 

@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Box } from '@mui/system';
+import Grid from '@mui/material/Grid2';
+import { Button, Card, Grid2, TextField, Typography } from '@mui/material';
 import { getMetaData } from '../../../tool';
 import { Comment } from '../../../types';
 import './index.css';
@@ -50,51 +53,95 @@ const CommentSection = ({ comments, handleAddComment }: CommentSectionProps) => 
   };
 
   return (
-    <div className='comment-section'>
-      <button className='toggle-button' onClick={() => setShowComments(!showComments)}>
+    <Box sx={{ margin: 1, padding: 1 }}>
+      <Button
+        fullWidth
+        sx={{ bgcolor: '#C8C7EC', color: '#32292F', marginX: 'auto' }}
+        variant='contained'
+        onClick={() => setShowComments(!showComments)}>
         {showComments ? 'Hide Comments' : 'Show Comments'}
-      </button>
+      </Button>
 
       {showComments && (
-        <div className='comments-container'>
-          <ul className='comments-list'>
+        <Box className='comments-container'>
+          <Box className='comments-list'>
             {comments.length > 0 ? (
               comments.map((comment, index) => (
-                <li key={index} className='comment-item'>
-                  <p className='comment-text'>{comment.text}</p>
-                  <small
-                    className='comment-meta'
-                    onClick={() => {
-                      navigate(`/profile/${comment.commentBy}`);
-                    }}>
-                    <span className='underline-name'>{comment.commentBy}</span>
-                    {', '}
-                    {getMetaData(new Date(comment.commentDateTime))}
-                  </small>
-                </li>
+                <Card
+                  key={index}
+                  className='comment-item'
+                  sx={{ bgcolor: 'white', display: 'flex', paddingY: 1 }}>
+                  <Grid container sx={{ width: '100%' }}>
+                    <Grid size={12}>
+                      <Box
+                        sx={{
+                          marginY: 'auto',
+                          paddingY: 'auto',
+                          paddingLeft: 'auto',
+                          width: '100%',
+                        }}>
+                        <Typography
+                          className='comment-meta'
+                          onClick={() => {
+                            navigate(`/profile/${comment.commentBy}`);
+                          }}>
+                          <span className='underline-name'>{comment.commentBy}</span>
+                          {', '}
+                          {getMetaData(new Date(comment.commentDateTime))}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid size={12}>
+                      <Box
+                        sx={{
+                          marginY: 'auto',
+                          paddingY: 'auto',
+                          paddingRight: 'auto',
+                          width: '100%',
+                        }}>
+                        <Typography>{comment.text}</Typography>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </Card>
               ))
             ) : (
-              <p className='no-comments'>No comments yet.</p>
+              <Typography className='no-comments'>No comments yet.</Typography>
             )}
-          </ul>
+          </Box>
 
-          <div className='add-comment'>
-            <div className='input-row'>
-              <textarea
-                placeholder='Comment'
-                value={text}
-                onChange={e => setText(e.target.value)}
-                className='comment-textarea'
-              />
-              <button className='add-comment-button' onClick={handleAddCommentClick}>
-                Add Comment
-              </button>
-            </div>
-            {textErr && <small className='error'>{textErr}</small>}
-          </div>
-        </div>
+          <Box className='add-comment'>
+            <Grid2 container sx={{ width: '100%' }}>
+              <Grid2 size={7}>
+                <TextField
+                  variant='outlined'
+                  placeholder='Comment'
+                  value={text}
+                  sx={{ bgcolor: 'white', width: '100%' }}
+                  onChange={e => setText(e.target.value)}
+                  className='comment-textarea'
+                />
+              </Grid2>
+              <Grid2 size={5} sx={{ paddingRight: 2 }}>
+                <Button
+                  className='add-comment-button'
+                  onClick={handleAddCommentClick}
+                  fullWidth
+                  sx={{
+                    bgcolor: '#5171A5',
+                    color: '#EDE6E3',
+                    height: '100%',
+                    marginX: 2,
+                  }}>
+                  Add Comment
+                </Button>
+              </Grid2>
+            </Grid2>
+            {textErr && <Typography className='error'>{textErr}</Typography>}
+          </Box>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 

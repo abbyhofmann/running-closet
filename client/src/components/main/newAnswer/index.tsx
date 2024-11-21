@@ -1,5 +1,6 @@
 import './index.css';
 import React from 'react';
+import { Box, Button, Typography } from '@mui/material';
 import Form from '../baseComponents/form';
 import TextArea from '../baseComponents/textarea';
 import useAnswerForm from '../../../hooks/useAnswerForm';
@@ -19,12 +20,12 @@ const NewAnswerPage = () => {
         setState={setText}
         err={textErr}
       />
-      <div className='btn_indicator_container'>
-        <button className='form_postBtn' onClick={postAnswer}>
+      <Box className='btn_indicator_container'>
+        <Button className='form_postBtn' variant='contained' onClick={postAnswer}>
           Post Answer
-        </button>
-        <div className='mandatory_indicator'>* indicates mandatory fields</div>
-      </div>
+        </Button>
+        <Typography className='mandatory_indicator'>* indicates mandatory fields</Typography>
+      </Box>
     </Form>
   );
 };

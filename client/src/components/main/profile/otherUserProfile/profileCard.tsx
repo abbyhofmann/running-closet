@@ -1,4 +1,5 @@
-import { Card, Typography } from '@mui/material';
+import { Box, Card, Typography } from '@mui/material';
+import { grey } from '@mui/material/colors';
 import { useNavigate } from 'react-router-dom';
 import ProfileAvatar from '../../../profileAvatar';
 
@@ -23,26 +24,16 @@ const ProfileCard = (props: ProfileCardProps) => {
       onClick={() => {
         navigate(`/profile/${username}`);
       }}
-      sx={{
-        marginX: 2,
-        minWidth: 150,
-        height: 150,
-        marginY: 2,
-      }}
       key={username}>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          paddingTop: '20px', // this may need to change but I couldn't figure out how to dynamically get it centered on the card
-        }}>
+      <Box sx={{ display: 'flex', backgroundColor: grey[300], padding: 1 }}>
         <ProfileAvatar profileGraphic={profileGraphic} size={75}></ProfileAvatar>
-      </div>
-      <Typography variant='h5' sx={{ textAlign: 'center' }} noWrap>
-        {username}
-      </Typography>
+        <Typography
+          variant='h6'
+          sx={{ textAlign: 'center', marginY: 'auto', color: '#32292F', paddingLeft: 2 }}
+          noWrap>
+          {username}
+        </Typography>
+      </Box>
     </Card>
   );
 };

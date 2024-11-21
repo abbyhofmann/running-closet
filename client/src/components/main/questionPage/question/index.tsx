@@ -1,6 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './index.css';
+import { Box } from '@mui/system';
+import { Button, Card, Typography } from '@mui/material';
+import { grey } from '@mui/material/colors';
 import { getMetaData } from '../../../../tool';
 import { Question } from '../../../../types';
 
@@ -45,46 +48,50 @@ const QuestionView = ({ q }: QuestionProps) => {
   };
 
   return (
-    <div
+    <Card
+      sx={{ bgcolor: grey[300], marginX: 4 }}
       className='question right_padding'
       onClick={() => {
         if (q._id) {
           handleAnswer(q._id);
         }
       }}>
-      <div className='postStats'>
-        <div>{q.answers.length || 0} answers</div>
-        <div>{q.views.length} views</div>
-      </div>
-      <div className='question_mid'>
-        <div className='postTitle'>{q.title}</div>
-        <div className='question_tags'>
+      <Box className='postStats' sx={{ marginY: 'auto' }}>
+        <Typography sx={{ color: '#32292F' }}>{q.answers.length || 0} answers</Typography>
+        <Typography sx={{ color: '#32292F' }}>{q.views.length} views</Typography>
+      </Box>
+      <Box className='question_mid' sx={{ marginY: 'auto' }}>
+        <Typography sx={{ color: '#5171A5' }}>{q.title}</Typography>
+        <Box className='question_tags'>
           {q.tags.map((tag, idx) => (
-            <button
+            <Button
+              size='small'
+              variant='contained'
+              sx={{ bgcolor: '#32292F', color: '#C8C7EC', height: 25, marginRight: 1 }}
               key={idx}
-              className='question_tag_button'
               onClick={e => {
                 e.stopPropagation();
                 clickTag(tag.name);
               }}>
               {tag.name}
-            </button>
+            </Button>
           ))}
-        </div>
-      </div>
-      <div className='lastActivity'>
-        <div
-          className='question_author'
+        </Box>
+      </Box>
+      <Box sx={{ width: '25%' }}>
+        <Typography
+          sx={{ color: '#E77963', textDecoration: 'underline' }}
           onClick={e => {
             e.stopPropagation();
             navigate(`/profile/${q.askedBy}`);
           }}>
           {q.askedBy}
-        </div>
-        <div>&nbsp;</div>
-        <div className='question_meta'>asked {getMetaData(new Date(q.askDateTime))}</div>
-      </div>
-    </div>
+        </Typography>
+        <Typography sx={{ color: '#32292F' }}>
+          asked {getMetaData(new Date(q.askDateTime))}
+        </Typography>
+      </Box>
+    </Card>
   );
 };
 

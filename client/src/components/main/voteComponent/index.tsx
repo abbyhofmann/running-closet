@@ -1,3 +1,7 @@
+import { Box } from '@mui/system';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import { IconButton, Typography } from '@mui/material';
 import { downvoteQuestion, upvoteQuestion } from '../../../services/questionService';
 import './index.css';
 import useUserContext from '../../../hooks/useUserContext';
@@ -42,19 +46,21 @@ const VoteComponent = ({ question }: VoteComponentProps) => {
   };
 
   return (
-    <div className='vote-container'>
-      <button
-        className={`vote-button ${voted === 1 ? 'vote-button-upvoted' : ''}`}
+    <Box sx={{ display: 'flex', alignItems: 'center', padding: 2, marginLeft: 2 }}>
+      <IconButton
+        aria-label='upvote'
+        sx={{ color: voted === 1 ? '#5171A5' : '#' }}
         onClick={() => handleVote('upvote')}>
-        Upvote
-      </button>
-      <button
-        className={`vote-button ${voted === -1 ? 'vote-button-downvoted' : ''}`}
+        <ThumbUpIcon />
+      </IconButton>
+      <IconButton
+        aria-label='downvote'
+        sx={{ color: voted === -1 ? '#E77963' : '#' }}
         onClick={() => handleVote('downvote')}>
-        Downvote
-      </button>
-      <span className='vote-count'>{count}</span>
-    </div>
+        <ThumbDownIcon />
+      </IconButton>
+      <Typography sx={{ marginLeft: 1 }}>{count}</Typography>
+    </Box>
   );
 };
 

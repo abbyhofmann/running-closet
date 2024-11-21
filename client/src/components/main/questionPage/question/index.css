@@ -1,17 +1,16 @@
 .question {
   display: flex;
   flex-direction: row;
-  border-top: #000000 1px dashed;
+  margin-top: 5px;
 }
 
 .postStats {
-  color: #bbbbbb;
   text-align: center;
-  width: 10%;
+  width: 20%;
 }
 
 .question_mid {
-  width: 60%;
+  width: 55%;
 }
 
 .postTitle {
@@ -35,16 +34,4 @@
   margin-left: 0;
 }
 
-.lastActivity {
-  width: 30%;
-  display: flex;
-  flex-direction: row;
-}
 
-.question_author {
-  color: red;
-}
-
-.question_meta {
-  color: #bbbbbb;
-}

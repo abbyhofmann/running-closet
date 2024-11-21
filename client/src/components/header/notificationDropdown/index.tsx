@@ -5,6 +5,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Typography from '@mui/material/Typography';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Paper from '@mui/material/Paper';
+import { grey } from '@mui/material/colors';
 import useNotificationDropdown from '../../../hooks/useNotificationDropdown';
 import NotificationComponent from './notification';
 
@@ -26,16 +27,16 @@ export default function NotificationDropdown() {
   return (
     <div>
       <Button
-        sx={{ justifyContent: 'center', marginX: 1 }}
+        sx={{ justifyContent: 'center' }}
         id='notification-icon'
         aria-controls={open ? 'notification-display-menu' : undefined}
         aria-haspopup='true'
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}>
-        <ListItemIcon sx={{ marginX: 'auto' }}>
+        <ListItemIcon>
           <NotificationsIcon
             fontSize='large'
-            sx={{ color: anyUnreadNotifications ? 'red' : 'grey', marginX: 'auto' }}
+            sx={{ color: anyUnreadNotifications ? '#E77963' : '#32292F', marginX: 'auto' }}
           />
         </ListItemIcon>
       </Button>
@@ -46,8 +47,16 @@ export default function NotificationDropdown() {
         onClose={handleClose}
         MenuListProps={{
           'aria-labelledby': 'notification-icon',
+        }}
+        slotProps={{
+          paper: {
+            style: {
+              backgroundColor: '#EDE6E3',
+              color: '#EDE6E3',
+            },
+          },
         }}>
-        <Paper sx={{ width: 400, maxHeight: 600 }}>
+        <Paper sx={{ width: 400, maxHeight: 600, margin: 1, bgcolor: grey[300] }}>
           {notifications.length >= 1 &&
             notifications.map(notification => (
               <NotificationComponent

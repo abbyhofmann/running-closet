@@ -1,5 +1,6 @@
 import React from 'react';
 import '../input/index.css';
+import { Box } from '@mui/system';
 
 /**
  * Interface representing the props for the Textarea component.
@@ -35,12 +36,12 @@ interface TextAreaProps {
  * @param err - Optional error message displayed when there's an issue with input.
  */
 const TextArea = ({ title, mandatory = true, hint, id, val, setState, err }: TextAreaProps) => (
-  <>
-    <div className='input_title'>
+  <Box>
+    <Box className='input_title'>
       {title}
       {mandatory ? '*' : ''}
-    </div>
-    {hint && <div className='input_hint'>{hint}</div>}
+    </Box>
+    {hint && <Box className='input_hint'>{hint}</Box>}
     <textarea
       id={id}
       className='input_input'
@@ -50,7 +51,7 @@ const TextArea = ({ title, mandatory = true, hint, id, val, setState, err }: Tex
       }}
     />
     {err && <div className='input_error'>{err}</div>}
-  </>
+  </Box>
 );
 
 export default TextArea;

@@ -1,4 +1,13 @@
-import { Button, Typography } from '@mui/material';
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import './index.css';
 import useOtherProfilePage from '../../../../hooks/useOtherProfilePage';
@@ -21,7 +30,7 @@ const OtherUserProfilePage = () => {
   } = useOtherProfilePage();
   return (
     <Grid container rowSpacing={1} columnSpacing={1}>
-      <Grid size={2}>
+      <Grid size={{ xs: 6, sm: 6, md: 4, lg: 2 }}>
         <div style={{ marginTop: 45, marginLeft: 30 }}>
           <ProfileAvatar profileGraphic={otherUserProfileGraphic} size={150}></ProfileAvatar>
         </div>
@@ -33,46 +42,74 @@ const OtherUserProfilePage = () => {
         {currentUserFollowingThisUser ? (
           <Button
             variant='contained'
-            sx={{ bgcolor: 'red', marginY: 2, marginLeft: 2 }}
+            sx={{ bgcolor: '#E77963', marginY: 2, marginLeft: 2, color: '#EDE6E3' }}
             onClick={unfollow}>
             Unfollow
           </Button>
         ) : (
           <Button
             variant='contained'
-            sx={{ bgcolor: 'green', marginY: 2, marginLeft: 2 }}
+            sx={{ bgcolor: '#5171A5', marginY: 2, marginLeft: 2, color: '#EDE6E3' }}
             onClick={follow}>
             Follow
           </Button>
         )}
       </Grid>
-      <Grid size={{ xs: 4, sm: 4, md: 2, lg: 2 }} sx={{ marginTop: 5 }}>
-        <Typography variant='h6' sx={{ marginTop: 8, marginLeft: 5 }}>
-          Followed By:
-        </Typography>
+      <Grid size={6} sx={{ paddingTop: 4, paddingBottom: 5, paddingLeft: 4 }}>
+        <TableContainer sx={{ height: 400 }}>
+          <Table stickyHeader aria-label='sticky table'>
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  key={'followers'}
+                  sx={{ backgroundColor: '#5171A5', color: '#EDE6E3', borderRadius: '16px' }}>
+                  <Typography variant='h6' sx={{ paddingX: 'auto' }}>
+                    <strong>Followers: {followedBy.length}</strong>
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {followedBy.map(u => (
+                <TableRow tabIndex={-1} key={u.username}>
+                  <TableCell>
+                    <ProfileCard
+                      username={u.username}
+                      profileGraphic={u.profileGraphic}></ProfileCard>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Grid>
-      <Grid size={{ xs: 8, sm: 8, md: 10, lg: 10 }} sx={{ marginTop: 5 }}>
-        <div className='following-box'>
-          {followedBy.map(u => (
-            <div key={u.username}>
-              <ProfileCard username={u.username} profileGraphic={u.profileGraphic}></ProfileCard>
-            </div>
-          ))}
-        </div>
-      </Grid>
-      <Grid size={{ xs: 4, sm: 4, md: 2, lg: 2 }} sx={{ marginTop: 2 }}>
-        <Typography variant='h6' sx={{ marginTop: 8, marginLeft: 5 }}>
-          Following:
-        </Typography>
-      </Grid>
-      <Grid size={{ xs: 8, sm: 8, md: 10, lg: 10 }} sx={{ marginY: 2 }}>
-        <div className='following-box'>
-          {following.map(u => (
-            <div key={u.username}>
-              <ProfileCard username={u.username} profileGraphic={u.profileGraphic}></ProfileCard>
-            </div>
-          ))}
-        </div>
+      <Grid size={6} sx={{ paddingTop: 4, paddingBottom: 5, paddingRight: 4 }}>
+        <TableContainer sx={{ height: 400 }}>
+          <Table stickyHeader aria-label='sticky table'>
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  key={'following'}
+                  sx={{ backgroundColor: '#5171A5', color: '#EDE6E3', borderRadius: '16px' }}>
+                  <Typography variant='h6'>
+                    <strong>Following: {following.length}</strong>
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {following.map(u => (
+                <TableRow tabIndex={-1} key={u.username}>
+                  <TableCell>
+                    <ProfileCard
+                      username={u.username}
+                      profileGraphic={u.profileGraphic}></ProfileCard>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Grid>
     </Grid>
   );

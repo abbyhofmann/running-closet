@@ -1,4 +1,6 @@
 import React from 'react';
+import { Box } from '@mui/system';
+import { Typography } from '@mui/material';
 import './index.css';
 import TagView from './tag';
 import useTagPage from '../../../hooks/useTagPage';
@@ -12,18 +14,22 @@ const TagPage = () => {
   const { tlist, clickTag } = useTagPage();
 
   return (
-    <>
-      <div className='space_between right_padding'>
-        <div className='bold_title'>{tlist.length} Tags</div>
-        <div className='bold_title'>All Tags</div>
+    <Box sx={{ paddingRight: 3 }}>
+      <Box className='space_between right_padding'>
+        <Typography variant='h5'>
+          <strong>{tlist.length} Tags</strong>
+        </Typography>
+        <Typography variant='h5'>
+          <strong>All Tags</strong>
+        </Typography>
         <AskQuestionButton />
-      </div>
-      <div className='tag_list right_padding'>
+      </Box>
+      <Box className='tag_list right_padding'>
         {tlist.map((t, idx) => (
           <TagView key={idx} t={t} clickTag={clickTag} />
         ))}
-      </div>
-    </>
+      </Box>
+    </Box>
   );
 };
 

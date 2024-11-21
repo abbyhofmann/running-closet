@@ -32,9 +32,8 @@ const useHeader = () => {
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-
       const searchParams = new URLSearchParams();
-      searchParams.set('search', e.currentTarget.value);
+      searchParams.set('search', val);
 
       navigate(`/home?${searchParams.toString()}`);
     }

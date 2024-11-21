@@ -1,5 +1,8 @@
 import React from 'react';
 import './index.css';
+import { Box } from '@mui/system';
+import Grid from '@mui/material/Grid2';
+import { Typography } from '@mui/material';
 import OrderButton from './orderButton';
 import { OrderType, orderTypeDisplayName } from '../../../../types';
 import AskQuestionButton from '../../askQuestionButton';
@@ -27,14 +30,56 @@ interface QuestionHeaderProps {
  * @param setQuestionOrder - Function to set the order of questions based on input message.
  */
 const QuestionHeader = ({ titleText, qcnt, setQuestionOrder }: QuestionHeaderProps) => (
-  <div>
-    <div className='space_between right_padding'>
-      <div className='bold_title'>{titleText}</div>
-      <AskQuestionButton />
-    </div>
-    <div className='space_between right_padding'>
-      <div id='question_count'>{qcnt} questions</div>
-      <div className='btns'>
+  <Grid container>
+    <Grid size={6} sx={{ marginTop: 3 }}>
+      <Box
+        sx={{
+          justifyContent: 'flex-start',
+          display: 'flex',
+          alignItems: 'start',
+          marginY: 2,
+          paddingLeft: 4,
+        }}>
+        <Typography variant='h4' sx={{ color: '#32292F' }}>
+          <strong>{titleText}</strong>
+        </Typography>
+      </Box>
+    </Grid>
+    <Grid size={6} sx={{ marginTop: 3 }}>
+      <Box
+        sx={{
+          justifyContent: 'flex-end',
+          display: 'flex',
+          alignItems: 'end',
+          marginY: 2,
+          paddingRight: 4,
+        }}>
+        <AskQuestionButton />
+      </Box>
+    </Grid>
+    <Grid size={4}>
+      <Box
+        sx={{
+          justifyContent: 'flex-start',
+          display: 'flex',
+          alignItems: 'start',
+          marginY: 2,
+          paddingLeft: 5,
+        }}>
+        <Typography variant='h6' sx={{ color: '#32292F' }}>
+          {qcnt} questions
+        </Typography>
+      </Box>
+    </Grid>
+    <Grid size={{ xs: 12, md: 8 }}>
+      <Box
+        sx={{
+          justifyContent: 'flex-end',
+          display: 'flex',
+          alignItems: 'end',
+          marginY: 2,
+          paddingRight: 3,
+        }}>
         {Object.keys(orderTypeDisplayName).map((order, idx) => (
           <OrderButton
             key={idx}
@@ -42,9 +87,9 @@ const QuestionHeader = ({ titleText, qcnt, setQuestionOrder }: QuestionHeaderPro
             setQuestionOrder={setQuestionOrder}
           />
         ))}
-      </div>
-    </div>
-  </div>
+      </Box>
+    </Grid>
+  </Grid>
 );
 
 export default QuestionHeader;

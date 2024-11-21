@@ -1,9 +1,3 @@
-.vote-container {
-  display: flex;
-  align-items: center;
-  padding: 12px;
-}
-
 .vote-button {
   padding: 0.5rem;
   margin-right: 0.5rem;

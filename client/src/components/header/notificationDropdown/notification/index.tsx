@@ -5,7 +5,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button } from '@mui/material';
-import { blue, grey } from '@mui/material/colors';
 import { useNavigate } from 'react-router-dom';
 import { Notification } from '../../../../types';
 import useUserContext from '../../../../hooks/useUserContext';
@@ -37,18 +36,18 @@ const NotificationComponent = (props: NotificationComponentProps) => {
     <MenuItem key={notification._id} onClick={handleOnClick}>
       {/* Displaying an unread icon if unread, read icon if read */}
       {notification.message.readBy.map(n => n.username).includes(user.username) ? (
-        <ListItemIcon sx={{ color: 'gray' }}>
+        <ListItemIcon sx={{ color: '#32292F' }}>
           <MailIcon fontSize='small' />
         </ListItemIcon>
       ) : (
-        <ListItemIcon sx={{ color: 'red' }}>
+        <ListItemIcon sx={{ color: '#E77963' }}>
           <MarkEmailUnreadIcon fontSize='small' />
         </ListItemIcon>
       )}
-      <Typography variant='inherit' noWrap sx={{ width: 100, color: blue[700] }}>
+      <Typography variant='inherit' noWrap sx={{ width: 100, color: '#5171A5' }}>
         {notification.message.sender.username}
       </Typography>
-      <Typography variant='inherit' noWrap>
+      <Typography variant='inherit' noWrap sx={{ color: '#32292F' }}>
         {notification.message.messageContent}
       </Typography>
       <Button
@@ -57,7 +56,7 @@ const NotificationComponent = (props: NotificationComponentProps) => {
         onClick={() => {
           handleDeleteNotification(notification._id);
         }}>
-        <DeleteIcon sx={{ color: grey[500] }}></DeleteIcon>
+        <DeleteIcon sx={{ color: '#32292F' }}></DeleteIcon>
       </Button>
     </MenuItem>
   );

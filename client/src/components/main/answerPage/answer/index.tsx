@@ -1,4 +1,8 @@
 import { useNavigate } from 'react-router-dom';
+import Grid from '@mui/material/Grid2';
+import { Box } from '@mui/system';
+import { grey } from '@mui/material/colors';
+import { Card, Typography } from '@mui/material';
 import { handleHyperlink } from '../../../../tool';
 import CommentSection from '../../commentSection';
 import './index.css';
@@ -34,22 +38,30 @@ interface AnswerProps {
 const AnswerView = ({ text, ansBy, meta, comments, handleAddComment }: AnswerProps) => {
   const navigate = useNavigate();
   return (
-    <div className='answer right_padding'>
-      <div id='answerText' className='answerText'>
-        {handleHyperlink(text)}
-      </div>
-      <div className='answerAuthor'>
-        <div
-          className='answer_author'
-          onClick={() => {
-            navigate(`/profile/${ansBy}`);
-          }}>
-          {ansBy}
-        </div>
-        <div className='answer_question_meta'>{meta}</div>
-      </div>
-      <CommentSection comments={comments} handleAddComment={handleAddComment} />
-    </div>
+    <Card sx={{ margin: 2, padding: 3, bgcolor: grey[300] }}>
+      <Grid container>
+        <Grid container size={6}>
+          <Grid size={{ xs: 12, sm: 3 }}>
+            <Box>
+              <Typography
+                sx={{ color: '#5171A5', textDecoration: 'underline' }}
+                onClick={() => {
+                  navigate(`/profile/${ansBy}`);
+                }}>
+                {ansBy}
+              </Typography>
+              <Typography sx={{ color: '#5171A5' }}>{meta}</Typography>
+            </Box>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 9 }}>
+            <Box id='answerText'>{handleHyperlink(text)}</Box>
+          </Grid>
+        </Grid>
+        <Grid size={6} sx={{ bgcolor: grey[300] }}>
+          <CommentSection comments={comments} handleAddComment={handleAddComment} />
+        </Grid>
+      </Grid>
+    </Card>
   );
 };
 

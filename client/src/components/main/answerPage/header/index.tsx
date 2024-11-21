@@ -1,4 +1,7 @@
 import React from 'react';
+import Grid from '@mui/material/Grid2';
+import { Box } from '@mui/system';
+import { Typography } from '@mui/material';
 import './index.css';
 import AskQuestionButton from '../../askQuestionButton';
 
@@ -21,11 +24,48 @@ interface AnswerHeaderProps {
  * @param title The title of the question or discussion thread.
  */
 const AnswerHeader = ({ ansCount, title }: AnswerHeaderProps) => (
-  <div id='answersHeader' className='space_between right_padding'>
-    <div className='bold_title'>{ansCount} answers</div>
-    <div className='bold_title answer_question_title'>{title}</div>
-    <AskQuestionButton />
-  </div>
+  <Grid container>
+    <Grid size={6}>
+      <Box
+        sx={{
+          justifyContent: 'flex-start',
+          display: 'flex',
+          alignItems: 'start',
+          marginTop: 2,
+          paddingLeft: 4,
+        }}>
+        <Typography variant='h5'>
+          <strong>{title}</strong>
+        </Typography>
+      </Box>
+    </Grid>
+    <Grid size={6}>
+      <Box
+        sx={{
+          justifyContent: 'flex-end',
+          display: 'flex',
+          alignItems: 'end',
+          marginTop: 2,
+          paddingRight: 4,
+        }}>
+        <Typography variant='h6'>
+          <strong>{ansCount} answers</strong>
+        </Typography>
+      </Box>
+    </Grid>
+    <Grid size={12}>
+      <Box
+        sx={{
+          justifyContent: 'flex-end',
+          display: 'flex',
+          alignItems: 'end',
+          paddingRight: 4,
+          marginTop: 2,
+        }}>
+        <AskQuestionButton />
+      </Box>
+    </Grid>
+  </Grid>
 );
 
 export default AnswerHeader;
