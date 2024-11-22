@@ -1,5 +1,18 @@
 import './index.css';
-import { Alert, Box } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import useRegister from '../../hooks/useRegister';
 
 /**
@@ -24,7 +37,10 @@ const Register = () => {
     handleFirstNameChange,
     handleLastNameChange,
     handleProfileGraphicSelect,
+    handleClickShowPassword,
+    showPassword,
   } = useRegister();
+  const navigate = useNavigate();
 
   return (
     <div className='container'>
@@ -80,79 +96,68 @@ const Register = () => {
           ))}
         </div>
         <div className='row'>
-          <label className='labels' htmlFor='firstName'>
-            First Name:
-          </label>
-          <input
-            type='text'
+          <TextField
+            id='outlined-first-name-input'
+            label='First Name'
+            required
             value={firstName}
+            sx={{ marginX: 'auto', width: '25ch' }}
             onChange={handleFirstNameChange}
-            placeholder='First Name'
-            required
-            className='input-text'
-            key='firstName'
-            id={'firstNameInput'}
           />
         </div>
         <div className='row'>
-          <label className='labels' htmlFor='lastName'>
-            Last Name:
-          </label>
-          <input
-            type='text'
+          <TextField
+            id='outlined-lastname-input'
+            label='Last Name'
+            required
             value={lastName}
+            sx={{ marginX: 'auto', width: '25ch' }}
             onChange={handleLastNameChange}
-            placeholder='Last Name'
-            required
-            className='input-text'
-            key='lastName'
-            id={'lastNameInput'}
           />
         </div>
         <div className='row'>
-          <label className='labels' htmlFor='username'>
-            Username:
-          </label>
-          <input
-            type='text'
+          <TextField
+            id='outlined-username-input'
+            label='Username'
+            type='username'
+            required
+            autoComplete='current-username'
             value={username}
+            sx={{ marginX: 'auto', width: '25ch' }}
             onChange={handleUsernameChange}
-            placeholder='Enter a username'
-            required
-            className='input-text'
-            key='username'
-            id={'usernameInput'}
           />
         </div>
         <div className='row'>
-          <label className='labels' htmlFor='email'>
-            Email:
-          </label>
-          <input
-            type='text'
+          <TextField
+            id='outlined-email-input'
+            label='Email'
+            required
             value={email}
+            sx={{ marginX: 'auto', width: '25ch' }}
             onChange={handleEmailChange}
-            placeholder='Enter your email'
-            required
-            className='input-text'
-            key='email'
-            id={'emailInput'}
           />
         </div>
         <div className='row'>
-          <label className='labels' htmlFor='pass'>
-            Password:
-          </label>
-          <input
-            type='password'
-            value={pass}
-            onChange={handlePassChange}
-            placeholder='Enter a password'
-            required
-            className='input-text'
-            key='pass'
-            id={'passInput'}
-          />
+          <FormControl sx={{ m: 1, width: '25ch', marginX: 'auto' }} variant='outlined'>
+            <InputLabel htmlFor='outlined-adornment-password'>Password</InputLabel>
+            <OutlinedInput
+              id='outlined-adornment-password'
+              type={showPassword ? 'text' : 'password'}
+              endAdornment={
+                <InputAdornment position='end'>
+                  <IconButton
+                    aria-label={showPassword ? 'hide the password' : 'display the password'}
+                    onClick={handleClickShowPassword}
+                    edge='end'>
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label='Password'
+              value={pass}
+              onChange={handlePassChange}
+            />
+          </FormControl>
         </div>
         {showRegistrationError && (
           <div className='alert-container'>
@@ -161,16 +166,33 @@ const Register = () => {
             </Alert>
           </div>
         )}
-        <button type='submit' className='login-button'>
+        <Button variant='contained' type='submit' sx={{ mt: 2, width: '25ch', bgcolor: '#5171A5' }}>
           Register
-        </button>
+        </Button>
       </form>
-      <h4>
-        Already registered?{' '}
-        <a href='/' style={{ color: '#E77963' }}>
-          Login
-        </a>
-      </h4>
+      <Box
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
+        sx={{ mt: 2, flexWrap: 'nowrap' }}>
+        <Typography variant='body2' color='text.secondary' sx={{ whiteSpace: 'nowrap' }}>
+          Already registered?
+        </Typography>
+        <Button
+          variant='text'
+          sx={{
+            ml: 1,
+            fontWeight: 'bold',
+            textTransform: 'none',
+            whiteSpace: 'nowrap',
+            color: '#5171A5',
+          }}
+          onClick={() => {
+            navigate('/');
+          }}>
+          Sign In Here!
+        </Button>
+      </Box>
     </div>
   );
 };

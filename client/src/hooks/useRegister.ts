@@ -25,9 +25,15 @@ const useRegister = () => {
   const [profileGraphic, setProfileGraphic] = useState<number>(-1);
   const [registrationError, setRegistrationError] = useState<string>('');
   const [showRegistrationError, setShowRegistrationError] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const { setUser } = useLoginContext();
   const navigate = useNavigate();
+
+  /**
+   * Function to handle the visibility of the password.
+   */
+  const handleClickShowPassword = () => setShowPassword(show => !show);
 
   /**
    * Function to handle the username input change event.
@@ -123,6 +129,8 @@ const useRegister = () => {
     handleFirstNameChange,
     handleLastNameChange,
     handleProfileGraphicSelect,
+    handleClickShowPassword,
+    showPassword,
   };
 };
 
