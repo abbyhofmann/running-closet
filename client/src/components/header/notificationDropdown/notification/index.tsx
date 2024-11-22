@@ -53,7 +53,8 @@ const NotificationComponent = (props: NotificationComponentProps) => {
       <Button
         variant='text'
         sx={{ marginLeft: 'auto' }}
-        onClick={() => {
+        onClick={e => {
+          e.stopPropagation();
           handleDeleteNotification(notification._id);
         }}>
         <DeleteIcon sx={{ color: '#32292F' }}></DeleteIcon>

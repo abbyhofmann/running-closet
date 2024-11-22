@@ -56,7 +56,7 @@ export default function NotificationDropdown() {
             },
           },
         }}>
-        <Paper sx={{ width: 400, maxHeight: 600, margin: 1, bgcolor: grey[300] }}>
+        <Paper sx={{ width: 400, margin: 1, bgcolor: grey[300] }}>
           {notifications.length >= 1 &&
             notifications.map(notification => (
               <NotificationComponent
