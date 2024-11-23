@@ -7,12 +7,13 @@ import { Conversation, User } from '../types';
 import { getAllUsers } from '../services/userService';
 import useUserContext from './useUserContext';
 import { addConversation, getConversations } from '../services/conversationService';
+import ProfileAvatar from '../components/profileAvatar';
 /**
  * From MUI for search bar.
  */
 const Root = styled('div')(
   ({ theme }) => `
-  color: ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,.85)'};
+  color: #32292F;
   font-size: 16px;
 `,
 );
@@ -30,25 +31,29 @@ const Label = styled('label')`
 const InputWrapper = styled('div')(
   ({ theme }) => `
   width: 100%;
-  border: 1px solid ${theme.palette.mode === 'dark' ? '#434343' : '#d9d9d9'};
-  background-color: ${theme.palette.mode === 'dark' ? '#141414' : '#fff'};
+  border: 1px solid rgb(0, 0, 0);
+  background-color: #EDE6E3; 
   border-radius: 4px;
   padding: 1px;
   display: flex;
   flex-wrap: wrap;
 
   &:hover {
-    border-color: ${theme.palette.mode === 'dark' ? '#177ddc' : '#40a9ff'};
+    border-color: #32292F ;
   }
 
   &.focused {
-    border-color: ${theme.palette.mode === 'dark' ? '#177ddc' : '#40a9ff'};
-    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+    border-color: #32292F;
+    box-shadow: 0 0 0 2px #32292F;
+  }
+
+  & svg {
+    color: #32292F;
   }
 
   & input {
-    background-color: ${theme.palette.mode === 'dark' ? '#141414' : '#fff'};
-    color: ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,.85)'};
+    background-color: #EDE6E3;
+    color: #32292F;
     height: 50px;
     box-sizing: border-box;
     padding: 4px 6px;
@@ -67,15 +72,17 @@ const InputWrapper = styled('div')(
  */
 interface TagProps extends ReturnType<AutocompleteGetTagProps> {
   label: string;
+  profileGraphic: number;
 }
 /**
  * From MUI for search bar.
  */
 function Tag(props: TagProps) {
-  const { label, onDelete, ...other } = props;
+  const { label, onDelete, profileGraphic, ...other } = props;
   return (
     <div {...other}>
-      <span>{label}</span>
+      <ProfileAvatar profileGraphic={profileGraphic} size={20} />
+      <span style={{ marginLeft: 8 }}>{label}</span>
       <CloseIcon onClick={onDelete} />
     </div>
   );
@@ -90,9 +97,9 @@ const StyledTag = styled(Tag)<TagProps>(
   height: 24px;
   margin: 2px;
   line-height: 22px;
-  background-color: ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : '#fafafa'};
-  border: 1px solid ${theme.palette.mode === 'dark' ? '#303030' : '#e8e8e8'};
-  border-radius: 2px;
+  background-color: #C8C7EC;
+  border: 1px solid #e9e9f7;
+  border-radius: 10px;
   box-sizing: content-box;
   padding: 0 4px 0 10px;
   outline: 0;
@@ -121,16 +128,16 @@ const StyledTag = styled(Tag)<TagProps>(
  */
 const Listbox = styled('ul')(
   ({ theme }) => `
-  width: 100%;
+  width: 48%;
   margin: 2px 0 0;
   padding: 0;
   position: absolute;
   list-style: none;
-  background-color: ${theme.palette.mode === 'dark' ? '#141414' : '#fff'};
+  background-color:#EDE6E3;
   overflow: auto;
   max-height: 250px;
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgb(0, 0, 0);
   z-index: 1;
 
   & li {
@@ -140,23 +147,19 @@ const Listbox = styled('ul')(
     & span {
       flex-grow: 1;
     }
-
-    & svg {
-      color: transparent;
-    }
   }
 
   & li[aria-selected='true'] {
-    background-color: ${theme.palette.mode === 'dark' ? '#2b2b2b' : '#fafafa'};
+    background-color: #c0a79c;
     font-weight: 600;
 
     & svg {
-      color: #1890ff;
+      color: #fff;
     }
   }
 
   & li.${autocompleteClasses.focused} {
-    background-color: ${theme.palette.mode === 'dark' ? '#003b57' : '#e6f7ff'};
+    background-color: #d2c0b9;
     cursor: pointer;
 
     & svg {
@@ -175,6 +178,7 @@ const useCreateConversation = (
   navigation: (path: string | URL) => void,
   setConversations: (conversations: Conversation[]) => void,
   conversations: Conversation[],
+  formatName: (user: User) => string,
 ) => {
   const [allUsers, setAllUsers] = useState<User[]>();
   const { user } = useUserContext();
@@ -195,7 +199,7 @@ const useCreateConversation = (
     defaultValue: [],
     multiple: true,
     options: allUsers || [],
-    getOptionLabel: option => option.username,
+    getOptionLabel: option => formatName(option),
   });
 
   useEffect(() => {

@@ -67,7 +67,7 @@ export default function IndividualConversation({ cidPath }: IndividualConversati
                   onClick={() => navigate(`/profile/${name}`)}>
                   {name}
                 </span>
-                {index < conversationNames.length - 1 && ', '}
+                {index < conversationNames.length - 1 && <span style={{ color: 'black' }}>, </span>}
               </React.Fragment>
             ))}
           </Typography>
@@ -104,7 +104,7 @@ export default function IndividualConversation({ cidPath }: IndividualConversati
             />
           </Box>
           <Box flex='0 0 20%'>
-            <Button type='submit' variant='contained' fullWidth>
+            <Button type='submit' variant='contained' fullWidth sx={{ bgcolor: '#5171A5' }}>
               Send
             </Button>
           </Box>

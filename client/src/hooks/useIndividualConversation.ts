@@ -14,6 +14,7 @@ import useUserContext from './useUserContext';
  * @returns handleNewMessageChange - Function to handle changes in the new message input field
  * @returns handleSendMessage - Function to handle sending a new message
  * @returns listRef - Reference to the message list elements (necessary for scrolling)
+ * @returns profileGraphic - the graphic that should be the icon for the conversation
  */
 const useIndividualConversation = (cidpath: string) => {
   const { user, socket } = useUserContext();
@@ -48,14 +49,11 @@ const useIndividualConversation = (cidpath: string) => {
           setConversationNames(
             conversation.users
               .filter(u => user.username !== u.username)
-              .map(u => u.username.toString()),
+              .map(u => u.firstName.toString()),
           );
           setMessages(conversation.messages.sort((a, b) => (a.sentAt > b.sentAt ? 1 : -1)));
-          setProfileGraphic(
-            conversation.users.filter(u => user.username !== u.username).length > 1
-              ? 0
-              : conversation.users.filter(u => user.username !== u.username)[0].profileGraphic,
-          );
+          const otherParticipants = conversation.users.filter(u => user.username !== u.username);
+          setProfileGraphic(otherParticipants.length > 1 ? 0 : otherParticipants[0].profileGraphic);
         } catch (err) {
           setAlert('There was an issue loading the conversation. Please try again.');
         }

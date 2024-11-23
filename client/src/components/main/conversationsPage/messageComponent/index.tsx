@@ -1,4 +1,4 @@
-import { ListItem, ListItemAvatar, ListItemText } from '@mui/material';
+import { ListItem, ListItemAvatar, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useState } from 'react';
 import { Message } from '../../../../types';
@@ -37,24 +37,59 @@ export default function MessageComponent(props: MessageComponentProps) {
           maxWidth: 1,
           minWidth: 1,
         }}>
-        <Box mr={2}>
+        <Box mr={1.5}>
           {!userSent && (
-            <ListItemAvatar>
-              <ProfileAvatar
-                profileGraphic={message.sender.profileGraphic}
-                size={40}></ProfileAvatar>
-              {/* if this is a group conversation, we need to display the username of the sender of each message */}
-              {groupConvo ? message.sender.username : ''}
+            <ListItemAvatar
+              sx={{
+                display: 'flex', // Enables flexbox
+                flexDirection: 'column', // Stacks items vertically
+                alignItems: 'center', // Centers items horizontally
+                justifyContent: 'center', // Centers items vertically
+              }}>
+              <ProfileAvatar profileGraphic={message.sender.profileGraphic} size={40} />
+              {/* Display sender's name if it's a group conversation */}
+              <Typography color='#32292F' sx={{ marginTop: 1, textAlign: 'center' }}>
+                {groupConvo ? message.sender.firstName : ''}
+              </Typography>
             </ListItemAvatar>
           )}
         </Box>
 
-        <Box flex={1} maxWidth='70%' sx={{ wordBreak: 'break-all', whiteSpace: 'pre-wrap' }}>
-          <ListItemText
-            primary={message.messageContent}
-            secondary={`${getMessageDate(new Date(message.sentAt))}`}
-            style={{ textAlign: userSent ? 'right' : 'left' }}
-          />
+        <Box
+          sx={{
+            maxWidth: '70%',
+            textAlign: userSent ? 'right' : 'left',
+          }}>
+          {/* Message Content */}
+          <Box
+            sx={{
+              display: 'inline-block',
+              backgroundColor: userSent ? '#d8d8f2' : '#f5c9c1', // lightened versions of our orange and purple
+              padding: 1.5,
+              borderRadius: 2,
+              wordBreak: 'break-word',
+              whiteSpace: 'pre-wrap',
+            }}>
+            <Typography
+              variant='body1'
+              sx={{
+                color: '#32292F',
+                mb: 0.5,
+              }}>
+              {message.messageContent}
+            </Typography>
+          </Box>
+
+          {/* Timestamp */}
+          <Typography
+            variant='caption'
+            sx={{
+              color: '#776270',
+              mt: 0.5,
+              display: 'block',
+            }}>
+            {getMessageDate(new Date(message.sentAt))}
+          </Typography>
         </Box>
 
         <Box ml={2}>

@@ -1,7 +1,9 @@
 import CheckIcon from '@mui/icons-material/Check';
 import { Box, Button, Typography } from '@mui/material';
+import { Add } from '@mui/icons-material';
 import { SearchUsersProps, User } from '../../../../types';
 import useCreateConversation from '../../../../hooks/useCreateConversation';
+import ProfileAvatar from '../../../profileAvatar';
 
 /**
  * Represent the create conversation component.
@@ -10,6 +12,9 @@ import useCreateConversation from '../../../../hooks/useCreateConversation';
  */
 export default function SearchUsers(props: SearchUsersProps) {
   const { setAlert, navigate, setConversations, conversations } = props;
+
+  const formatName = (user: User) => `${user.firstName} ${user.lastName} (${user.username})`;
+
   const {
     allUsers,
     Root,
@@ -28,43 +33,80 @@ export default function SearchUsers(props: SearchUsersProps) {
     getListboxProps,
     getOptionProps,
     createConversation,
-  } = useCreateConversation(setAlert, navigate, setConversations, conversations);
+  } = useCreateConversation(setAlert, navigate, setConversations, conversations, formatName);
+
   return (
     // From MUI. Only changed name and inputs.
-    <Root>
+    <Root
+      sx={{
+        marginTop: 5,
+        display: 'flex',
+        flexDirection: 'column',
+        maxWidth: 1,
+        minWidth: 1,
+      }}>
       <div {...getRootProps()}>
-        <Label {...getInputLabelProps()} sx={{ marginTop: 5 }}>
+        <Label {...getInputLabelProps()} sx={{ marginTop: 5, color: '#32292F' }}>
           <Typography variant='h5'>Create a new conversation with:</Typography>
         </Label>
-        <InputWrapper ref={setAnchorEl} className={focused ? 'focused' : ''}>
-          {value.map((option: User, index: number) => {
-            const { key, ...tagProps } = getTagProps({ index });
-            return <StyledTag key={key} {...tagProps} label={option.username} />;
-          })}
-          <input {...getInputProps()} />
-        </InputWrapper>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            width: '100%',
+          }}>
+          <InputWrapper
+            ref={setAnchorEl}
+            className={focused ? 'focused' : ''}
+            sx={{
+              flex: '0 0 70%',
+              display: 'flex',
+              alignItems: 'center',
+              marginRight: 1,
+            }}>
+            {value.map((option: User, index: number) => {
+              const { key, ...tagProps } = getTagProps({ index });
+              return (
+                <StyledTag
+                  key={key}
+                  profileGraphic={option.profileGraphic}
+                  {...tagProps}
+                  label={formatName(option)}
+                />
+              );
+            })}
+            <input {...getInputProps()} />
+          </InputWrapper>
+
+          <Box flex='0 0 20%'>
+            <Button
+              variant='contained'
+              fullWidth
+              onClick={createConversation}
+              disabled={value.length === 0}
+              sx={{ bgcolor: '#5171A5', marginLeft: 4 }}>
+              <Add sx={{ marginRight: 1 }}></Add>
+            </Button>
+          </Box>
+        </Box>
       </div>
+
       <Box>
-        <Box flex='0 0 100%'>
+        <Box>
           {groupedOptions.length > 0 ? (
             <Listbox {...getListboxProps()}>
               {((groupedOptions as typeof allUsers) || []).map((option, index) => {
                 const { key, ...optionProps } = getOptionProps({ option, index });
                 return (
                   <li key={key} {...optionProps}>
-                    <span>{option.username}</span>
+                    <ProfileAvatar profileGraphic={option.profileGraphic} size={20}></ProfileAvatar>
+                    <span style={{ marginLeft: 8 }}>{formatName(option)}</span>
                     <CheckIcon fontSize='small' />
                   </li>
                 );
               })}
             </Listbox>
           ) : null}
-        </Box>
-        {/* Added this button which triggers the creation of the conversation */}
-        <Box flex='0 0 100%'>
-          <Button fullWidth variant='contained' sx={{ marginTop: 1 }} onClick={createConversation}>
-            Create Conversation
-          </Button>
         </Box>
       </Box>
     </Root>

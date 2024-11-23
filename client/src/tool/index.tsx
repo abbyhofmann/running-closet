@@ -81,23 +81,36 @@ const getMetaData = (date: Date): string => {
 const getMessageDate = (date: Date): string => {
   const now = new Date();
   const diffs = Math.floor(Math.abs(now.getTime() - date.getTime()) / 1000);
+  const formattedTime = date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
 
-  if (diffs < 60 * 60 * 24) {
-    return `Today at ${date.toTimeString().slice(0, 5)}`;
+  if (now.getDate() === date.getDate()) {
+    return `Today at ${formattedTime}`;
+  }
+
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  if (
+    date.getDate() === yesterday.getDate() &&
+    date.getMonth() === yesterday.getMonth() &&
+    date.getFullYear() === yesterday.getFullYear()
+  ) {
+    return `Yesterday at ${formattedTime}`;
   }
 
   if (diffs < 60 * 60 * 24 * 7) {
-    return `${getDayOfWeek(date)} at ${date.toTimeString().slice(0, 5)}`;
+    return `${getDayOfWeek(date)} at ${formattedTime}`;
   }
 
   if (diffs < 60 * 60 * 24 * 365) {
-    return `${MONTHS[date.getMonth()]} ${getDateHelper(date)} at ${date
-      .toTimeString()
-      .slice(0, 5)}`;
+    return `${MONTHS[date.getMonth()]} ${getDateHelper(date)} at ${formattedTime}`;
   }
   return `${MONTHS[date.getMonth()]} ${getDateHelper(
     date,
-  )}, ${date.getFullYear()} at ${date.toTimeString().slice(0, 5)}`;
+  )}, ${date.getFullYear()} at ${formattedTime}`;
 };
 
 /**

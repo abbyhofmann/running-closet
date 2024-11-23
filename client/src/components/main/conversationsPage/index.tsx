@@ -3,20 +3,35 @@ import Typography from '@mui/material/Typography';
 import { AppProvider, NavigationItem, type Navigation } from '@toolpad/core/AppProvider';
 import SearchIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
-import MarkUnreadChatAltIcon from '@mui/icons-material/MarkUnreadChatAlt';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ForumIcon from '@mui/icons-material/Forum';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import './index.css';
-import blue from '@mui/material/colors/blue';
 import React, { ChangeEvent } from 'react';
-import { TextField, Tooltip } from '@mui/material';
+import { Badge, TextField, Tooltip } from '@mui/material';
 import { useParams } from 'react-router-dom';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useConversationPage from '../../../hooks/useConversationsPage';
 import NewConversationPage from './newConversation';
 import IndividualConversation from './individualConversation';
 import ProfileAvatar from '../../profileAvatar';
 import { Conversation, User } from '../../../types';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#5171A5',
+    },
+    secondary: {
+      main: '#FF69B4',
+    },
+    background: {
+      default: '#EDE6E3',
+      paper: '#EDE6E3',
+    },
+  },
+  colorSchemes: { light: true, dark: false },
+});
 
 function NoConversationLayout() {
   return (
@@ -63,7 +78,12 @@ function Search(
             sx: { pr: 0.5 },
           },
         }}
-        sx={{ display: { xs: 'none', md: 'inline-block' }, marginLeft: 3 }}
+        sx={{
+          display: { xs: 'none', md: 'inline-block' },
+          marginLeft: 3,
+          marginTop: 2,
+          marginBottom: 1,
+        }}
         value={searchInput}
         onChange={handleInputChange}
       />
@@ -111,16 +131,24 @@ export default function ConversationsPage() {
     segment: `conversation/${c._id}`,
     title: c.users
       .filter(u => user.username !== u.username)
-      .map(u => ' '.concat(u.username))
+      .map(u => ' '.concat(u.firstName))
       .toString(),
-    icon:
-      c.messages.findIndex(m => m.readBy.findIndex(u => u.username === user.username) === -1) ===
-      -1 ? (
+    icon: (
+      <Badge
+        color='error'
+        variant='dot'
+        invisible={
+          c.messages.findIndex(
+            m => m.readBy.findIndex(u => u.username === user.username) === -1,
+          ) === -1
+        }
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}>
         <ProfileAvatar profileGraphic={getConversationGraphicNumber(c, user)} size={40} />
-      ) : (
-        // TODO - use a different icon for unread
-        <MarkUnreadChatAltIcon style={{ color: 'blue' }} />
-      ),
+      </Badge>
+    ),
   }));
 
   /**
@@ -131,7 +159,7 @@ export default function ConversationsPage() {
     segment: `conversation/${c._id}`,
     title: c.users
       .filter(u => user.username !== u.username)
-      .map(u => u.username)
+      .map(u => u.firstName)
       .join(', '),
     icon: <ProfileAvatar profileGraphic={getConversationGraphicNumber(c, user)} size={40} />,
   }));
@@ -199,27 +227,30 @@ export default function ConversationsPage() {
       : defaultNavigation(searchInput, setSearchInput, setShowSearchResults, messagesNav);
 
   return (
-    <AppProvider
-      navigation={navigation}
-      branding={{
-        logo: <ForumIcon className='messagesIcon' sx={{ color: blue[700], marginTop: 1 }} />,
-        title: 'Messages',
-      }}
-      router={router}>
-      <DashboardLayout sx={{ height: 1, width: 1 }}>
-        {router.pathname.includes('new/convo') && (
-          <NewConversationPage
-            navigate={router.navigate}
-            setConversations={setConversations}
-            conversations={conversations}></NewConversationPage>
-        )}
-        {router.pathname.includes('conversation') && (
-          <IndividualConversation cidPath={router.pathname} />
-        )}
-        {!router.pathname.includes('new/convo') && !router.pathname.includes('conversation') && (
-          <NoConversationLayout />
-        )}
-      </DashboardLayout>
-    </AppProvider>
+    <ThemeProvider theme={theme}>
+      <AppProvider
+        navigation={navigation}
+        branding={{
+          logo: <ForumIcon className='messagesIcon' sx={{ color: '#5171A5', marginTop: 1 }} />,
+          title: 'Messages',
+        }}
+        router={router}
+        theme={theme}>
+        <DashboardLayout sx={{ height: 1, width: 1, bgcolor: '#EDE6E3', color: '#EDE6E3' }}>
+          {router.pathname.includes('new/convo') && (
+            <NewConversationPage
+              navigate={router.navigate}
+              setConversations={setConversations}
+              conversations={conversations}></NewConversationPage>
+          )}
+          {router.pathname.includes('conversation') && (
+            <IndividualConversation cidPath={router.pathname} />
+          )}
+          {!router.pathname.includes('new/convo') && !router.pathname.includes('conversation') && (
+            <NoConversationLayout />
+          )}
+        </DashboardLayout>
+      </AppProvider>
+    </ThemeProvider>
   );
 }

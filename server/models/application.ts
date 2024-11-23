@@ -1127,7 +1127,14 @@ export const addMessage = async (message: Message): Promise<ConversationResponse
       { new: true },
     ).populate([
       { path: 'users', model: UserModel },
-      { path: 'messages', model: MessageModel, populate: { path: 'sender', model: UserModel } },
+      {
+        path: 'messages',
+        model: MessageModel,
+        populate: [
+          { path: 'sender', model: UserModel },
+          { path: 'readBy', model: UserModel },
+        ],
+      },
     ]);
 
     if (result === null) {

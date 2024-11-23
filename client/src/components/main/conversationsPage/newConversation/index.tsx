@@ -2,6 +2,7 @@ import './index.css';
 import { Alert, Button, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import CheckIcon from '@mui/icons-material/Check';
+import { Campaign } from '@mui/icons-material';
 import SearchUsers from './searchUsers';
 import { DashboardNavigationProps } from '../../../../types';
 import useNewConversationPage from '../../../../hooks/useNewConversationPage';
@@ -46,7 +47,7 @@ const NewConversationPage = (props: DashboardNavigationProps) => {
           display: 'flex',
           flexDirection: 'column',
         }}>
-        <Typography variant='h5' sx={{ marginLeft: 3 }}>
+        <Typography variant='h5' sx={{ marginLeft: 2, color: '#32292F' }}>
           Send a blast message to all followers:
         </Typography>
         <Box component='form' sx={{ p: 2, flexShrink: 0 }}>
@@ -66,8 +67,9 @@ const NewConversationPage = (props: DashboardNavigationProps) => {
                 variant='contained'
                 fullWidth
                 onClick={sendBlast}
-                disabled={blastMessageContent === ''}>
-                Send Blast
+                disabled={blastMessageContent === ''}
+                sx={{ bgcolor: '#5171A5' }}>
+                <Campaign sx={{ marginRight: 1 }}></Campaign>
               </Button>
             </Box>
           </Box>
