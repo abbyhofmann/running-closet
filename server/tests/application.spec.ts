@@ -36,6 +36,7 @@ import {
   deleteNotificationById,
   saveNotification,
   fetchNotifsByUsername,
+  removeUserFromFollowerFollowingLists,
 } from '../models/application';
 import {
   Answer,
@@ -1387,6 +1388,72 @@ describe('application module', () => {
         expect(result).toEqual({
           error: `Error when fetching user: Failed to fetch user with id 507f191e810c19729de860ea`,
         });
+      });
+    });
+
+    describe('removeUserFromFollowerFollowingLists', () => {
+      test('removeUserFromFollowerFollowingLists returns error if fetch fails', async () => {
+        mockingoose(UserModel).toReturn(null, 'findOne');
+        const result = await removeUserFromFollowerFollowingLists('random_username');
+        expect(result).toEqual({
+          success: false,
+          error: `Error when user random_username was being removed from others' following and followers lists: Error: Error when fetching user: Failed to fetch user with username random_username`,
+        });
+      });
+
+      test('removeUserFromFollowerFollowingLists returns error if updateMany isnt acknowledged', async () => {
+        const mockUser = {
+          _id: new ObjectId('507f191e810c19729de860ea'),
+          username: 'husky009',
+          firstName: 'Husky',
+          lastName: 'Dog',
+          email: 'neuStudent@northeastern.edu',
+          password: 'strongPassword',
+          profileGraphic: 3,
+          deleted: false,
+          followers: [],
+          following: [],
+        };
+        mockingoose(UserModel).toReturn(mockUser, 'findOne');
+        mockingoose(UserModel).toReturn(
+          {
+            acknowledged: false,
+            modifiedCount: 2,
+            matchedCount: 2,
+          },
+          'updateMany',
+        );
+        const result = await removeUserFromFollowerFollowingLists('random_username');
+        expect(result).toEqual({
+          success: false,
+          error: `Error when user random_username was being removed from others' following and followers lists: Error: Update not acknowledged by server.`,
+        });
+      });
+
+      test('removeUserFromFollowerFollowingLists returns success upon successful updateMany', async () => {
+        const mockUser = {
+          _id: new ObjectId('507f191e810c19729de860ea'),
+          username: 'husky009',
+          firstName: 'Husky',
+          lastName: 'Dog',
+          email: 'neuStudent@northeastern.edu',
+          password: 'strongPassword',
+          profileGraphic: 3,
+          deleted: false,
+          followers: [],
+          following: [],
+        };
+        mockingoose(UserModel).toReturn(mockUser, 'findOne');
+        mockingoose(UserModel).toReturn(
+          {
+            acknowledged: true,
+            modifiedCount: 2,
+            matchedCount: 2,
+          },
+          'updateMany',
+        );
+        const result = await removeUserFromFollowerFollowingLists('random_username');
+        expect(result).toEqual({ success: true });
       });
     });
   });

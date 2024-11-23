@@ -498,3 +498,9 @@ export interface NotificationUpdatePayload {
   notification: Notification;
   type: 'add' | 'remove';
 }
+
+/**
+ * Type representing the possible responses for when a user is being removed from
+ * the following/follower lists of other users.
+ */
+export type RemoveUserResponse = { success: boolean; error?: string };

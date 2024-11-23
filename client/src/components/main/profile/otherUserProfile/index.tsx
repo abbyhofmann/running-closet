@@ -64,21 +64,23 @@ const OtherUserProfilePage = () => {
                   key={'followers'}
                   sx={{ backgroundColor: '#5171A5', color: '#EDE6E3', borderRadius: '16px' }}>
                   <Typography variant='h6' sx={{ paddingX: 'auto' }}>
-                    <strong>Followers: {followedBy.length}</strong>
+                    <strong>Followers: {followedBy.filter(u => !u.deleted).length}</strong>
                   </Typography>
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {followedBy.map(u => (
-                <TableRow tabIndex={-1} key={u.username}>
-                  <TableCell>
-                    <ProfileCard
-                      username={u.username}
-                      profileGraphic={u.profileGraphic}></ProfileCard>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {followedBy
+                .filter(u => !u.deleted)
+                .map(u => (
+                  <TableRow tabIndex={-1} key={u.username}>
+                    <TableCell>
+                      <ProfileCard
+                        username={u.username}
+                        profileGraphic={u.profileGraphic}></ProfileCard>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
@@ -92,21 +94,23 @@ const OtherUserProfilePage = () => {
                   key={'following'}
                   sx={{ backgroundColor: '#5171A5', color: '#EDE6E3', borderRadius: '16px' }}>
                   <Typography variant='h6'>
-                    <strong>Following: {following.length}</strong>
+                    <strong>Following: {following.filter(u => !u.deleted).length}</strong>
                   </Typography>
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {following.map(u => (
-                <TableRow tabIndex={-1} key={u.username}>
-                  <TableCell>
-                    <ProfileCard
-                      username={u.username}
-                      profileGraphic={u.profileGraphic}></ProfileCard>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {following
+                .filter(u => !u.deleted)
+                .map(u => (
+                  <TableRow tabIndex={-1} key={u.username}>
+                    <TableCell>
+                      <ProfileCard
+                        username={u.username}
+                        profileGraphic={u.profileGraphic}></ProfileCard>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>

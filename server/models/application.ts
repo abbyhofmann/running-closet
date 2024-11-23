@@ -20,6 +20,7 @@ import {
   NotificationResponse,
   Notification,
   MultipleNotificationResponse,
+  RemoveUserResponse,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -1061,6 +1062,58 @@ export const unfollowAnotherUser = async (
     };
   }
 };
+
+/**
+ * Removes the user with the given username from every other users list of followers
+ * and following. This is for the use case of a user being deleted, where we need to
+ * remove them from these lists.
+ * @param username Username of the user being removed.
+ * @returns Upon success, an object with a true bool. Upon failure, an object with an
+ * error message.
+ */
+export const removeUserFromFollowerFollowingLists = async (
+  username: string,
+): Promise<RemoveUserResponse> => {
+  try {
+    // fetch the user being removed - they should not yet be marked as deleted
+    const user = await fetchUserByUsername(username);
+
+    if ('error' in user) {
+      throw new Error(user.error as string);
+    }
+
+    // remove the user from every other user's following and followers lists
+    const updateListsResult = await UserModel.updateMany(
+      {
+        deleted: false, // only need to look at the non-deleted users
+        $or: [
+          // only need to look at the users who have this user in their followers or following list
+          { followers: user._id },
+          { following: user._id },
+        ],
+      },
+      {
+        $pull: {
+          followers: user._id,
+          following: user._id,
+        },
+      },
+    );
+
+    // false acknowledgement means an error occurred
+    if (!updateListsResult.acknowledged) {
+      throw new Error('Update not acknowledged by server.');
+    }
+
+    return { success: true };
+  } catch (err) {
+    return {
+      success: false,
+      error: `Error when user ${username} was being removed from others' following and followers lists: ${err}`,
+    };
+  }
+};
+
 /**
  * Sets the the current user in the application to the given user.
  * @param user the user that will be set to the current user.

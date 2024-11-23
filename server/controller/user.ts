@@ -21,6 +21,7 @@ import {
   getCurrentUser,
   setCurrentUser,
   logoutCurrentUser,
+  removeUserFromFollowerFollowingLists,
 } from '../models/application';
 
 const userController = (socket: FakeSOSocket) => {
@@ -216,6 +217,14 @@ const userController = (socket: FakeSOSocket) => {
     const { username } = req.body;
 
     try {
+      // we should remove the user from everyone else's lists of followers and following
+      // before updating their deleted status because fetchByUsername only fetches non-deleted users
+      const removedUserResult = await removeUserFromFollowerFollowingLists(username);
+
+      if (!removedUserResult.success) {
+        throw new Error(removedUserResult.error as string);
+      }
+
       const result = await updateDeletedStatus(username);
 
       if (result && 'error' in result) {

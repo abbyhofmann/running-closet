@@ -68,6 +68,10 @@ const user4: User = {
 };
 
 const updateDeletedStatusSpy = jest.spyOn(util, 'updateDeletedStatus');
+const removeUserFromFollowerFollowingListsSpy = jest.spyOn(
+  util,
+  'removeUserFromFollowerFollowingLists',
+);
 
 describe('POST /registerUser', () => {
   afterEach(async () => {
@@ -478,11 +482,28 @@ describe('POST /deleteUser', () => {
     };
 
     updateDeletedStatusSpy.mockResolvedValueOnce({ error: 'User not found!' });
+    removeUserFromFollowerFollowingListsSpy.mockResolvedValueOnce({ success: true });
 
     const response = await supertest(app).post('/user/deleteUser').send(mockReqBody);
 
     expect(response.status).toBe(500);
     expect(response.text).toBe('Error when deleting user someUid: User not found!');
+  });
+
+  it('should return error if removeUserFromFollowerFollowingLists is unsuccessful', async () => {
+    const mockReqBody = {
+      username: 'someUid',
+    };
+
+    removeUserFromFollowerFollowingListsSpy.mockResolvedValueOnce({
+      success: false,
+      error: 'Error!',
+    });
+
+    const response = await supertest(app).post('/user/deleteUser').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Error when deleting user someUid: Error!');
   });
 
   it('should return user with deleted field updated upon successful deletion', async () => {
@@ -505,6 +526,7 @@ describe('POST /deleteUser', () => {
     };
 
     updateDeletedStatusSpy.mockResolvedValueOnce(updatedUser);
+    removeUserFromFollowerFollowingListsSpy.mockResolvedValueOnce({ success: true });
 
     const response = await supertest(app).post('/user/deleteUser').send(mockReqBody);
     expect(response.status).toBe(200);
