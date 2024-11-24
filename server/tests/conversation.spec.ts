@@ -2,7 +2,14 @@ import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 import supertest from 'supertest';
 import { app } from '../app';
-import { User, MultipleConversationResponse, Conversation, Message, Notification } from '../types';
+import {
+  User,
+  MultipleConversationResponse,
+  Conversation,
+  Message,
+  Notification,
+  SendEmailPayload,
+} from '../types';
 import * as util from '../models/application';
 
 const saveConversationSpy = jest.spyOn(util, 'saveConversation');
@@ -419,6 +426,11 @@ describe('POST /sendBlastMessage', () => {
       message: mockMessage,
     };
 
+    const mockSendMsgPayload = {
+      success: true,
+      message: 'Email sent successfully',
+    };
+
     jest.spyOn(util, 'fetchUserById').mockResolvedValueOnce(user3 as User);
     jest
       .spyOn(util, 'fetchConvosByParticipants')
@@ -432,6 +444,7 @@ describe('POST /sendBlastMessage', () => {
       .mockResolvedValueOnce(mockConversationWithMessage as Conversation);
     jest.spyOn(util, 'saveAndAddMessage').mockResolvedValue(mockMessage as Message);
     jest.spyOn(util, 'saveNotification').mockResolvedValue(mockNotification as Notification);
+    jest.spyOn(util, 'sendEmail').mockResolvedValueOnce(mockSendMsgPayload as SendEmailPayload);
 
     const mockReqBody = {
       uid: user3._id?.toString(),

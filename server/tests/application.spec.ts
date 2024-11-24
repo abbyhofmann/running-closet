@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongodb';
+import sgMail from '@sendgrid/mail';
 import Tags from '../models/tags';
 import QuestionModel from '../models/questions';
 import {
@@ -37,6 +38,7 @@ import {
   saveNotification,
   fetchNotifsByUsername,
   removeUserFromFollowerFollowingLists,
+  sendEmail,
 } from '../models/application';
 import {
   Answer,
@@ -2064,6 +2066,44 @@ describe('application module', () => {
         const result = await fetchNotifsByUsername('user1');
 
         expect(result).toEqual({ error: 'Error when fetching the notifications' });
+      });
+    });
+
+    describe('sendEmail', () => {
+      beforeEach(() => {
+        jest.resetModules();
+        process.env.SENDGRID_API_KEY = 'mock-sendgrid-api-key';
+      });
+      test('sendEmail returns success payload upon success', async () => {
+        jest
+          .spyOn(sgMail, 'send')
+          .mockResolvedValueOnce([{ statusCode: 200, body: {}, headers: {} }, {}]);
+        const result = await sendEmail('test@email.com', user1.username, user1.profileGraphic);
+        expect(result).toEqual({ success: true, message: 'Email sent successfully!' });
+        expect(sgMail.send).toHaveBeenCalledWith(
+          expect.objectContaining({
+            to: 'test@email.com',
+            from: 'code_connect_neu@outlook.com',
+            subject: 'New CodeConnect Message from user1!',
+          }),
+        );
+      });
+
+      test('sendEmail returns failure payload upon success', async () => {
+        jest.spyOn(sgMail, 'send').mockRejectedValueOnce(new Error('SendGrid API error'));
+
+        const result = await sendEmail('test@email.com', user1.username, user1.profileGraphic);
+        expect(result).toEqual({
+          success: false,
+          message: 'Failed to send email: SendGrid API error',
+        });
+        expect(sgMail.send).toHaveBeenCalledWith(
+          expect.objectContaining({
+            to: 'test@email.com',
+            from: 'code_connect_neu@outlook.com',
+            subject: 'New CodeConnect Message from user1!',
+          }),
+        );
       });
     });
   });

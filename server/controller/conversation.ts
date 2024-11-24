@@ -20,6 +20,7 @@ import {
   createOrFetchConversation,
   saveAndAddMessage,
   saveNotification,
+  sendEmail,
 } from '../models/application';
 
 const conversationController = (socket: FakeSOSocket) => {
@@ -224,7 +225,10 @@ const conversationController = (socket: FakeSOSocket) => {
             notification: notificationFromDb,
             type: 'add',
           };
-
+          const sendEmailResp = await sendEmail(follower.email, user.username, user.profileGraphic);
+          if (sendEmailResp && !sendEmailResp.success) {
+            throw new Error(sendEmailResp.message);
+          }
           socket.emit('notificationsUpdate', notificationUpdate);
         }),
       );

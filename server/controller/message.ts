@@ -19,6 +19,7 @@ import {
   fetchUserByUsername,
   saveMessage,
   saveNotification,
+  sendEmail,
 } from '../models/application';
 
 const messageController = (socket: FakeSOSocket) => {
@@ -129,6 +130,10 @@ const messageController = (socket: FakeSOSocket) => {
           type: 'add',
         };
 
+        const sendEmailResp = await sendEmail(u.email, user.username, user.profileGraphic);
+        if (sendEmailResp && !sendEmailResp.success) {
+          throw new Error(sendEmailResp.message);
+        }
         socket.emit('notificationsUpdate', notificationUpdate);
       });
 

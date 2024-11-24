@@ -504,3 +504,14 @@ export interface NotificationUpdatePayload {
  * the following/follower lists of other users.
  */
 export type RemoveUserResponse = { success: boolean; error?: string };
+
+/**
+ * Interface representing the payload when an email is attempted to be sent.
+ * - success: boolean, true upon success and false upon failure
+ * - message: 'Email successfully sent!' upon success, or 'Failed to send email' with
+ * error appended upon failure.
+ */
+export interface SendEmailPayload {
+  success: boolean;
+  message: string;
+}

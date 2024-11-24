@@ -12,6 +12,7 @@ const areUsersRegisteredSpy = jest.spyOn(util, 'areUsersRegistered');
 const fetchUserByIdSpy = jest.spyOn(util, 'fetchUserById');
 const markMessageAsReadSpy = jest.spyOn(util, 'markMessageAsRead');
 const fetchUserByUsernameSpy = jest.spyOn(util, 'fetchUserByUsername');
+const sendEmailSpy = jest.spyOn(util, 'sendEmail');
 
 const user1: User = {
   _id: new ObjectId('45e9b58910afe6e94fc6e6dc'),
@@ -74,6 +75,11 @@ describe('POST /sendMessage', () => {
       cid: validCid.toString(),
     };
 
+    const mockSendMsgPayload = {
+      success: true,
+      message: 'Email sent successfully',
+    };
+
     fetchUserByUsernameSpy.mockResolvedValueOnce(user1);
 
     areUsersRegisteredSpy.mockResolvedValueOnce(true);
@@ -83,6 +89,8 @@ describe('POST /sendMessage', () => {
     saveMessageSpy.mockResolvedValueOnce(mockMessage);
 
     addMessageSpy.mockResolvedValueOnce(mockConversation);
+
+    sendEmailSpy.mockResolvedValueOnce(mockSendMsgPayload);
 
     const response = await supertest(app).post('/message/sendMessage').send(mockReqBody);
 

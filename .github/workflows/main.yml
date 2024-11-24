@@ -8,6 +8,10 @@ on: # Controls when the action will run.
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+# env variables 
+env: 
+  SENDGRID_API_KEY: ${{secrets.API_KEY}}
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build-and-test: #
@@ -44,6 +48,7 @@ jobs:
         env:
           # Pass the environmental variables for the backend tests to use
           MONGODB_URI: mongodb://localhost:27017
+          SENDGRID_API_KEY: ${{secrets.API_KEY}}
         run: |
           cd server
 

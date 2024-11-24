@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { QueryOptions } from 'mongoose';
+import sgMail from '@sendgrid/mail';
 import {
   Answer,
   AnswerResponse,
@@ -21,6 +22,7 @@ import {
   Notification,
   MultipleNotificationResponse,
   RemoveUserResponse,
+  SendEmailPayload,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -1352,5 +1354,72 @@ export const fetchNotifsByUsername = async (
     return notifs;
   } catch (error) {
     return { error: 'Error when fetching the notifications' };
+  }
+};
+
+/**
+ * Sends an email to the specified email address. Uses the SendGrid API. If the limit
+ * of 100 free emails is reached, the error from SendGrid is handled but the message
+ * is still sent.
+ * @param to Email to send the email to.
+ * @param msgSender The user sending the message.
+ */
+export const sendEmail = async (
+  to: string,
+  msgSender: string,
+  profileGraphic: number,
+): Promise<SendEmailPayload> => {
+  const sendGridApiKey = process.env.SENDGRID_API_KEY;
+  if (sendGridApiKey) {
+    sgMail.setApiKey(sendGridApiKey);
+  } else {
+    throw new Error('SENDGRID_API_KEY environment variable is not set');
+  }
+
+  const ccLink = 'https://fall24-project-fall24-team-project-group-3ck6.onrender.com/';
+
+  const msg = {
+    to,
+    from: 'code_connect_neu@outlook.com',
+    subject: `New CodeConnect Message from ${msgSender}!`,
+    html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; text-align: center; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px;">
+      <!-- header with logo -->
+      <div style="margin-bottom: 20px;">
+        <img src="${ccLink}logos/code-connect-name.png" alt="CC Logo" width="200" style="vertical-align: middle;">
+      </div>
+      
+      <!-- profile graphic and text -->
+      <div style="margin-bottom: 20px;">
+        <img src="${ccLink}profileGraphics/image${profileGraphic}.jpeg" alt="Profile Graphic" style="border-radius: 50%; width: 80px; height: 80px; margin-bottom: 10px;">
+        <p style="font-size: 16px; color: #333; margin: 0;">${msgSender} sent you a message!</p>
+      </div>
+      
+      <!-- link to code connect website -->
+      <a href=${ccLink} target="_blank" style="text-decoration: none;">
+        <div style="background-color: #006aff; color: white; padding: 12px 20px; font-size: 16px; border-radius: 5px; display: inline-block;">
+          Open Code Connect
+        </div>
+      </a>
+      
+      <!-- footer note -->
+      <p style="font-size: 12px; color: #666; margin-top: 20px;">
+        You'll need to use Code Connect to see and respond to ${msgSender}'s message. With Code Connect, you can send messages, and ask and answer questions.
+      </p>
+    </div>
+  `,
+  };
+
+  try {
+    await sgMail.send(msg);
+    return { success: true, message: 'Email sent successfully!' };
+  } catch (err) {
+    // a Forbidden or Unauthorized error is returned when the email fails to be sent because of the
+    // 100 email/day limit; here, we catch this to ensure that even though the email is not sent,
+    // the message still goes through
+    if ((err as Error).message === 'Forbidden' || (err as Error).message === 'Unauthorized') {
+      return { success: true, message: 'Send limit reached - email not sent' };
+    }
+    return { success: false, message: `Failed to send email: ${(err as Error).message}` };
   }
 };
