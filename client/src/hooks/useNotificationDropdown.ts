@@ -78,10 +78,12 @@ const useNotificationDropdown = () => {
       if (user.username === notification.user) {
         setNotifications(prevNotifications => {
           if (type === 'add' && !prevNotifications.find(n => n._id === notification._id)) {
-            return [...prevNotifications, notification];
+            return [...prevNotifications, notification].sort(sortBySentAt);
           }
           if (type === 'remove') {
-            return prevNotifications.filter(n => n.message._id !== notification.message._id);
+            return prevNotifications
+              .filter(n => n.message._id !== notification.message._id)
+              .sort(sortBySentAt);
           }
           return prevNotifications;
         });
