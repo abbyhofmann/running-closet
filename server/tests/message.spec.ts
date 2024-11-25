@@ -13,6 +13,7 @@ const fetchUserByIdSpy = jest.spyOn(util, 'fetchUserById');
 const markMessageAsReadSpy = jest.spyOn(util, 'markMessageAsRead');
 const fetchUserByUsernameSpy = jest.spyOn(util, 'fetchUserByUsername');
 const sendEmailSpy = jest.spyOn(util, 'sendEmail');
+const saveNotificationSpy = jest.spyOn(util, 'saveNotification');
 const fetchNotifsByUsernameSpy = jest.spyOn(util, 'fetchNotifsByUsername');
 const deleteNotificationByIdSpy = jest.spyOn(util, 'deleteNotificationById');
 
@@ -342,6 +343,108 @@ describe('POST /sendMessage', () => {
     saveMessageSpy.mockResolvedValueOnce(mockMessage);
 
     addMessageSpy.mockResolvedValueOnce({ error: 'error' });
+
+    const response = await supertest(app).post('/message/sendMessage').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Error when adding message: error');
+  });
+
+  it('should throw a database error when saveNotification throws', async () => {
+    const validCid = new mongoose.Types.ObjectId();
+    const validMid = new mongoose.Types.ObjectId();
+
+    const mockConversation = {
+      _id: validCid,
+      users: [user1, user2],
+      messages: [],
+      updatedAt: new Date('2024-11-03'),
+    };
+
+    const mockReqBody = {
+      messageContent: 'Hello',
+      sentBy: 'user1',
+      cid: validCid.toString(),
+    };
+
+    const mockMessage = {
+      _id: validMid,
+      messageContent: 'Hello',
+      sender: user1,
+      sentAt: new Date('2024-11-03'),
+      readBy: [user1],
+      cid: validCid.toString(),
+    };
+
+    fetchUserByUsernameSpy.mockResolvedValueOnce(user1);
+
+    areUsersRegisteredSpy.mockResolvedValueOnce(true);
+
+    fetchConversationByIdSpy.mockResolvedValueOnce(mockConversation);
+
+    saveMessageSpy.mockResolvedValueOnce(mockMessage);
+
+    addMessageSpy.mockResolvedValueOnce(mockConversation);
+
+    saveNotificationSpy.mockResolvedValueOnce({ error: 'error' });
+
+    const response = await supertest(app).post('/message/sendMessage').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Error when adding message: error');
+  });
+
+  it('should throw a database error when sendEmailResponse is unsuccesful', async () => {
+    const validCid = new mongoose.Types.ObjectId();
+    const validMid = new mongoose.Types.ObjectId();
+    const validNid = new mongoose.Types.ObjectId();
+
+    const mockConversation = {
+      _id: validCid,
+      users: [user1, user2],
+      messages: [],
+      updatedAt: new Date('2024-11-03'),
+    };
+
+    const mockReqBody = {
+      messageContent: 'Hello',
+      sentBy: 'user1',
+      cid: validCid.toString(),
+    };
+
+    const mockMessage = {
+      _id: validMid,
+      messageContent: 'Hello',
+      sender: user1,
+      sentAt: new Date('2024-11-03'),
+      readBy: [user1],
+      cid: validCid.toString(),
+    };
+
+    const mockNotification = {
+      _id: validNid,
+      message: mockMessage,
+      user: user2.username,
+    };
+
+    const mockSendMsgPayload = {
+      success: false,
+      message: 'error',
+    };
+
+    fetchUserByUsernameSpy.mockResolvedValueOnce(user1);
+
+    areUsersRegisteredSpy.mockResolvedValueOnce(true);
+
+    fetchConversationByIdSpy.mockResolvedValueOnce(mockConversation);
+
+    saveMessageSpy.mockResolvedValueOnce(mockMessage);
+
+    addMessageSpy.mockResolvedValueOnce(mockConversation);
+
+    saveNotificationSpy.mockResolvedValueOnce(mockNotification);
+
+    sendEmailSpy.mockResolvedValueOnce(mockSendMsgPayload);
 
     const response = await supertest(app).post('/message/sendMessage').send(mockReqBody);
 

@@ -17,6 +17,11 @@ const areUsersRegisteredSpy = jest.spyOn(util, 'areUsersRegistered');
 const doesConversationExistSpy = jest.spyOn(util, 'doesConversationExist');
 const fetchConvosByParticipantsSpy = jest.spyOn(util, 'fetchConvosByParticipants');
 const fetchConversationByIdSpy = jest.spyOn(util, 'fetchConversationById');
+const fetchUserByIdSpy = jest.spyOn(util, 'fetchUserById');
+const createOrFetchConversationSpy = jest.spyOn(util, 'createOrFetchConversation');
+const saveAndAddMessageSpy = jest.spyOn(util, 'saveAndAddMessage');
+const saveNotificationSpy = jest.spyOn(util, 'saveNotification');
+const sendEmailSpy = jest.spyOn(util, 'sendEmail');
 
 const user1: User = {
   _id: new ObjectId('45e9b58910afe6e94fc6e6dc'),
@@ -125,6 +130,22 @@ describe('POST /addConversation', () => {
     expect(response.text).toBe('Conversation with provided users already exists');
   });
 
+  it('should return error status if error during doesConversationExist', async () => {
+    const mockReqBody = {
+      users: [user1, user2],
+    };
+
+    areUsersRegisteredSpy.mockResolvedValueOnce(true);
+    doesConversationExistSpy.mockRejectedValueOnce(new Error('Error thrown'));
+
+    const response = await supertest(app).post('/conversation/addConversation').send(mockReqBody);
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe(
+      'Error occurred when checking if conversation exists: Error: Error thrown',
+    );
+  });
+
   it('should return error status if error during fetch convo', async () => {
     const mockReqBody = {
       users: [user1, user2],
@@ -137,6 +158,21 @@ describe('POST /addConversation', () => {
 
     expect(response.status).toBe(400);
     expect(response.text).toBe('Conversation with provided users already exists');
+  });
+
+  it('should return database error when there is an issue with saveConversation', async () => {
+    const mockReqBody = {
+      users: [user1, user2],
+    };
+
+    saveConversationSpy.mockResolvedValueOnce({ error: 'Error' });
+    areUsersRegisteredSpy.mockResolvedValueOnce(true);
+    fetchConvosByParticipantsSpy.mockResolvedValueOnce([]);
+    doesConversationExistSpy.mockResolvedValueOnce(false);
+
+    const response = await supertest(app).post('/conversation/addConversation').send(mockReqBody);
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Error when saving conversation: Error');
   });
 
   it('should return conversation object upon valid request', async () => {
@@ -298,10 +334,10 @@ describe('GET /getConversations', () => {
       updatedAt: dateObj,
     };
 
-    jest.spyOn(util, 'fetchUserById').mockResolvedValueOnce(user1 as User);
-    jest
-      .spyOn(util, 'fetchConvosByParticipants')
-      .mockResolvedValueOnce([mockConversation] as MultipleConversationResponse);
+    fetchUserByIdSpy.mockResolvedValueOnce(user1 as User);
+    fetchConvosByParticipantsSpy.mockResolvedValueOnce([
+      mockConversation,
+    ] as MultipleConversationResponse);
 
     const response = await supertest(app).get(`/conversation/getConversations/${user1._id}`);
 
@@ -341,6 +377,26 @@ describe('GET /getConversations', () => {
 
     expect(response.status).toBe(200);
     expect(JSON.parse(response.text)).toEqual(expectedResponse);
+  });
+
+  it('should return database error if fetchUserById throws', async () => {
+    jest.clearAllMocks();
+    fetchUserByIdSpy.mockResolvedValueOnce({ error: 'Error' });
+
+    const response = await supertest(app).get(`/conversation/getConversations/${user1._id}`);
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Error when fetching conversations: Error');
+  });
+
+  it('should return database error if fetchUserById throws', async () => {
+    jest.clearAllMocks();
+
+    fetchUserByIdSpy.mockResolvedValueOnce(user1 as User);
+    fetchConvosByParticipantsSpy.mockResolvedValueOnce({ error: 'Error' });
+
+    const response = await supertest(app).get(`/conversation/getConversations/${user1._id}`);
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Error when fetching conversations: Error');
   });
 });
 
@@ -394,6 +450,17 @@ describe('POST /sendBlastMessage', () => {
     expect(response.text).toBe('Invalid blast message request body');
   });
 
+  it('should return invalid request error if uid is not valid format', async () => {
+    const mockReqBody = {
+      uid: 'invalid',
+      messageContent: 'hey!',
+    };
+
+    const response = await supertest(app).post('/conversation/sendBlastMessage').send(mockReqBody);
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid ID format');
+  });
+
   it('should return a list of conversation ids upon valid request', async () => {
     jest.clearAllMocks();
     const dateObj = new Date('December 17, 1995');
@@ -413,13 +480,6 @@ describe('POST /sendBlastMessage', () => {
       cid: mockConversation._id.toString(),
     };
 
-    const mockConversationWithMessage = {
-      _id: new mongoose.Types.ObjectId(),
-      users: [user3, user1],
-      messages: [mockMessage],
-      updatedAt: dateObj,
-    };
-
     const mockNotification = {
       _id: new mongoose.Types.ObjectId(),
       user: user1.username,
@@ -431,20 +491,11 @@ describe('POST /sendBlastMessage', () => {
       message: 'Email sent successfully',
     };
 
-    jest.spyOn(util, 'fetchUserById').mockResolvedValueOnce(user3 as User);
-    jest
-      .spyOn(util, 'fetchConvosByParticipants')
-      .mockResolvedValueOnce([mockConversation] as Conversation[]);
-    jest
-      .spyOn(util, 'createOrFetchConversation')
-      .mockResolvedValueOnce(mockConversation as Conversation);
-    jest.spyOn(util, 'saveMessage').mockResolvedValueOnce(mockMessage as Message);
-    jest
-      .spyOn(util, 'addMessage')
-      .mockResolvedValueOnce(mockConversationWithMessage as Conversation);
-    jest.spyOn(util, 'saveAndAddMessage').mockResolvedValue(mockMessage as Message);
-    jest.spyOn(util, 'saveNotification').mockResolvedValue(mockNotification as Notification);
-    jest.spyOn(util, 'sendEmail').mockResolvedValueOnce(mockSendMsgPayload as SendEmailPayload);
+    fetchUserByIdSpy.mockResolvedValueOnce(user3 as User);
+    createOrFetchConversationSpy.mockResolvedValueOnce(mockConversation as Conversation);
+    saveAndAddMessageSpy.mockResolvedValue(mockMessage as Message);
+    saveNotificationSpy.mockResolvedValue(mockNotification as Notification);
+    sendEmailSpy.mockResolvedValueOnce(mockSendMsgPayload as SendEmailPayload);
 
     const mockReqBody = {
       uid: user3._id?.toString(),
@@ -457,5 +508,144 @@ describe('POST /sendBlastMessage', () => {
 
     expect(response.status).toBe(200);
     expect(JSON.parse(response.text)).toEqual(expectedResponse);
+  });
+
+  it('should return a database error when there is an issue with fetchUserById', async () => {
+    jest.clearAllMocks();
+    fetchUserByIdSpy.mockResolvedValueOnce({ error: 'error' });
+
+    const mockReqBody = {
+      uid: user3._id?.toString(),
+      messageContent: 'User 3 sending message!',
+    };
+
+    const response = await supertest(app).post('/conversation/sendBlastMessage').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toEqual('Error when blasting message: error');
+  });
+
+  it('should return a database error when there is an issue with createOrFetchConversation', async () => {
+    jest.clearAllMocks();
+
+    fetchUserByIdSpy.mockResolvedValueOnce({ error: 'error' });
+    createOrFetchConversationSpy.mockRejectedValueOnce(new Error('error'));
+
+    const mockReqBody = {
+      uid: user3._id?.toString(),
+      messageContent: 'User 3 sending message!',
+    };
+
+    const response = await supertest(app).post('/conversation/sendBlastMessage').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toEqual('Error when blasting message: error');
+  });
+
+  it('should return a database error when there is an issue with saveAndAddMessage', async () => {
+    jest.clearAllMocks();
+    const dateObj = new Date('December 17, 1995');
+    const mockConversation = {
+      _id: new mongoose.Types.ObjectId(),
+      users: [user3, user1],
+      messages: [],
+      updatedAt: dateObj,
+    };
+
+    fetchUserByIdSpy.mockResolvedValueOnce(user3 as User);
+    createOrFetchConversationSpy.mockResolvedValueOnce(mockConversation as Conversation);
+    saveAndAddMessageSpy.mockRejectedValueOnce(new Error('error'));
+
+    const mockReqBody = {
+      uid: user3._id?.toString(),
+      messageContent: 'User 3 sending message!',
+    };
+
+    const response = await supertest(app).post('/conversation/sendBlastMessage').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toEqual('Error when blasting message: error');
+  });
+
+  it('should return a database error when there is an issue with saveNotification', async () => {
+    jest.clearAllMocks();
+    const dateObj = new Date('December 17, 1995');
+    const mockConversation = {
+      _id: new mongoose.Types.ObjectId(),
+      users: [user3, user1],
+      messages: [],
+      updatedAt: dateObj,
+    };
+
+    const mockMessage = {
+      _id: new mongoose.Types.ObjectId(),
+      messageContent: 'Hello',
+      sender: user1,
+      sentAt: new Date('2024-11-03'),
+      readBy: [user1],
+      cid: mockConversation._id.toString(),
+    };
+
+    fetchUserByIdSpy.mockResolvedValueOnce(user3 as User);
+    createOrFetchConversationSpy.mockResolvedValueOnce(mockConversation as Conversation);
+    saveAndAddMessageSpy.mockResolvedValue(mockMessage as Message);
+    saveNotificationSpy.mockResolvedValue({ error: 'error' });
+
+    const mockReqBody = {
+      uid: user3._id?.toString(),
+      messageContent: 'User 3 sending message!',
+    };
+
+    const response = await supertest(app).post('/conversation/sendBlastMessage').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toEqual('Error when blasting message: error');
+  });
+
+  it('should return a database error when there is an issue with sendEmail', async () => {
+    jest.clearAllMocks();
+    const dateObj = new Date('December 17, 1995');
+    const mockConversation = {
+      _id: new mongoose.Types.ObjectId(),
+      users: [user3, user1],
+      messages: [],
+      updatedAt: dateObj,
+    };
+
+    const mockMessage = {
+      _id: new mongoose.Types.ObjectId(),
+      messageContent: 'Hello',
+      sender: user1,
+      sentAt: new Date('2024-11-03'),
+      readBy: [user1],
+      cid: mockConversation._id.toString(),
+    };
+
+    const mockNotification = {
+      _id: new mongoose.Types.ObjectId(),
+      user: user1.username,
+      message: mockMessage,
+    };
+
+    const mockFailedSendMsgPayload = {
+      success: false,
+      message: 'error',
+    };
+
+    fetchUserByIdSpy.mockResolvedValueOnce(user3 as User);
+    createOrFetchConversationSpy.mockResolvedValueOnce(mockConversation as Conversation);
+    saveAndAddMessageSpy.mockResolvedValue(mockMessage as Message);
+    saveNotificationSpy.mockResolvedValue(mockNotification as Notification);
+    sendEmailSpy.mockResolvedValueOnce(mockFailedSendMsgPayload as SendEmailPayload);
+
+    const mockReqBody = {
+      uid: user3._id?.toString(),
+      messageContent: 'User 3 sending message!',
+    };
+
+    const response = await supertest(app).post('/conversation/sendBlastMessage').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toEqual('Error when blasting message: error');
   });
 });

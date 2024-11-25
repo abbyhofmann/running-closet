@@ -39,6 +39,8 @@ import {
   fetchNotifsByUsername,
   removeUserFromFollowerFollowingLists,
   sendEmail,
+  comparePasswords,
+  saveAndAddMessage,
 } from '../models/application';
 import {
   Answer,
@@ -56,12 +58,15 @@ import UserModel from '../models/users';
 import ConversationModel from '../models/conversations';
 import MessageModel from '../models/messages';
 import NotificationModel from '../models/notifications';
+import * as util from '../models/application';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mockingoose = require('mockingoose');
 
 const createMessageSpy = jest.spyOn(MessageModel, 'create');
 const createNotificationSpy = jest.spyOn(NotificationModel, 'create');
+const createUserSpy = jest.spyOn(UserModel, 'create');
+const createConversationSpy = jest.spyOn(ConversationModel, 'create');
 
 const tag1: Tag = {
   _id: new ObjectId('507f191e810c19729de860ea'),
@@ -1036,6 +1041,14 @@ describe('application module', () => {
         expect(result.followers).toEqual(mockUser.followers);
         expect(result.following).toEqual(mockUser.following);
       });
+
+      test('saveUser should return an error when create throws an error', async () => {
+        createUserSpy.mockRejectedValueOnce(new Error('error'));
+
+        const result = await saveUser(user1);
+
+        expect(result).toEqual({ error: 'Error when saving a user' });
+      });
     });
 
     describe('hashPassword', () => {
@@ -1044,6 +1057,23 @@ describe('application module', () => {
         const hashedPassword = (await hashPassword(password)) as string;
 
         expect(hashedPassword).not.toEqual(password);
+      });
+    });
+
+    describe('comparePasswords', () => {
+      test('comparePasswords successfully compares a password and its hashed version', async () => {
+        const password = 'password';
+        const hashedPassword = (await hashPassword(password)) as string;
+
+        const result = await comparePasswords(password, hashedPassword);
+        expect(result).toEqual(true);
+      });
+
+      test('comparePasswords successfully says two passwords are different', async () => {
+        const password = 'password';
+
+        const result = await comparePasswords(password, password);
+        expect(result).toEqual(false);
       });
     });
 
@@ -1579,6 +1609,67 @@ describe('application module', () => {
       });
     });
 
+    describe('saveAndAddMessage', () => {
+      test('saveAndAddMessage should return the updated message', async () => {
+        const conversation: Conversation = {
+          ...conversation2,
+          messages: [message1],
+          users: [user1, user2],
+          updatedAt: new Date(),
+        };
+
+        jest.spyOn(util, 'saveMessage').mockResolvedValueOnce(message1);
+
+        jest.spyOn(util, 'addMessage').mockResolvedValueOnce(conversation);
+
+        const result = await saveAndAddMessage(
+          conversation,
+          message1.sender,
+          message1.messageContent,
+        );
+
+        expect(result._id).toBeDefined();
+        expect(result.messageContent).toEqual(message1.messageContent);
+        expect(result.sender._id?.toString()).toEqual(message1.sender._id?.toString());
+        expect(result.sentAt).toEqual(message1.sentAt);
+        expect(result.readBy.length).toEqual(1);
+        expect(result.readBy[0]._id?.toString()).toEqual(message1.sender._id?.toString());
+      });
+
+      test('saveAndAddMessage should throw an error if saveMessage throws', async () => {
+        const conversation: Conversation = {
+          ...conversation2,
+          messages: [message1],
+          users: [user1, user2],
+          updatedAt: new Date(),
+        };
+
+        jest.spyOn(util, 'saveMessage').mockResolvedValueOnce({ error: 'error' });
+
+        await expect(
+          saveAndAddMessage(conversation, message1.sender, message1.messageContent),
+        ).rejects.toThrow('error');
+      });
+
+      test('saveAndAddMessage should throw an error if saveMessage throws', async () => {
+        const conversation: Conversation = {
+          ...conversation2,
+          messages: [message1],
+          users: [user1, user2],
+          updatedAt: new Date(),
+        };
+
+        jest.spyOn(util, 'saveMessage').mockResolvedValueOnce(message1);
+
+        // Mock `addMessage` to avoid it being called
+        jest.spyOn(util, 'addMessage').mockResolvedValueOnce({ error: 'error' });
+
+        await expect(
+          saveAndAddMessage(conversation, message1.sender, message1.messageContent),
+        ).rejects.toThrow('error');
+      });
+    });
+
     describe('markMessageAsRead', () => {
       test('markMessageAsRead should return the updated message', async () => {
         mockingoose(MessageModel).toReturn(message1, 'findOneAndUpdate');
@@ -1624,6 +1715,20 @@ describe('application module', () => {
         expect(result.users.length).toEqual(2);
         expect(result.users[0]).toEqual(user1._id);
         expect(result.users[1]).toEqual(user2._id);
+      });
+
+      test('saveConversation should return an error when create throws an error', async () => {
+        const mockConversation = {
+          users: [user1, user2],
+          messages: [],
+          updatedAt: new Date(),
+        };
+
+        createConversationSpy.mockRejectedValueOnce(new Error('error'));
+
+        const result = await saveConversation(mockConversation);
+
+        expect(result).toEqual({ error: 'Error when saving a conversation' });
       });
     });
 
@@ -1913,6 +2018,39 @@ describe('application module', () => {
         expect(convo.users).toEqual(mockConversation.users);
         expect(convo.messages).toEqual(mockConversation.messages);
         expect(convo.updatedAt).toBeInstanceOf(Date);
+      });
+
+      test('createOrFetchConversation throws error when fetchConvoByParticipants throws', async () => {
+        mockingoose(ConversationModel).toReturn(new Error('error'), 'find');
+
+        await expect(createOrFetchConversation(user1, user2)).rejects.toThrow(
+          'Error when fetching the conversations',
+        );
+      });
+
+      test('createOrFetchConversation throws when more than one convo was found', async () => {
+        mockingoose(ConversationModel).toReturn([], 'find');
+        const mockConversation: Conversation = {
+          _id: new ObjectId('6734a800f4078fe67cc1d2df'),
+          users: [user1, user2],
+          messages: [],
+          updatedAt: new Date('October 1, 2024'),
+        };
+        mockingoose(ConversationModel).toReturn([mockConversation, mockConversation], 'find');
+
+        await expect(createOrFetchConversation(user1, user2)).rejects.toThrow(
+          'More than one conversation returned',
+        );
+      });
+
+      test('createOrFetchConversation throws an error when saveConversation fails', async () => {
+        mockingoose(ConversationModel).toReturn([], 'find');
+
+        createConversationSpy.mockRejectedValueOnce(new Error('error'));
+
+        await expect(createOrFetchConversation(user1, user2)).rejects.toThrow(
+          'Error when saving a conversation',
+        );
       });
     });
   });

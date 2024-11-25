@@ -824,6 +824,20 @@ describe('POST /unfollowUser', () => {
     expect(response.status).toBe(400);
     expect(response.text).toBe('Invalid ID format');
   });
+
+  it('should return error when unfollowAnotherUserErrors', async () => {
+    const mockReqBody = {
+      currentUserId: '45e9b58910afe6e94fc6e6dc',
+      userToFollowId: '46e9b58910afe6e94fc6e6dd',
+    };
+
+    unfollowAnotherUserSpy.mockResolvedValueOnce({ error: 'error' });
+
+    const response = await supertest(app).post('/user/unfollowUser').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Error when unfollowing user: error');
+  });
 });
 
 describe('GET /getCurrentUser', () => {
@@ -839,6 +853,7 @@ describe('GET /getCurrentUser', () => {
     await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
   });
   it('should return 500 status when no user is logged in', async () => {
+    jest.clearAllMocks();
     const response = await supertest(app).get('/user/getCurrentUser');
 
     getCurrentUserSpy.mockResolvedValueOnce(null);
