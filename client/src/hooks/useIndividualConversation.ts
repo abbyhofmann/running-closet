@@ -20,7 +20,8 @@ const useIndividualConversation = (cidpath: string) => {
   const { user, socket } = useUserContext();
   const [conversationId, setConversationId] = useState<string>(cidpath.split('/')[2]);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [conversationNames, setConversationNames] = useState<string[]>([]);
+  // list of lists, where each list is the user's first name at index 0 and the user's username at index 1
+  const [conversationNames, setConversationNames] = useState<string[][]>([]);
   const [newMessage, setNewMessage] = useState<string>('');
   const [alert, setAlert] = useState<string | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -49,7 +50,7 @@ const useIndividualConversation = (cidpath: string) => {
           setConversationNames(
             conversation.users
               .filter(u => user.username !== u.username)
-              .map(u => u.firstName.toString()),
+              .map(u => [u.firstName.toString(), u.username]),
           );
           setMessages(conversation.messages.sort((a, b) => (a.sentAt > b.sentAt ? 1 : -1)));
           const otherParticipants = conversation.users.filter(u => user.username !== u.username);

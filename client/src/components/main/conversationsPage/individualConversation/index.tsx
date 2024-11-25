@@ -60,12 +60,13 @@ export default function IndividualConversation({ cidPath }: IndividualConversati
         <div>
           {/* Each name of the other user(s) in the convo is clickable */}
           <Typography variant='h6'>
-            {conversationNames.map((name, index) => (
-              <React.Fragment key={name}>
+            {conversationNames.map((nameList, index) => (
+              <React.Fragment key={nameList[1]}>
                 <span
                   style={{ cursor: 'pointer', color: 'black', fontWeight: 'bold' }}
-                  onClick={() => navigate(`/profile/${name}`)}>
-                  {name}
+                  onClick={() => navigate(`/profile/${nameList[1]}`)}>
+                  {/* We display each user's name but user their username to redirect to their profile page */}
+                  {nameList[0]}
                 </span>
                 {index < conversationNames.length - 1 && <span style={{ color: 'black' }}>, </span>}
               </React.Fragment>
