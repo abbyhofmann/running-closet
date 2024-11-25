@@ -46,7 +46,7 @@ const LoggedInUserProfilePage = () => {
         </Button>
       </Grid>
       <Grid size={6} sx={{ paddingTop: 4, paddingBottom: 5, paddingLeft: 4 }}>
-        <TableContainer sx={{ height: 400 }}>
+        <TableContainer sx={{ height: 425 }}>
           <Table stickyHeader aria-label='sticky table'>
             <TableHead>
               <TableRow>
@@ -72,7 +72,7 @@ const LoggedInUserProfilePage = () => {
         </TableContainer>
       </Grid>
       <Grid size={6} sx={{ paddingTop: 4, paddingBottom: 5, paddingRight: 4 }}>
-        <TableContainer sx={{ height: 400 }}>
+        <TableContainer sx={{ height: 425 }}>
           <Table stickyHeader aria-label='sticky table'>
             <TableHead>
               <TableRow>

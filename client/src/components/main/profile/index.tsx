@@ -17,7 +17,7 @@ const ProfilePage = () => {
   const { username } = useParams();
   const { user, socket } = useUserContext();
   const { setUser } = useLoginContext();
-  const [notFound, setNotFound] = useState<boolean>(true);
+  const [notFound, setNotFound] = useState<boolean>();
 
   useEffect(() => {
     const fetchData = async () => {
