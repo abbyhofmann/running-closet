@@ -20,6 +20,8 @@ import {
   saveMessage,
   saveNotification,
   sendEmail,
+  fetchNotifsByUsername,
+  deleteNotificationById,
 } from '../models/application';
 
 const messageController = (socket: FakeSOSocket) => {
@@ -185,31 +187,55 @@ const messageController = (socket: FakeSOSocket) => {
         throw new Error(user.error);
       }
 
-      const status = await markMessageAsRead(mid, user);
+      const message = await markMessageAsRead(mid, user);
 
-      if (status && 'error' in status) {
-        throw new Error(status.error);
+      if (message && 'error' in message) {
+        throw new Error(message.error);
       }
 
-      const notification: Notification = {
-        user: user.username,
-        message: status,
-      };
+      const userNotifications = await fetchNotifsByUsername(user.username);
 
-      const notificationUpdate: NotificationUpdatePayload = {
-        notification,
-        type: 'remove',
-      };
+      if (userNotifications && 'error' in userNotifications) {
+        throw new Error(userNotifications.error);
+      }
 
-      socket.emit('notificationsUpdate', notificationUpdate);
+      const notifications = userNotifications.filter(n => n.message._id?.equals(message._id));
 
-      const conversation = await fetchConversationById(status.cid);
+      // if there is a notification for the current message, delete it. if there is not then keep going as expected.
+      if (notifications.length !== 0) {
+        if (notifications.length !== 1) {
+          throw new Error(
+            `Issue finding notification for message ${message._id} for user ${user.username}`,
+          );
+        }
+
+        const notification = notifications[0];
+
+        if (!notification._id) {
+          throw new Error('Notification id undefined');
+        }
+
+        const notificationDeleted = await deleteNotificationById(notification._id.toString());
+
+        if (!notificationDeleted) {
+          throw new Error('Notification not successully deleted');
+        }
+
+        const notificationUpdate: NotificationUpdatePayload = {
+          notification,
+          type: 'remove',
+        };
+
+        socket.emit('notificationsUpdate', notificationUpdate);
+      }
+
+      const conversation = await fetchConversationById(message.cid);
 
       if (conversation && !('error' in conversation)) {
         socket.emit('conversationUpdate', conversation);
       }
 
-      res.json(status);
+      res.json(message);
     } catch (err) {
       res.status(500).send(`Error when marking message as read: ${(err as Error).message}`);
     }

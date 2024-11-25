@@ -3,7 +3,7 @@ import supertest from 'supertest';
 import { ObjectId } from 'mongodb';
 import * as util from '../models/application';
 import { app } from '../app';
-import { User } from '../types';
+import { MultipleNotificationResponse, User } from '../types';
 
 const saveMessageSpy = jest.spyOn(util, 'saveMessage');
 const fetchConversationByIdSpy = jest.spyOn(util, 'fetchConversationById');
@@ -13,6 +13,8 @@ const fetchUserByIdSpy = jest.spyOn(util, 'fetchUserById');
 const markMessageAsReadSpy = jest.spyOn(util, 'markMessageAsRead');
 const fetchUserByUsernameSpy = jest.spyOn(util, 'fetchUserByUsername');
 const sendEmailSpy = jest.spyOn(util, 'sendEmail');
+const fetchNotifsByUsernameSpy = jest.spyOn(util, 'fetchNotifsByUsername');
+const deleteNotificationByIdSpy = jest.spyOn(util, 'deleteNotificationById');
 
 const user1: User = {
   _id: new ObjectId('45e9b58910afe6e94fc6e6dc'),
@@ -360,6 +362,7 @@ describe('POST /markAsRead', () => {
   it('should mark a message as read successfully', async () => {
     const validMid = new mongoose.Types.ObjectId();
     const validCid = new mongoose.Types.ObjectId();
+    const validNid = new mongoose.Types.ObjectId();
 
     const mockMessage = {
       _id: validMid,
@@ -375,8 +378,18 @@ describe('POST /markAsRead', () => {
       uid: user1._id?.toString(),
     };
 
+    const mockNotifications = [
+      {
+        _id: validNid,
+        message: mockMessage,
+        user: user1.username,
+      },
+    ];
+
     fetchUserByIdSpy.mockResolvedValueOnce(user2);
     markMessageAsReadSpy.mockResolvedValueOnce(mockMessage);
+    fetchNotifsByUsernameSpy.mockResolvedValueOnce(mockNotifications);
+    deleteNotificationByIdSpy.mockResolvedValueOnce(true);
 
     const response = await supertest(app).post('/message/markAsRead').send(mockReqBody);
 
@@ -473,5 +486,237 @@ describe('POST /markAsRead', () => {
 
     expect(response.status).toBe(500);
     expect(response.text).toBe('Error when marking message as read: error');
+  });
+
+  it('should mark a message as read successfully but not delete any notifications if there are no notifications for the user', async () => {
+    const validMid = new mongoose.Types.ObjectId();
+    const validCid = new mongoose.Types.ObjectId();
+
+    const mockMessage = {
+      _id: validMid,
+      messageContent: 'Hello',
+      sender: user1,
+      sentAt: new Date('2024-11-03'),
+      readBy: [user1],
+      cid: validCid.toString(),
+    };
+
+    const mockReqBody = {
+      mid: validMid.toString(),
+      uid: user1._id?.toString(),
+    };
+
+    const mockNotifications: MultipleNotificationResponse = [];
+
+    fetchUserByIdSpy.mockResolvedValueOnce(user2);
+    markMessageAsReadSpy.mockResolvedValueOnce(mockMessage);
+    fetchNotifsByUsernameSpy.mockResolvedValueOnce(mockNotifications);
+
+    const response = await supertest(app).post('/message/markAsRead').send(mockReqBody);
+
+    expect(response.status).toBe(200);
+    expect(response.body._id?.toString()).toBe(validMid.toString());
+    expect(response.body.messageContent).toBe('Hello');
+    expect(response.body.sender._id?.toString()).toEqual(user1._id?.toString());
+    expect(response.body.sentAt).toBe(mockMessage.sentAt.toISOString());
+    expect(response.body.readBy.length).toBe(1);
+    expect(response.body.readBy[0]._id?.toString()).toEqual(user1._id?.toString());
+  });
+
+  it('should mark a message as read successfully but not delete any notifications when there are no notifications with the correct id', async () => {
+    const validMid = new mongoose.Types.ObjectId();
+    const validCid = new mongoose.Types.ObjectId();
+    const validNid = new mongoose.Types.ObjectId();
+
+    const mockMessage = {
+      _id: validMid,
+      messageContent: 'Hello',
+      sender: user1,
+      sentAt: new Date('2024-11-03'),
+      readBy: [user1],
+      cid: validCid.toString(),
+    };
+
+    const mockReqBody = {
+      mid: validMid.toString(),
+      uid: user1._id?.toString(),
+    };
+
+    const mockNotifications = [
+      {
+        _id: validNid,
+        message: {
+          _id: new mongoose.Types.ObjectId(),
+          messageContent: 'Hello',
+          sender: user1,
+          sentAt: new Date('2024-11-03'),
+          readBy: [user1],
+          cid: validCid.toString(),
+        },
+        user: user1.username,
+      },
+    ];
+
+    fetchUserByIdSpy.mockResolvedValueOnce(user2);
+    markMessageAsReadSpy.mockResolvedValueOnce(mockMessage);
+    fetchNotifsByUsernameSpy.mockResolvedValueOnce(mockNotifications);
+
+    const response = await supertest(app).post('/message/markAsRead').send(mockReqBody);
+
+    expect(response.status).toBe(200);
+    expect(response.body._id?.toString()).toBe(validMid.toString());
+    expect(response.body.messageContent).toBe('Hello');
+    expect(response.body.sender._id?.toString()).toEqual(user1._id?.toString());
+    expect(response.body.sentAt).toBe(mockMessage.sentAt.toISOString());
+    expect(response.body.readBy.length).toBe(1);
+    expect(response.body.readBy[0]._id?.toString()).toEqual(user1._id?.toString());
+  });
+
+  it('should return a database error when there is fetchNotifsByUsername throws an error', async () => {
+    const validMid = new mongoose.Types.ObjectId();
+    const validCid = new mongoose.Types.ObjectId();
+
+    const mockMessage = {
+      _id: validMid,
+      messageContent: 'Hello',
+      sender: user1,
+      sentAt: new Date('2024-11-03'),
+      readBy: [user1],
+      cid: validCid.toString(),
+    };
+
+    const mockReqBody = {
+      mid: validMid.toString(),
+      uid: user1._id?.toString(),
+    };
+
+    fetchUserByIdSpy.mockResolvedValueOnce(user2);
+    markMessageAsReadSpy.mockResolvedValueOnce(mockMessage);
+    fetchNotifsByUsernameSpy.mockResolvedValueOnce({ error: 'error' });
+
+    const response = await supertest(app).post('/message/markAsRead').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Error when marking message as read: error');
+  });
+
+  it('should throw an error when there are more than 1 notifications found for a message', async () => {
+    const validMid = new mongoose.Types.ObjectId();
+    const validCid = new mongoose.Types.ObjectId();
+    const validNid = new mongoose.Types.ObjectId();
+    const validNid2 = new mongoose.Types.ObjectId();
+
+    const mockMessage = {
+      _id: validMid,
+      messageContent: 'Hello',
+      sender: user1,
+      sentAt: new Date('2024-11-03'),
+      readBy: [user1],
+      cid: validCid.toString(),
+    };
+
+    const mockReqBody = {
+      mid: validMid.toString(),
+      uid: user1._id?.toString(),
+    };
+
+    const mockNotifications = [
+      {
+        _id: validNid,
+        message: mockMessage,
+        user: user1.username,
+      },
+      {
+        _id: validNid2,
+        message: mockMessage,
+        user: user1.username,
+      },
+    ];
+
+    fetchUserByIdSpy.mockResolvedValueOnce(user2);
+    markMessageAsReadSpy.mockResolvedValueOnce(mockMessage);
+    fetchNotifsByUsernameSpy.mockResolvedValueOnce(mockNotifications);
+
+    const response = await supertest(app).post('/message/markAsRead').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe(
+      `Error when marking message as read: Issue finding notification for message ${validMid} for user ${user2.username}`,
+    );
+  });
+
+  it('should throw an error when the notification id is undefined', async () => {
+    const validMid = new mongoose.Types.ObjectId();
+    const validCid = new mongoose.Types.ObjectId();
+
+    const mockMessage = {
+      _id: validMid,
+      messageContent: 'Hello',
+      sender: user1,
+      sentAt: new Date('2024-11-03'),
+      readBy: [user1],
+      cid: validCid.toString(),
+    };
+
+    const mockReqBody = {
+      mid: validMid.toString(),
+      uid: user1._id?.toString(),
+    };
+
+    const mockNotifications = [
+      {
+        message: mockMessage,
+        user: user1.username,
+      },
+    ];
+
+    fetchUserByIdSpy.mockResolvedValueOnce(user2);
+    markMessageAsReadSpy.mockResolvedValueOnce(mockMessage);
+    fetchNotifsByUsernameSpy.mockResolvedValueOnce(mockNotifications);
+
+    const response = await supertest(app).post('/message/markAsRead').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe(`Error when marking message as read: Notification id undefined`);
+  });
+
+  it('should throw an error when deleteNotificationById returns false', async () => {
+    const validMid = new mongoose.Types.ObjectId();
+    const validCid = new mongoose.Types.ObjectId();
+    const validNid = new mongoose.Types.ObjectId();
+
+    const mockMessage = {
+      _id: validMid,
+      messageContent: 'Hello',
+      sender: user1,
+      sentAt: new Date('2024-11-03'),
+      readBy: [user1],
+      cid: validCid.toString(),
+    };
+
+    const mockReqBody = {
+      mid: validMid.toString(),
+      uid: user1._id?.toString(),
+    };
+
+    const mockNotifications = [
+      {
+        _id: validNid,
+        message: mockMessage,
+        user: user1.username,
+      },
+    ];
+
+    fetchUserByIdSpy.mockResolvedValueOnce(user2);
+    markMessageAsReadSpy.mockResolvedValueOnce(mockMessage);
+    fetchNotifsByUsernameSpy.mockResolvedValueOnce(mockNotifications);
+    deleteNotificationByIdSpy.mockResolvedValueOnce(false);
+
+    const response = await supertest(app).post('/message/markAsRead').send(mockReqBody);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe(
+      `Error when marking message as read: Notification not successully deleted`,
+    );
   });
 });
