@@ -10,6 +10,8 @@ import ProfileAvatar from '../../../profileAvatar';
 interface ProfileCardProps {
   username: string;
   profileGraphic: number;
+  firstName: string;
+  lastName: string;
 }
 
 /**
@@ -17,7 +19,7 @@ interface ProfileCardProps {
  * @returns the profile card element.
  */
 const ProfileCard = (props: ProfileCardProps) => {
-  const { username, profileGraphic } = props;
+  const { username, profileGraphic, firstName, lastName } = props;
   const navigate = useNavigate();
   return (
     <Card
@@ -31,7 +33,7 @@ const ProfileCard = (props: ProfileCardProps) => {
           variant='h6'
           sx={{ textAlign: 'center', marginY: 'auto', color: '#32292F', paddingLeft: 2 }}
           noWrap>
-          {username}
+          {firstName} {lastName} (@{username})
         </Typography>
       </Box>
     </Card>

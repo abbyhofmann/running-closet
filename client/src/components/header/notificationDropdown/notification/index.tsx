@@ -45,7 +45,7 @@ const NotificationComponent = (props: NotificationComponentProps) => {
         </ListItemIcon>
       )}
       <Typography variant='inherit' noWrap sx={{ width: 100, color: '#5171A5' }}>
-        {notification.message.sender.username}
+        {notification.message.sender.firstName}
       </Typography>
       <Typography variant='inherit' noWrap sx={{ color: '#32292F' }}>
         {notification.message.messageContent}

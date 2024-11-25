@@ -32,10 +32,10 @@ const LoggedInUserProfilePage = () => {
       </Grid>
       <Grid size={{ xs: 6, sm: 6, md: 8, lg: 10 }}>
         <Typography sx={{ marginTop: 8, marginLeft: 2, color: '#32292F' }} variant='h4'>
-          {user.username}
+          {user.firstName} {user.lastName}
         </Typography>
-        <Typography sx={{ marginLeft: 2, color: '#32292F' }} variant='h6'>
-          {user.email}
+        <Typography sx={{ marginTop: 1, marginLeft: 2, color: '#32292F' }} variant='h5'>
+          @{user.username}
         </Typography>
         <Button
           id='delete-profile-button'
@@ -63,7 +63,9 @@ const LoggedInUserProfilePage = () => {
                   <TableCell>
                     <ProfileCard
                       username={u.username}
-                      profileGraphic={u.profileGraphic}></ProfileCard>
+                      profileGraphic={u.profileGraphic}
+                      firstName={u.firstName}
+                      lastName={u.lastName}></ProfileCard>
                   </TableCell>
                 </TableRow>
               ))}
@@ -89,7 +91,9 @@ const LoggedInUserProfilePage = () => {
                   <TableCell>
                     <ProfileCard
                       username={u.username}
-                      profileGraphic={u.profileGraphic}></ProfileCard>
+                      profileGraphic={u.profileGraphic}
+                      firstName={u.firstName}
+                      lastName={u.lastName}></ProfileCard>
                   </TableCell>
                 </TableRow>
               ))}

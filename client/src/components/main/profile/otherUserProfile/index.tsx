@@ -20,7 +20,7 @@ import ProfileAvatar from '../../../profileAvatar';
  */
 const OtherUserProfilePage = () => {
   const {
-    username,
+    profileUser,
     following,
     followedBy,
     currentUserFollowingThisUser,
@@ -37,7 +37,10 @@ const OtherUserProfilePage = () => {
       </Grid>
       <Grid size={{ xs: 6, sm: 6, md: 8, lg: 10 }}>
         <Typography sx={{ marginTop: 8, marginLeft: 2 }} variant='h4'>
-          {username}
+          {profileUser?.firstName} {profileUser?.lastName}
+        </Typography>
+        <Typography sx={{ marginTop: 1, marginLeft: 2 }} variant='h5'>
+          @{profileUser?.username}
         </Typography>
         {currentUserFollowingThisUser ? (
           <Button
@@ -77,7 +80,9 @@ const OtherUserProfilePage = () => {
                     <TableCell>
                       <ProfileCard
                         username={u.username}
-                        profileGraphic={u.profileGraphic}></ProfileCard>
+                        profileGraphic={u.profileGraphic}
+                        firstName={u.firstName}
+                        lastName={u.lastName}></ProfileCard>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -107,7 +112,9 @@ const OtherUserProfilePage = () => {
                     <TableCell>
                       <ProfileCard
                         username={u.username}
-                        profileGraphic={u.profileGraphic}></ProfileCard>
+                        profileGraphic={u.profileGraphic}
+                        firstName={u.firstName}
+                        lastName={u.lastName}></ProfileCard>
                     </TableCell>
                   </TableRow>
                 ))}

@@ -13,7 +13,7 @@ import ProfileAvatar from '../../../profileAvatar';
 export default function SearchUsers(props: SearchUsersProps) {
   const { setAlert, navigate, setConversations, conversations } = props;
 
-  const formatName = (user: User) => `${user.firstName} ${user.lastName} (${user.username})`;
+  const formatName = (user: User) => `${user.firstName} ${user.lastName} (@${user.username})`;
 
   const {
     allUsers,
