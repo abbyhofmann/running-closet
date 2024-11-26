@@ -81,7 +81,10 @@ const NewConversationPage = (props: DashboardNavigationProps) => {
         </Alert>
       )}
       {!alert && blastMessageSuccess && (
-        <Alert sx={{ margin: 2 }} icon={<CheckIcon fontSize='inherit' />} severity='success'>
+        <Alert
+          sx={{ margin: 2, bgcolor: '#C8C7EC', color: '#32292F' }}
+          icon={<CheckIcon fontSize='inherit' sx={{ color: '#32292F' }} />}
+          severity='success'>
           {blastMessageSuccess}
         </Alert>
       )}
