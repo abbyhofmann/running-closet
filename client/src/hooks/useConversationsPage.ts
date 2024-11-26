@@ -79,9 +79,12 @@ const useConversationPage = (cid: string | undefined) => {
         conversation =>
           conversation.users
             .filter(u => u.username !== user.username) // exclude the logged-in user
-            .some(convoUser =>
-              convoUser.username.toLowerCase().includes(searchInput.toLowerCase()),
-            ), // match the search input username
+            .some(
+              convoUser =>
+                convoUser.username.toLowerCase().includes(searchInput.toLowerCase()) ||
+                convoUser.firstName.toLowerCase().includes(searchInput.toLowerCase()) ||
+                convoUser.lastName.toLowerCase().includes(searchInput.toLowerCase()),
+            ), // match the search input username,first name or last name
       );
       setFilteredConversationsBySearchInput(filtered);
     }

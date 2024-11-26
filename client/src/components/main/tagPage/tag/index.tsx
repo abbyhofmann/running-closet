@@ -35,7 +35,7 @@ const TagView = ({ t, clickTag }: TagProps) => {
         clickTag(t.name);
       }}>
       <Typography sx={{ color: '#E77963', marginY: 'auto' }}>
-        <strong>{tag.name}</strong>
+        <strong>{tag.name.toLowerCase()}</strong>
       </Typography>
       <Typography sx={{ color: '#32292F', marginY: 'auto' }}>{tag.description}</Typography>
       <Typography sx={{ color: '#5171A5', marginY: 'auto' }}>{t.qcnt} questions</Typography>
