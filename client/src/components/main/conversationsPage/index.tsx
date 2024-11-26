@@ -193,7 +193,7 @@ export default function ConversationsPage() {
       kind: 'divider',
     },
     {
-      kind: 'header',
+      kind: 'page',
       title: 'Messages',
     },
     ...msgNav,
