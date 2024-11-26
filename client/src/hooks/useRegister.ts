@@ -22,7 +22,7 @@ const useRegister = () => {
   const [lastName, setLastName] = useState<string>('');
   const [pass, setPass] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-  const [profileGraphic, setProfileGraphic] = useState<number>(-1);
+  const [profileGraphic, setProfileGraphic] = useState<number>(1);
   const [registrationError, setRegistrationError] = useState<string>('');
   const [showRegistrationError, setShowRegistrationError] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState(false);

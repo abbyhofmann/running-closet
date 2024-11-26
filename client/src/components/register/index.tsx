@@ -139,7 +139,7 @@ const Register = () => {
         </div>
         <div className='row'>
           <FormControl sx={{ m: 1, width: '25ch', marginX: 'auto' }} variant='outlined'>
-            <InputLabel htmlFor='outlined-adornment-password'>Password</InputLabel>
+            <InputLabel htmlFor='outlined-adornment-password'>Password *</InputLabel>
             <OutlinedInput
               id='outlined-adornment-password'
               type={showPassword ? 'text' : 'password'}
