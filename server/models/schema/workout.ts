@@ -36,11 +36,3 @@ const workoutSchema: Schema = new Schema(
 );
 
 export default workoutSchema;
-
-/*  
-Distance 
-Average pace 
-Duration 
-Location (Location type?) 
-
-*/

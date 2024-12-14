@@ -553,7 +553,7 @@ export interface Runner {
  * - id: The unique identifier for the outfit.
  * - wearer: The user who wore and logged the outfit.
  * - workout: The workout for which this outfit was worn.
- * - satisfactionGrade: The level of satisfaction for the outfit.
+ * - rating: The rating of the outfit.
  * - tops: The tops worn in the outfit.
  * - bottoms: The bottoms worn in the outfit.
  * - outerwear: The outerwear worn in the outfit.
@@ -564,7 +564,7 @@ export interface Outfit {
   _id?: ObjectId;
   wearer: Runner;
   workout: Workout;
-  satisfactionGrade: String;
+  rating: Rating;
   tops: Top[];
   bottoms: Bottom[];
   outerwear: Outerwear[];
