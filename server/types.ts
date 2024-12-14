@@ -515,3 +515,81 @@ export interface SendEmailPayload {
   success: boolean;
   message: string;
 }
+
+/**
+ * Interface representing an Runner document, which contains:
+ * - id: The unique identifier for the user.
+ * - username: The unique username for each user.
+ * - firstName: The first name of the user.
+ * - lastName: The last name of the user.
+ * - email: The email associated with the account.
+ * - password: The an ecrypted version of the user's password for the account.
+ * - profileGraphic: The number corresponding to which profile graphic they choose upon registering.
+ * - deleted: A boolean value representing if the account has been deleted. 
+ * - following: A list of of users that the user follows.
+ * - followers: A list of of users that follow the user.
+ * - outifts: The outfits the user has logged. 
+ * - gender: The gender of the user. 
+ * - age: The age of the user. 
+ */
+export interface Runner {
+  _id?: ObjectId;
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  profileGraphic: number;
+  deleted: boolean;
+  following: Runner[];
+  followers: Runner[];
+  outfits: Outfit[];
+  gender: string; 
+  age: number;
+}
+
+/**
+ * Interface representing an Runner document, which contains:
+ * - id: The unique identifier for the outfit.
+ * - wearer: The user who wore and logged the outfit.
+ * - workout: The workout for which this outfit was worn.
+ * - satisfactionGrade: The level of satisfaction for the outfit.
+ * - tops: The tops worn in the outfit.
+ * - bottoms: The bottoms worn in the outfit.
+ * - outerwear: The outerwear worn in the outfit.
+ * - accessories: The accessories worn in the outfit.
+ * - shoes: The shoes worn in the outfit.
+ */
+export interface Outfit {
+  _id?: ObjectId;
+  wearer: Runner;
+  workout: Workout;
+  satisfactionGrade: String;
+  tops: Top[];
+  bottoms: Bottom[];
+  outerwear: Outerwear[];
+  accessories: Accessory[];
+  shoes: Shoe[];
+}
+
+/**
+ * Interface representing an Runner document, which contains:
+ * - id: The unique identifier for the workout.
+ * - runner: The user who logged the workout.
+ * - outfit: The outfit worn during the workout.
+ * - runType: The type of run workout.
+ * - dateCompleted: The date on which the workout was completed.
+ * - distance: The distance (in miles) ran during the workout.
+ * - duration: The time duration of the run workout.
+ * - location: The city/state/country location of the workout.
+ */
+export interface Workout {
+  _id?: ObjectId;
+  runner: Runner;
+  outfit: Outfit;
+  runType: String;
+  dateCompleted: Date;
+  distance: Number;
+  duration: Number;
+  location: String;
+}
