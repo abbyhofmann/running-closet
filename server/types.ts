@@ -208,6 +208,8 @@ export interface AnswerUpdatePayload {
  * - email - The email address of the user registering.
  * - password - The password of the user registering.
  * - profileGraphic: The number corresponding to which profile graphic they choose upon registering.
+ * - gender: The gender of the user registering.
+ * - age: The age of the user registering.
  */
 export interface RegisterUserRequest {
   body: {
@@ -217,6 +219,8 @@ export interface RegisterUserRequest {
     email: string;
     password: string;
     profileGraphic: number;
+    gender: string;
+    age: number;
   };
 }
 
@@ -300,31 +304,33 @@ export interface ServerToClientEvents {
   message: Message;
 }
  
- /**
- * Interface representing an User document, which contains:
- * - id: The unique identifier for the user.
- * - username: The unique username for each user.
- * - firstName: The first name of the user.
- * - lastName: The last name of the user.
- * - email: The email associated with the account.
- * - password: The an ecrypted version of the user's password for the account.
- * - profileGraphic: The number corresponding to which profile graphic they choose upon registering.
- * - deleted: A boolean value representing if the account has been deleted. 
- * - following: A list of of users that the user follows.
- * - followers: A list of of users that follow the user.
- */
-export interface User {
-  _id?: ObjectId;
-  username: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  profileGraphic: number;
-  deleted: boolean;
-  following: User[];
-  followers: User[];
-}
+// TODO - remove 
+
+//  /**
+//  * Interface representing an User document, which contains:
+//  * - id: The unique identifier for the user.
+//  * - username: The unique username for each user.
+//  * - firstName: The first name of the user.
+//  * - lastName: The last name of the user.
+//  * - email: The email associated with the account.
+//  * - password: The an ecrypted version of the user's password for the account.
+//  * - profileGraphic: The number corresponding to which profile graphic they choose upon registering.
+//  * - deleted: A boolean value representing if the account has been deleted. 
+//  * - following: A list of of users that the user follows.
+//  * - followers: A list of of users that follow the user.
+//  */
+// export interface User {
+//   _id?: ObjectId;
+//   username: string;
+//   firstName: string;
+//   lastName: string;
+//   email: string;
+//   password: string;
+//   profileGraphic: number;
+//   deleted: boolean;
+//   following: User[];
+//   followers: User[];
+// }
 
 /**
  * Interface representing a Conversation document, which contains:
@@ -517,7 +523,7 @@ export interface SendEmailPayload {
 }
 
 /**
- * Interface representing an Runner document, which contains:
+ * Interface representing a User document, which contains:
  * - id: The unique identifier for the user.
  * - username: The unique username for each user.
  * - firstName: The first name of the user.
@@ -532,7 +538,7 @@ export interface SendEmailPayload {
  * - gender: The gender of the user. 
  * - age: The age of the user. 
  */
-export interface Runner {
+export interface User {
   _id?: ObjectId;
   username: string;
   firstName: string;
@@ -541,8 +547,8 @@ export interface Runner {
   password: string;
   profileGraphic: number;
   deleted: boolean;
-  following: Runner[];
-  followers: Runner[];
+  following: User[];
+  followers: User[];
   outfits: Outfit[];
   gender: string; 
   age: number;
@@ -562,7 +568,7 @@ export interface Runner {
  */
 export interface Outfit {
   _id?: ObjectId;
-  wearer: Runner;
+  wearer: User;
   workout: Workout;
   rating: Rating;
   tops: Top[];
@@ -573,7 +579,7 @@ export interface Outfit {
 }
 
 /**
- * Interface representing an Workout document, which contains:
+ * Interface representing a Workout document, which contains:
  * - id: The unique identifier for the workout.
  * - runner: The user who logged the workout.
  * - outfit: The outfit worn during the workout.
@@ -585,7 +591,7 @@ export interface Outfit {
  */
 export interface Workout {
   _id?: ObjectId;
-  runner: Runner;
+  runner: User;
   outfit: Outfit;
   runType: String;
   dateCompleted: Date;
@@ -595,7 +601,7 @@ export interface Workout {
 }
 
 /**
- * Interface representing an Rating document, which contains:
+ * Interface representing a Rating document, which contains:
  * - id: The unique identifier for the rating.
  * - outfit: The outfit to which the rating is associated.
  * - stars: The number of stars (out of 5) allocated to the outfit.
@@ -610,7 +616,7 @@ export interface Rating {
 }
 
 /**
- * Interface representing an Top document, which contains:
+ * Interface representing a Top document, which contains:
  * - id: The unique identifier for the top.
  * - runner: The runner who created the top.
  * - brand: The brand name of the top. 
@@ -620,7 +626,7 @@ export interface Rating {
  */
 export interface Top {
   _id?: ObjectId;
-  runner: Runner;
+  runner: User;
   brand: String;
   model: String;
   s3PhotoUrl: String;
@@ -628,7 +634,7 @@ export interface Top {
 }
 
 /**
- * Interface representing an Botton document, which contains:
+ * Interface representing a Botton document, which contains:
  * - id: The unique identifier for the bottom.
  * - runner: The runner who created the bottom.
  * - brand: The brand name of the bottom. 
@@ -638,7 +644,7 @@ export interface Top {
  */
 export interface Bottom {
   _id?: ObjectId;
-  runner: Runner;
+  runner: User;
   brand: String;
   model: String;
   s3PhotoUrl: String;
@@ -656,7 +662,7 @@ export interface Bottom {
  */
 export interface Accessory {
   _id?: ObjectId;
-  runner: Runner;
+  runner: User;
   brand: String;
   model: String;
   s3PhotoUrl: String;
@@ -674,7 +680,7 @@ export interface Accessory {
  */
 export interface Outerwear {
   _id?: ObjectId;
-  runner: Runner;
+  runner: User;
   brand: String;
   model: String;
   s3PhotoUrl: String;
@@ -692,7 +698,7 @@ export interface Outerwear {
  */
 export interface Shoe {
   _id?: ObjectId;
-  runner: Runner;
+  runner: User;
   brand: String;
   model: String;
   s3PhotoUrl: String;

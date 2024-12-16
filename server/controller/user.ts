@@ -41,7 +41,9 @@ const userController = (socket: FakeSOSocket) => {
       !!req.body.lastName &&
       !!req.body.email &&
       !!req.body.password &&
-      !!req.body.profileGraphic
+      !!req.body.profileGraphic &&
+      !!req.body.gender &&
+      !!req.body.age
     );
   }
 
@@ -106,7 +108,8 @@ const userController = (socket: FakeSOSocket) => {
       return;
     }
 
-    const { username, firstName, lastName, email, password, profileGraphic } = req.body;
+    const { username, firstName, lastName, email, password, profileGraphic, gender, age } =
+      req.body;
 
     const hash = (await hashPassword(password)) as string;
 
@@ -120,6 +123,9 @@ const userController = (socket: FakeSOSocket) => {
       deleted: false,
       following: [],
       followers: [],
+      outfits: [],
+      gender,
+      age,
     };
 
     try {

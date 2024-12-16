@@ -14,6 +14,9 @@ export type FakeSOSocket = Socket<ServerToClientEvents>;
  * - deleted - Boolean inidicating if this user has been deleted.
  * - following - Usernames of users that this user is following.
  * - followers - Usernames of users that are following this user.
+ * - outifts: The outfits the user has logged.
+ * - gender: The gender of the user.
+ * - age: The age of the user.
  */
 export interface User {
   _id?: string;
@@ -26,6 +29,160 @@ export interface User {
   deleted: boolean;
   following: User[];
   followers: User[];
+  outfits: Outfit[];
+  gender: string;
+  age: number;
+}
+
+/**
+ * Interface representing an Outfit, which contains:
+ * - id: The unique identifier for the outfit.
+ * - wearer: The user who wore and logged the outfit.
+ * - workout: The workout for which this outfit was worn.
+ * - rating: The rating of the outfit.
+ * - tops: The tops worn in the outfit.
+ * - bottoms: The bottoms worn in the outfit.
+ * - outerwear: The outerwear worn in the outfit.
+ * - accessories: The accessories worn in the outfit.
+ * - shoes: The shoes worn in the outfit.
+ */
+export interface Outfit {
+  _id?: string;
+  wearer: User;
+  workout: Workout;
+  rating: Rating;
+  tops: Top[];
+  bottoms: Bottom[];
+  outerwear: Outerwear[];
+  accessories: Accessory[];
+  shoes: Shoe[];
+}
+
+/**
+ * Interface representing a Workout, which contains:
+ * - id: The unique identifier for the workout.
+ * - runner: The user who logged the workout.
+ * - outfit: The outfit worn during the workout.
+ * - runType: The type of run workout.
+ * - dateCompleted: The date on which the workout was completed.
+ * - distance: The distance (in miles) ran during the workout.
+ * - duration: The time duration of the run workout.
+ * - location: The city/state/country location of the workout.
+ */
+export interface Workout {
+  _id?: string;
+  runner: User;
+  outfit: Outfit;
+  runType: string;
+  dateCompleted: Date;
+  distance: number;
+  duration: number;
+  location: string;
+}
+
+/**
+ * Interface representing a Rating for an outfit, which contains:
+ * - id: The unique identifier for the rating.
+ * - outfit: The outfit to which the rating is associated.
+ * - stars: The number of stars (out of 5) allocated to the outfit.
+ * - temperatureGuage: A measure of how the outfit performed in the weather conditions (
+ * i.e. too cold, too warm, appropriate).
+ */
+export interface Rating {
+  _id?: string;
+  outfit: Outfit;
+  stars: number;
+  temperatureGuage: string;
+}
+
+/**
+ * Interface representing a Top, which contains:
+ * - id: The unique identifier for the top.
+ * - runner: The runner who created the top.
+ * - brand: The brand name of the top.
+ * - model: The model name of the top.
+ * - s3PhotoUrl: The URL link to the S3 bucket where the top photo is stored.
+ * - outfits: The list of outfits that the top is a part of.
+ */
+export interface Top {
+  _id?: string;
+  runner: User;
+  brand: string;
+  model: string;
+  s3PhotoUrl: string;
+  outfits: Outfit[];
+}
+
+/**
+ * Interface representing a Botton, which contains:
+ * - id: The unique identifier for the bottom.
+ * - runner: The runner who created the bottom.
+ * - brand: The brand name of the bottom.
+ * - model: The model name of the bottom.
+ * - s3PhotoUrl: The URL link to the S3 bucket where the bottom photo is stored.
+ * - outfits: The list of outfits that the bottom is a part of.
+ */
+export interface Bottom {
+  _id?: string;
+  runner: User;
+  brand: string;
+  model: string;
+  s3PhotoUrl: string;
+  outfits: Outfit[];
+}
+
+/**
+ * Interface representing an Accessory, which contains:
+ * - id: The unique identifier for the accessory.
+ * - runner: The runner who created the accessory.
+ * - brand: The brand name of the accessory.
+ * - model: The model name of the accessory.
+ * - s3PhotoUrl: The URL link to the S3 bucket where the accessory photo is stored.
+ * - outfits: The list of outfits that the accessory is a part of.
+ */
+export interface Accessory {
+  _id?: string;
+  runner: User;
+  brand: string;
+  model: string;
+  s3PhotoUrl: string;
+  outfits: Outfit[];
+}
+
+/**
+ * Interface representing an Outerwear object, which contains:
+ * - id: The unique identifier for the outerwear item.
+ * - runner: The runner who created the outerwear item.
+ * - brand: The brand name of the outerwear item.
+ * - model: The model name of the outerwear item.
+ * - s3PhotoUrl: The URL link to the S3 bucket where the outerwear photo is stored.
+ * - outfits: The list of outfits that the outerwear item is a part of.
+ */
+export interface Outerwear {
+  _id?: string;
+  runner: User;
+  brand: string;
+  model: string;
+  s3PhotoUrl: string;
+  outfits: Outfit[];
+}
+
+/**
+ * Interface representing a Shoe, which contains:
+ * - id: The unique identifier for the shoe.
+ * - runner: The runner who created the shoe.
+ * - brand: The brand name of the shoe.
+ * - model: The model name of the shoe.
+ * - s3PhotoUrl: The URL link to the S3 bucket where the shoe photo is stored.
+ * - outfits: The list of outfits that the shoe is a part of.
+ */
+export interface Shoe {
+  _id?: string;
+  runner: User;
+  brand: string;
+  model: string;
+  s3PhotoUrl: string;
+  outfits: Outfit[];
 }
 
 /**

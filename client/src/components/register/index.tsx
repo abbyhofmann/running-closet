@@ -28,6 +28,7 @@ const Register = () => {
     pass,
     email,
     profileGraphic,
+    age,
     registrationError,
     showRegistrationError,
     handleSubmit,
@@ -38,6 +39,8 @@ const Register = () => {
     handleLastNameChange,
     handleProfileGraphicSelect,
     handleClickShowPassword,
+    handleGenderSelect,
+    handleAgeChange,
     showPassword,
   } = useRegister();
   const navigate = useNavigate();
@@ -94,6 +97,31 @@ const Register = () => {
               onClick={() => handleProfileGraphicSelect(num)}
             />
           ))}
+        </div>
+        <div className='gender-select'>
+          <label>
+            Select a gender:
+            <select
+              name='selectedGender'
+              defaultValue='male'
+              onChange={e => handleGenderSelect(e.target.value)}>
+              <option value='male'>Male</option>
+              <option value='female'>Female</option>
+              <option value='other'>Other</option>
+            </select>
+          </label>
+        </div>
+        <div className='age-entry'>
+          <TextField
+            id='age-input'
+            label='Age'
+            type='age'
+            required
+            autoComplete='current-age'
+            value={age}
+            sx={{ marginX: 'auto', width: '25ch' }}
+            onChange={handleAgeChange}
+          />
         </div>
         <div className='row'>
           <TextField

@@ -23,6 +23,8 @@ const useRegister = () => {
   const [pass, setPass] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [profileGraphic, setProfileGraphic] = useState<number>(1);
+  const [gender, setGender] = useState<string>('female');
+  const [age, setAge] = useState<number>(18);
   const [registrationError, setRegistrationError] = useState<string>('');
   const [showRegistrationError, setShowRegistrationError] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -90,6 +92,24 @@ const useRegister = () => {
   };
 
   /**
+   * Function to handle the gender selection chance event.
+   *
+   * @param genderSelection - the number associated with the photo selected.
+   */
+  const handleGenderSelect = (genderSelection: string) => {
+    setGender(genderSelection);
+  };
+
+  /**
+   * Function to handle the age input change event.
+   *
+   * @param e - the event object.
+   */
+  const handleAgeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setAge(e.target.valueAsNumber);
+  };
+
+  /**
    * Function to handle the form submission event.
    *
    * @param event - the form event object.
@@ -99,7 +119,16 @@ const useRegister = () => {
     try {
       setRegistrationError('');
       setShowRegistrationError(false);
-      const u = await registerUser(username, firstName, lastName, email, pass, profileGraphic);
+      const u = await registerUser(
+        username,
+        firstName,
+        lastName,
+        email,
+        pass,
+        profileGraphic,
+        gender,
+        age,
+      );
       setUser(u);
       navigate('/home');
     } catch (err) {
@@ -120,6 +149,8 @@ const useRegister = () => {
     pass,
     email,
     profileGraphic,
+    gender,
+    age,
     registrationError,
     showRegistrationError,
     handleEmailChange,
@@ -130,6 +161,8 @@ const useRegister = () => {
     handleLastNameChange,
     handleProfileGraphicSelect,
     handleClickShowPassword,
+    handleGenderSelect,
+    handleAgeChange,
     showPassword,
   };
 };

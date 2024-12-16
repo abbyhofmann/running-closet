@@ -14,10 +14,10 @@ const ratingSchema: Schema = new Schema(
   {
     outfit: { type: Schema.Types.ObjectId, ref: 'Rating' },
     stars: {
-        type: Number,
+      type: Number,
     },
     temperatureGuage: {
-        type: String,
+      type: String,
     },
   },
   { collection: 'Rating' },
