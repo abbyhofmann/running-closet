@@ -7,10 +7,10 @@ import { Workout } from '../types';
  *
  * This model is created using the `Workout` interface and the `workoutSchema`, representing the
  * `Workout` collection in the MongoDB database, and provides an interface for interacting with
- * the stored users.
+ * the stored workouts.
  *
  * @type {Model<Workout>}
  */
-const WorkoutModel: Model<Workout> = mongoose.model<Workout>('Runner', workoutSchema);
+const WorkoutModel: Model<Workout> = mongoose.model<Workout>('Workout', workoutSchema);
 
 export default WorkoutModel;

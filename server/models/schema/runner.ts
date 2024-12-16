@@ -13,9 +13,9 @@ import { Schema } from 'mongoose';
  * - `deleted`: A boolean value representing if the account has been deleted. By default false.
  * - `following`: A list of users that the user follows.
  * - `followers`: A list of users that follow the user.
- * - `outfits`: The outfits this user has logged. 
- * - `gender`: The gender of the user. 
- * - `age`: The age of the user. 
+ * - `outfits`: The outfits this user has logged.
+ * - `gender`: The gender of the user.
+ * - `age`: The age of the user.
  */
 const runnerSchema: Schema = new Schema(
   {
@@ -45,13 +45,13 @@ const runnerSchema: Schema = new Schema(
     },
     following: [{ type: Schema.Types.ObjectId, ref: 'Runner' }],
     followers: [{ type: Schema.Types.ObjectId, ref: 'Runner' }],
-    outfits: [{ type: Schema.Types.ObjectId, ref: 'Outfit' }], 
+    outfits: [{ type: Schema.Types.ObjectId, ref: 'Outfit' }],
     gender: {
-        type: String,
-    }, 
+      type: String,
+    },
     age: {
-        type: Number,
-    }
+      type: Number,
+    },
   },
   { collection: 'Runner' },
 );

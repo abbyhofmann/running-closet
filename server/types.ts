@@ -549,7 +549,7 @@ export interface Runner {
 }
 
 /**
- * Interface representing an Runner document, which contains:
+ * Interface representing an Outfit document, which contains:
  * - id: The unique identifier for the outfit.
  * - wearer: The user who wore and logged the outfit.
  * - workout: The workout for which this outfit was worn.
@@ -573,7 +573,7 @@ export interface Outfit {
 }
 
 /**
- * Interface representing an Runner document, which contains:
+ * Interface representing an Workout document, which contains:
  * - id: The unique identifier for the workout.
  * - runner: The user who logged the workout.
  * - outfit: The outfit worn during the workout.
@@ -592,4 +592,109 @@ export interface Workout {
   distance: Number;
   duration: Number;
   location: String;
+}
+
+/**
+ * Interface representing an Rating document, which contains:
+ * - id: The unique identifier for the rating.
+ * - outfit: The outfit to which the rating is associated.
+ * - stars: The number of stars (out of 5) allocated to the outfit.
+ * - temperatureGuage: A measure of how the outfit performed in the weather conditions (
+ * i.e. too cold, too warm, appropriate).
+ */
+export interface Rating {
+  _id?: ObjectId;
+  outfit: Outfit;
+  stars: Number;
+  temperatureGuage: String;
+}
+
+/**
+ * Interface representing an Top document, which contains:
+ * - id: The unique identifier for the top.
+ * - runner: The runner who created the top.
+ * - brand: The brand name of the top. 
+ * - model: The model name of the top.
+ * - s3PhotoUrl: The URL link to the S3 bucket where the top photo is stored.
+ * - outfits: The list of outfits that the top is a part of.
+ */
+export interface Top {
+  _id?: ObjectId;
+  runner: Runner;
+  brand: String;
+  model: String;
+  s3PhotoUrl: String;
+  outfits: Outfit[];
+}
+
+/**
+ * Interface representing an Botton document, which contains:
+ * - id: The unique identifier for the bottom.
+ * - runner: The runner who created the bottom.
+ * - brand: The brand name of the bottom. 
+ * - model: The model name of the bottom.
+ * - s3PhotoUrl: The URL link to the S3 bucket where the bottom photo is stored.
+ * - outfits: The list of outfits that the bottom is a part of.
+ */
+export interface Bottom {
+  _id?: ObjectId;
+  runner: Runner;
+  brand: String;
+  model: String;
+  s3PhotoUrl: String;
+  outfits: Outfit[];
+}
+
+/**
+ * Interface representing an Accessory document, which contains:
+ * - id: The unique identifier for the accessory.
+ * - runner: The runner who created the accessory.
+ * - brand: The brand name of the accessory. 
+ * - model: The model name of the accessory.
+ * - s3PhotoUrl: The URL link to the S3 bucket where the accessory photo is stored.
+ * - outfits: The list of outfits that the accessory is a part of.
+ */
+export interface Accessory {
+  _id?: ObjectId;
+  runner: Runner;
+  brand: String;
+  model: String;
+  s3PhotoUrl: String;
+  outfits: Outfit[];
+}
+
+/**
+ * Interface representing an Outerwear document, which contains:
+ * - id: The unique identifier for the outerwear item.
+ * - runner: The runner who created the outerwear item.
+ * - brand: The brand name of the outerwear item. 
+ * - model: The model name of the outerwear item.
+ * - s3PhotoUrl: The URL link to the S3 bucket where the outerwear photo is stored.
+ * - outfits: The list of outfits that the outerwear item is a part of.
+ */
+export interface Outerwear {
+  _id?: ObjectId;
+  runner: Runner;
+  brand: String;
+  model: String;
+  s3PhotoUrl: String;
+  outfits: Outfit[];
+}
+
+/**
+ * Interface representing a Shoe document, which contains:
+ * - id: The unique identifier for the shoe.
+ * - runner: The runner who created the shoe.
+ * - brand: The brand name of the shoe. 
+ * - model: The model name of the shoe.
+ * - s3PhotoUrl: The URL link to the S3 bucket where the shoe photo is stored.
+ * - outfits: The list of outfits that the shoe is a part of.
+ */
+export interface Shoe {
+  _id?: ObjectId;
+  runner: Runner;
+  brand: String;
+  model: String;
+  s3PhotoUrl: String;
+  outfits: Outfit[];
 }

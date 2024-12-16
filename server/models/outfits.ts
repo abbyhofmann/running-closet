@@ -1,5 +1,5 @@
 import mongoose, { Model } from 'mongoose';
-import outfitSchema from './schema/outfit';
+import outfitSchema from './schema/outfit/outfit';
 import { Outfit } from '../types';
 
 /**
@@ -7,10 +7,10 @@ import { Outfit } from '../types';
  *
  * This model is created using the `Outfit` interface and the `outfitSchema`, representing the
  * `Outfit` collection in the MongoDB database, and provides an interface for interacting with
- * the stored users.
+ * the stored outfits.
  *
  * @type {Model<Outfit>}
  */
-const OutfitModel: Model<Outfit> = mongoose.model<Outfit>('Runner', outfitSchema);
+const OutfitModel: Model<Outfit> = mongoose.model<Outfit>('Outfit', outfitSchema);
 
 export default OutfitModel;

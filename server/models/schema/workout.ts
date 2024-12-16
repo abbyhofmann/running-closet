@@ -17,19 +17,19 @@ const workoutSchema: Schema = new Schema(
     runner: { type: Schema.Types.ObjectId, ref: 'Runner' },
     outfit: { type: Schema.Types.ObjectId, ref: 'Outfit' },
     runType: {
-        type: String,
+      type: String,
     },
     dateCompleted: {
-        type: Date,
+      type: Date,
     },
     distance: {
-        type: Number,
+      type: Number,
     },
     duration: {
-        type: Number,
-    }, 
+      type: Number,
+    },
     location: {
-        type: String,
+      type: String,
     },
   },
   { collection: 'Workout' },
