@@ -1,0 +1,4 @@
+- remove runner schema file 
+- update logos 
+- revamp UI 
+- remove the scroll click on the age input on register page 

@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 /**
- * Mongoose schema for the User collection.
+ * Mongoose schema for the User (runner) collection.
  *
  * This schema defines the structure for storing users in the database.
  * Each user includes the following fields:
@@ -13,6 +13,9 @@ import { Schema } from 'mongoose';
  * - `deleted`: A boolean value representing if the account has been deleted. By default false.
  * - `following`: A list of users that the user follows.
  * - `followers`: A list of users that follow the user.
+ * - `outfits`: The outfits this user has logged.
+ * - `gender`: The gender of the user.
+ * - `age`: The age of the user.
  */
 const userSchema: Schema = new Schema(
   {
@@ -42,6 +45,13 @@ const userSchema: Schema = new Schema(
     },
     following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    outfits: [{ type: Schema.Types.ObjectId, ref: 'Outfit' }],
+    gender: {
+      type: String,
+    },
+    age: {
+      type: Number,
+    },
   },
   { collection: 'User' },
 );

@@ -27,6 +27,12 @@ const SideBarNav = () => (
       className={({ isActive }) => `menu_button ${isActive ? 'menu_selected' : ''}`}>
       Messages
     </NavLink>
+    <NavLink
+      to='/outfits'
+      id='menu_outfits'
+      className={({ isActive }) => `menu_button ${isActive ? 'menu_selected' : ''}`}>
+      Temp Outfits
+    </NavLink>
   </div>
 );
 

@@ -10,6 +10,8 @@ import {
   OutlinedInput,
   TextField,
   Typography,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -28,6 +30,7 @@ const Register = () => {
     pass,
     email,
     profileGraphic,
+    gender,
     age,
     registrationError,
     showRegistrationError,
@@ -98,31 +101,6 @@ const Register = () => {
             />
           ))}
         </div>
-        <div className='gender-select'>
-          <label>
-            Select a gender:
-            <select
-              name='selectedGender'
-              defaultValue='male'
-              onChange={e => handleGenderSelect(e.target.value)}>
-              <option value='male'>Male</option>
-              <option value='female'>Female</option>
-              <option value='other'>Other</option>
-            </select>
-          </label>
-        </div>
-        <div className='age-entry'>
-          <TextField
-            id='age-input'
-            label='Age'
-            type='age'
-            required
-            autoComplete='current-age'
-            value={age}
-            sx={{ marginX: 'auto', width: '25ch' }}
-            onChange={handleAgeChange}
-          />
-        </div>
         <div className='row'>
           <TextField
             id='outlined-first-name-input'
@@ -132,8 +110,6 @@ const Register = () => {
             sx={{ marginX: 'auto', width: '25ch' }}
             onChange={handleFirstNameChange}
           />
-        </div>
-        <div className='row'>
           <TextField
             id='outlined-lastname-input'
             label='Last Name'
@@ -141,6 +117,37 @@ const Register = () => {
             value={lastName}
             sx={{ marginX: 'auto', width: '25ch' }}
             onChange={handleLastNameChange}
+          />
+        </div>
+        <div className='row'>
+          <FormControl fullWidth>
+            <InputLabel id='gender-select-label'>Gender</InputLabel>
+            <Select
+              labelId='gender-select-label'
+              id='gender-select'
+              value={gender}
+              label='Gender'
+              onChange={e => handleGenderSelect(e.target.value)}>
+              <MenuItem value={'male'}>Male</MenuItem>
+              <MenuItem value={'female'}>Female</MenuItem>
+              <MenuItem value={'other'}>Other</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            id='age-input'
+            label='Age'
+            type='text'
+            required
+            autoComplete='current-age'
+            value={age}
+            sx={{ marginX: 'auto', width: '25ch' }}
+            onChange={e => {
+              const { value } = e.target;
+              // Allow only integers greater than or equal to 0
+              if (value === '' || /^[0-9]+$/.test(value)) {
+                handleAgeChange(Number(value));
+              }
+            }}
           />
         </div>
         <div className='row'>

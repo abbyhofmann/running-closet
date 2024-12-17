@@ -86,6 +86,7 @@
   display: flex; 
   align-items: center; 
   margin-bottom: 10px; 
+  gap: 1rem;
 }
 
 .profile-photo-grid {

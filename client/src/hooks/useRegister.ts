@@ -9,6 +9,9 @@ import { registerUser } from '../services/userService';
  * @returns username - The current value of the username input.
  * @returns pass - The current value of the password input.
  * @returns email - The current value of the email input.
+ * @returns profileGraphic - The current value of the selected profile graphic.
+ * @returns gender - The current value of the selected gender.
+ * @returns age - The current value of the age input.
  * @returns handleUsernameChange - Function to handle changes in the username field.
  * @returns handlePasswordChange - Function to handle changes in the password field.
  * @returns handleEmailChange - Function to handle changes in the email field.
@@ -105,8 +108,8 @@ const useRegister = () => {
    *
    * @param e - the event object.
    */
-  const handleAgeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setAge(e.target.valueAsNumber);
+  const handleAgeChange = (ageInput: number) => {
+    setAge(ageInput);
   };
 
   /**
