@@ -2,3 +2,4 @@
 - update logos 
 - revamp UI 
 - remove the scroll click on the age input on register page 
+- add s3 url validation check when creating a new top/bottom, etc

@@ -23,6 +23,8 @@ import {
   MultipleNotificationResponse,
   RemoveUserResponse,
   SendEmailPayload,
+  Top,
+  TopResponse,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -32,6 +34,7 @@ import UserModel from './users';
 import ConversationModel from './conversations';
 import MessageModel from './messages';
 import NotificationModel from './notifications';
+import TopModel from './tops';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
@@ -1421,5 +1424,23 @@ export const sendEmail = async (
       return { success: true, message: 'Send limit reached - email not sent' };
     }
     return { success: false, message: `Failed to send email: ${(err as Error).message}` };
+  }
+};
+
+/// //////////////////////////////////////// RUNNER APP ADDITIONS
+
+/**
+ * Saves a new top to the database.
+ *
+ * @param {Top} top - The top to save
+ *
+ * @returns {Promise<TopResponse>} - The saved top, or an error message if the save failed
+ */
+export const saveTop = async (top: Top): Promise<TopResponse> => {
+  try {
+    const result = await TopModel.create(top);
+    return result;
+  } catch (error) {
+    return { error: 'Error when saving a top' };
   }
 };

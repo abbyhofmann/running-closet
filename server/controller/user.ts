@@ -111,16 +111,6 @@ const userController = (socket: FakeSOSocket) => {
     const { username, firstName, lastName, email, password, profileGraphic, gender, age } =
       req.body;
 
-    console.log('Request body in user:', {
-      username,
-      firstName,
-      lastName,
-      email,
-      password,
-      gender,
-      age,
-    });
-
     const hash = (await hashPassword(password)) as string;
 
     const newUser = {

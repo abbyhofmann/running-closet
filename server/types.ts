@@ -575,7 +575,31 @@ export interface Outfit {
   bottoms: Bottom[];
   outerwear: Outerwear[];
   accessories: Accessory[];
-  shoes: Shoe[];
+  shoes: Shoe;
+}
+
+/**
+ * Interface for the request body when creating a new outfit.
+ * - creatorId: The id of the user creating the outfit (i.e. the wearer).
+ * - workoutId: The id of the workout the outfit was worn in.
+ * - ratingId: The id of the rating associated with the outfit.
+ * - topIds: The list of ids of the tops worn as part of the outfit.
+ * - bottomIds: The list of ids of the bottoms worn as part of the outfit.
+ * - outerwearIds: The list of ids of the outerwear items worn as part of the outfit.
+ * - accessoriesIds: The list of ids of the accessories worn as part of the outfit.
+ * - shoeId: The id of the shoes worn in the outfit.
+ */
+export interface CreateOutfitRequest {
+  body: {
+    creatorId: string;
+    workoutId: string;
+    ratingId: string;
+    topIds: string[];
+    bottomIds: string[];
+    outerwearIds: string[];
+    accessoriesIds: string[];
+    shoeId: string;
+  };
 }
 
 /**
@@ -632,6 +656,27 @@ export interface Top {
   s3PhotoUrl: String;
   outfits: Outfit[];
 }
+
+/**
+ * Interface for the request body when creating a new top.
+ * - runnerId: The id of the user creating the top (i.e. the wearer).
+ * - brand: The brand name of the top.
+ * - model: The model name of the top.
+ * - s3PhotoUrl: The URL of the S3 bucket where the photo of the top is stored.
+ */
+export interface CreateTopRequest {
+  body: {
+    runnerId: string;
+    brand: string;
+    model: string;
+    s3PhotoUrl: string;
+  };
+}
+
+/**
+ * Type representing the possible responses for a Top-related operation.
+ */
+export type TopResponse = Top | { error: string };
 
 /**
  * Interface representing a Botton document, which contains:
