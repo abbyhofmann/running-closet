@@ -21,6 +21,7 @@ import messageController from './controller/message';
 import conversationController from './controller/conversation';
 import notificationController from './controller/notification';
 import bottomController from './controller/bottom';
+import outerwearController from './controller/outerwear';
 
 dotenv.config();
 
@@ -86,6 +87,7 @@ app.use('/notification', notificationController(socket));
 app.use('/outfit', outfitController(socket));
 app.use('/top', topController(socket));
 app.use('/bottom', bottomController(socket));
+app.use('/outerwear', outerwearController(socket));
 
 // Export the app instance
 export { app, server, startServer };

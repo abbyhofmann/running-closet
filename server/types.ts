@@ -754,6 +754,27 @@ export interface Outerwear {
 }
 
 /**
+ * Interface for the request body when creating a new outerwear item.
+ * - runnerId: The id of the user creating the outerwear item (i.e. the wearer).
+ * - brand: The brand name of the outerwear item.
+ * - model: The model name of the outerwear item.
+ * - s3PhotoUrl: The URL of the S3 bucket where the photo of the outerwear item is stored.
+ */
+export interface CreateOuterwearRequest {
+  body: {
+    runnerId: string;
+    brand: string;
+    model: string;
+    s3PhotoUrl: string;
+  };
+}
+
+/**
+ * Type representing the possible responses for a Outerwear-related operation.
+ */
+export type OuterwearResponse = Bottom | { error: string };
+
+/**
  * Interface representing a Shoe document, which contains:
  * - id: The unique identifier for the shoe.
  * - runner: The runner who created the shoe.
