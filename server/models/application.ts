@@ -25,6 +25,8 @@ import {
   SendEmailPayload,
   Top,
   TopResponse,
+  Bottom,
+  BottomResponse,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -35,6 +37,7 @@ import ConversationModel from './conversations';
 import MessageModel from './messages';
 import NotificationModel from './notifications';
 import TopModel from './tops';
+import BottomModel from './bottoms';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
@@ -1442,5 +1445,21 @@ export const saveTop = async (top: Top): Promise<TopResponse> => {
     return result;
   } catch (error) {
     return { error: 'Error when saving a top' };
+  }
+};
+
+/**
+ * Saves a new bottom to the database.
+ *
+ * @param {Bottom} bottom - The bottom to save
+ *
+ * @returns {Promise<BottomResponse>} - The saved bottom, or an error message if the save failed
+ */
+export const saveBottom = async (bottom: Bottom): Promise<BottomResponse> => {
+  try {
+    const result = await BottomModel.create(bottom);
+    return result;
+  } catch (error) {
+    return { error: 'Error when saving a bottom' };
   }
 };

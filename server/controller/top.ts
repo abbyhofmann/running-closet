@@ -20,7 +20,7 @@ const topController = (socket: FakeSOSocket) => {
    * Adds a new top to the database. The top request is validated and the top is then saved.
    * If there is an error, the HTTP response's status is updated.
    *
-   * @param req The CreateOutfitRequest object containing the Outfit data.
+   * @param req The CreateTopRequest object containing the Top data.
    * @param res The HTTP response object used to send back the result of the operation. The response object contains
    * the new user.
    *

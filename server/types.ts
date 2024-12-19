@@ -697,6 +697,27 @@ export interface Bottom {
 }
 
 /**
+ * Interface for the request body when creating a new bottom.
+ * - runnerId: The id of the user creating the bottom (i.e. the wearer).
+ * - brand: The brand name of the bottom.
+ * - model: The model name of the bottom.
+ * - s3PhotoUrl: The URL of the S3 bucket where the photo of the bottom is stored.
+ */
+export interface CreateBottomRequest {
+  body: {
+    runnerId: string;
+    brand: string;
+    model: string;
+    s3PhotoUrl: string;
+  };
+}
+
+/**
+ * Type representing the possible responses for a Bottom-related operation.
+ */
+export type BottomResponse = Bottom | { error: string };
+
+/**
  * Interface representing an Accessory document, which contains:
  * - id: The unique identifier for the accessory.
  * - runner: The runner who created the accessory.

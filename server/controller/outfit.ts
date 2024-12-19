@@ -83,11 +83,9 @@ const outfitController = (socket: FakeSOSocket) => {
   const getAllOutfits = async (req: Request, res: Response): Promise<void> => {
     // try {
     //   const olist = await fetchAllOutfits();
-
     //   if ('error' in olist) {
     //     throw new Error(olist.error as string);
     //   }
-
     //   res.json(olist);
     // } catch (err) {
     //   res.status(500).send(`Error when fetching all outfits: ${(err as Error).message}`);
