@@ -22,6 +22,7 @@ import conversationController from './controller/conversation';
 import notificationController from './controller/notification';
 import bottomController from './controller/bottom';
 import outerwearController from './controller/outerwear';
+import accessoryController from './controller/accessory';
 
 dotenv.config();
 
@@ -88,6 +89,7 @@ app.use('/outfit', outfitController(socket));
 app.use('/top', topController(socket));
 app.use('/bottom', bottomController(socket));
 app.use('/outerwear', outerwearController(socket));
+app.use('/accessory', accessoryController(socket));
 
 // Export the app instance
 export { app, server, startServer };

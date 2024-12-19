@@ -29,6 +29,8 @@ import {
   BottomResponse,
   Outerwear,
   OuterwearResponse,
+  Accessory,
+  AccessoryResponse,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -41,6 +43,7 @@ import NotificationModel from './notifications';
 import TopModel from './tops';
 import BottomModel from './bottoms';
 import OuterwearModel from './outerwears';
+import AccessoryModel from './accessories';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
@@ -1480,5 +1483,21 @@ export const saveOuterwear = async (outerwear: Outerwear): Promise<OuterwearResp
     return result;
   } catch (error) {
     return { error: 'Error when saving an outerwear item' };
+  }
+};
+
+/**
+ * Saves a new accessory to the database.
+ *
+ * @param {Accessory} accessory - The accessory to save
+ *
+ * @returns {Promise<AccessoryResponse>} - The saved accessory, or an error message if the save failed
+ */
+export const saveAccessory = async (accessory: Accessory): Promise<AccessoryResponse> => {
+  try {
+    const result = await AccessoryModel.create(accessory);
+    return result;
+  } catch (error) {
+    return { error: 'Error when saving an accessory' };
   }
 };

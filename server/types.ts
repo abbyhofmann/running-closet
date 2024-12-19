@@ -736,6 +736,27 @@ export interface Accessory {
 }
 
 /**
+ * Interface for the request body when creating a new accessory.
+ * - runnerId: The id of the user creating the accessory (i.e. the wearer).
+ * - brand: The brand name of the accessory.
+ * - model: The model name of the accessory.
+ * - s3PhotoUrl: The URL of the S3 bucket where the photo of the accessory is stored.
+ */
+export interface CreateAccessoryRequest {
+  body: {
+    runnerId: string;
+    brand: string;
+    model: string;
+    s3PhotoUrl: string;
+  };
+}
+
+/**
+ * Type representing the possible responses for a Accessory-related operation.
+ */
+export type AccessoryResponse = Accessory | { error: string };
+
+/**
  * Interface representing an Outerwear document, which contains:
  * - id: The unique identifier for the outerwear item.
  * - runner: The runner who created the outerwear item.
@@ -772,7 +793,7 @@ export interface CreateOuterwearRequest {
 /**
  * Type representing the possible responses for a Outerwear-related operation.
  */
-export type OuterwearResponse = Bottom | { error: string };
+export type OuterwearResponse = Outerwear | { error: string };
 
 /**
  * Interface representing a Shoe document, which contains:
