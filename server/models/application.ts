@@ -33,6 +33,8 @@ import {
   AccessoryResponse,
   ShoeResponse,
   Shoe,
+  Workout,
+  WorkoutResponse,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -47,6 +49,7 @@ import BottomModel from './bottoms';
 import OuterwearModel from './outerwears';
 import AccessoryModel from './accessories';
 import ShoeModel from './shoes';
+import WorkoutModel from './workouts';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
@@ -1518,5 +1521,48 @@ export const saveShoe = async (shoe: Shoe): Promise<ShoeResponse> => {
     return result;
   } catch (error) {
     return { error: 'Error when saving a shoe' };
+  }
+};
+
+/**
+ * Saves a new workout to the database.
+ *
+ * @param {Workout} workout - The workout to save
+ *
+ * @returns {Promise<WorkoutResponse>} - The saved shoe, or an error message if the save failed
+ */
+export const saveWorkout = async (workout: Workout): Promise<WorkoutResponse> => {
+  try {
+    const result = await WorkoutModel.create(workout);
+    return result;
+  } catch (error) {
+    return { error: 'Error when saving a workout' };
+  }
+};
+
+/**
+ * Adds a workout to a user's list of workouts.
+ *
+ * @param workout The workout being added.
+ * @param runnerId The id of the user to which the workout is being added.
+ * @returns {Promise<UserResponse>} - The updated user, or an error message if the update failed.
+ */
+export const addWorkout = async (workout: Workout, runnerId: string): Promise<UserResponse> => {
+  try {
+    const updatedUser = await UserModel.findOneAndUpdate(
+      { _id: runnerId },
+      { $addToSet: { workouts: workout } },
+      {
+        new: true,
+      },
+    );
+
+    if (!updatedUser) {
+      return { error: 'User not found!' };
+    }
+
+    return updatedUser;
+  } catch (err) {
+    return { error: `Error when adding a workout to user:  ${(err as Error).message}` };
   }
 };

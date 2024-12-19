@@ -7,22 +7,26 @@ const outfitController = (socket: FakeSOSocket) => {
   const router = express.Router();
 
   /**
-   * Checks if the provided register user request contains the required fields.
+   * Checks if the provided create outfit request contains the required fields.
    *
-   * @param req The request object containing the new user's username, email, and password.
+   * @param req The request object containing the new outfit's clothing items. There must
+   * be at least one top, one bottom, and one shoe, while the outerwear and accessories are optional (i.e.
+   * can be empty lists).
    *
    * @returns `true` if the request is valid, otherwise `false`.
    */
-  function isRegisterRequestValid(req: RegisterUserRequest): boolean {
+  function isCreateOutfitRequestValid(req: CreateOutfitRequest): boolean {
     return (
-      !!req.body.username &&
-      !!req.body.firstName &&
-      !!req.body.lastName &&
-      !!req.body.email &&
-      !!req.body.password &&
-      !!req.body.profileGraphic &&
-      !!req.body.gender &&
-      !!req.body.age
+      !!req.body.creatorId &&
+      !!req.body.workoutId &&
+      !!req.body.ratingId &&
+      !!req.body.topIds &&
+      req.body.topIds.length > 0 &&
+      !!req.body.bottomIds &&
+      req.body.bottomIds.length > 0 &&
+      !!req.body.outerwearIds &&
+      !!req.body.accessoriesIds &&
+      !!req.body.shoeId
     );
   }
 
@@ -37,10 +41,10 @@ const outfitController = (socket: FakeSOSocket) => {
    * @returns A Promise that resolves to void.
    */
   const createOutfit = async (req: CreateOutfitRequest, res: Response): Promise<void> => {
-    // if (!isCreateOutfitRequestValid(req)) {
-    //   res.status(400).send('Invalid create outfit request');
-    //   return;
-    // }
+    if (!isCreateOutfitRequestValid(req)) {
+      res.status(400).send('Invalid create outfit request');
+      return;
+    }
 
     const {
       creatorId,
@@ -57,6 +61,8 @@ const outfitController = (socket: FakeSOSocket) => {
     // outfit object
 
     // then add this outfit to each item (top, bottom, etc)'s list of outfits
+
+    // add outfit to user's list of outfits and list of workouts
 
     // try {
     //   const userFromDb = await saveUser(newUser);

@@ -14,6 +14,7 @@ import { Schema } from 'mongoose';
  * - `following`: A list of users that the user follows.
  * - `followers`: A list of users that follow the user.
  * - `outfits`: The outfits this user has logged.
+ * - `workouts`: The workouts this user has logged.
  * - `gender`: The gender of the user.
  * - `age`: The age of the user.
  */
@@ -46,6 +47,7 @@ const userSchema: Schema = new Schema(
     following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     outfits: [{ type: Schema.Types.ObjectId, ref: 'Outfit' }],
+    workouts: [{ type: Schema.Types.ObjectId, ref: 'Workout' }],
     gender: {
       type: String,
     },

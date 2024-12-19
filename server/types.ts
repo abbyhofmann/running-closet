@@ -535,6 +535,7 @@ export interface SendEmailPayload {
  * - following: A list of of users that the user follows.
  * - followers: A list of of users that follow the user.
  * - outifts: The outfits the user has logged. 
+ * - workouts: The workouts the user has logged.
  * - gender: The gender of the user. 
  * - age: The age of the user. 
  */
@@ -550,6 +551,7 @@ export interface User {
   following: User[];
   followers: User[];
   outfits: Outfit[];
+  workouts: Workout[];
   gender: string; 
   age: number;
 }
@@ -606,7 +608,6 @@ export interface CreateOutfitRequest {
  * Interface representing a Workout document, which contains:
  * - id: The unique identifier for the workout.
  * - runner: The user who logged the workout.
- * - outfit: The outfit worn during the workout.
  * - runType: The type of run workout.
  * - dateCompleted: The date on which the workout was completed.
  * - distance: The distance (in miles) ran during the workout.
@@ -616,13 +617,37 @@ export interface CreateOutfitRequest {
 export interface Workout {
   _id?: ObjectId;
   runner: User;
-  outfit: Outfit;
   runType: String;
   dateCompleted: Date;
   distance: Number;
   duration: Number;
   location: String;
 }
+
+/**
+ * Interface for the request body when creating a new workout.
+ * - runnerId: The id of the user creating the workout (i.e. the runner).
+ * - runType: The type of run workout.
+ * - dateCompleted: The date on which the workout was completed.
+ * - distance: The distance (in miles) ran during the workout.
+ * - duration: The time duration of the run workout.
+ * - location: The city/state/country location of the workout.
+ */
+export interface CreateWorkoutRequest {
+  body: {
+    runnerId: string;
+    runType: string;
+    dateCompleted: Date;
+    distance: number;
+    duration: number; 
+    location: String;
+  };
+}
+
+/**
+ * Type representing the possible responses for a Workout-related operation.
+ */
+export type WorkoutResponse = Workout | { error: string };
 
 /**
  * Interface representing a Rating document, which contains:

@@ -124,6 +124,7 @@ const userController = (socket: FakeSOSocket) => {
       following: [],
       followers: [],
       outfits: [],
+      workouts: [],
       gender,
       age,
     };

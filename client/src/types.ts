@@ -15,6 +15,7 @@ export type FakeSOSocket = Socket<ServerToClientEvents>;
  * - following - Usernames of users that this user is following.
  * - followers - Usernames of users that are following this user.
  * - outifts: The outfits the user has logged.
+ * - workouts: The workouts the user has logged.
  * - gender: The gender of the user.
  * - age: The age of the user.
  */
@@ -30,6 +31,7 @@ export interface User {
   following: User[];
   followers: User[];
   outfits: Outfit[];
+  workouts: Workout[];
   gender: string;
   age: number;
 }
@@ -62,7 +64,6 @@ export interface Outfit {
  * Interface representing a Workout, which contains:
  * - id: The unique identifier for the workout.
  * - runner: The user who logged the workout.
- * - outfit: The outfit worn during the workout.
  * - runType: The type of run workout.
  * - dateCompleted: The date on which the workout was completed.
  * - distance: The distance (in miles) ran during the workout.
@@ -72,7 +73,6 @@ export interface Outfit {
 export interface Workout {
   _id?: string;
   runner: User;
-  outfit: Outfit;
   runType: string;
   dateCompleted: Date;
   distance: number;
