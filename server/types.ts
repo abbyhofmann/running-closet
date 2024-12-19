@@ -812,3 +812,24 @@ export interface Shoe {
   s3PhotoUrl: String;
   outfits: Outfit[];
 }
+
+/**
+ * Interface for the request body when creating a new shoe.
+ * - runnerId: The id of the user creating the shoe (i.e. the wearer).
+ * - brand: The brand name of the shoe.
+ * - model: The model name of the shoe.
+ * - s3PhotoUrl: The URL of the S3 bucket where the photo of the shoe is stored.
+ */
+export interface CreateShoeRequest {
+  body: {
+    runnerId: string;
+    brand: string;
+    model: string;
+    s3PhotoUrl: string;
+  };
+}
+
+/**
+ * Type representing the possible responses for a Shoe-related operation.
+ */
+export type ShoeResponse = Shoe | { error: string };
