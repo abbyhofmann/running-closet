@@ -11,6 +11,6 @@ import { Rating } from '../types';
  *
  * @type {Model<Rating>}
  */
-const RatingtModel: Model<Rating> = mongoose.model<Rating>('Rating', ratingSchema);
+const RatingModel: Model<Rating> = mongoose.model<Rating>('Rating', ratingSchema);
 
-export default RatingtModel;
+export default RatingModel;

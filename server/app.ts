@@ -25,6 +25,7 @@ import outerwearController from './controller/outerwear';
 import accessoryController from './controller/accessory';
 import shoeController from './controller/shoe';
 import workoutController from './controller/workout';
+import ratingController from './controller/rating';
 
 dotenv.config();
 
@@ -94,6 +95,7 @@ app.use('/outerwear', outerwearController(socket));
 app.use('/accessory', accessoryController(socket));
 app.use('/shoe', shoeController(socket));
 app.use('/workout', workoutController(socket));
+app.use('/rating', ratingController(socket));
 
 // Export the app instance
 export { app, server, startServer };

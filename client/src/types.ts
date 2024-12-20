@@ -41,7 +41,9 @@ export interface User {
  * - id: The unique identifier for the outfit.
  * - wearer: The user who wore and logged the outfit.
  * - workout: The workout for which this outfit was worn.
- * - rating: The rating of the outfit.
+ * - ratings: The list of ratings given to the outfit - there can
+ * be multiple ratings if the user re-wears an outfit for a different
+ * workout or on a different day.
  * - tops: The tops worn in the outfit.
  * - bottoms: The bottoms worn in the outfit.
  * - outerwear: The outerwear worn in the outfit.
@@ -52,7 +54,7 @@ export interface Outfit {
   _id?: string;
   wearer: User;
   workout: Workout;
-  rating: Rating;
+  ratings: Rating[];
   tops: Top[];
   bottoms: Bottom[];
   outerwear: Outerwear[];
@@ -85,14 +87,14 @@ export interface Workout {
  * - id: The unique identifier for the rating.
  * - outfit: The outfit to which the rating is associated.
  * - stars: The number of stars (out of 5) allocated to the outfit.
- * - temperatureGuage: A measure of how the outfit performed in the weather conditions (
+ * - temperatureGauge: A measure of how the outfit performed in the weather conditions (
  * i.e. too cold, too warm, appropriate).
  */
 export interface Rating {
   _id?: string;
   outfit: Outfit;
   stars: number;
-  temperatureGuage: string;
+  temperatureGauge: string;
 }
 
 /**

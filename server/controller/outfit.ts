@@ -1,7 +1,29 @@
 import express, { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
-import { FakeSOSocket, RegisterUserRequest, CreateOutfitRequest, GetUserRequest } from '../types';
-import { saveUser, fetchUserByUsername } from '../models/application';
+import {
+  FakeSOSocket,
+  RegisterUserRequest,
+  CreateOutfitRequest,
+  GetUserRequest,
+  Top,
+  TopResponse,
+  BottomResponse,
+  Bottom,
+  Outerwear,
+  OuterwearResponse,
+  AccessoryResponse,
+  Accessory,
+} from '../types';
+import {
+  saveUser,
+  fetchUserByUsername,
+  fetchUserById,
+  fetchWorkoutById,
+  fetchTopById,
+  fetchBottomById,
+  fetchAccessoryById,
+  fetchShoeById,
+} from '../models/application';
 
 const outfitController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -19,7 +41,6 @@ const outfitController = (socket: FakeSOSocket) => {
     return (
       !!req.body.creatorId &&
       !!req.body.workoutId &&
-      !!req.body.ratingId &&
       !!req.body.topIds &&
       req.body.topIds.length > 0 &&
       !!req.body.bottomIds &&
@@ -46,19 +67,92 @@ const outfitController = (socket: FakeSOSocket) => {
       return;
     }
 
-    const {
-      creatorId,
-      workoutId,
-      ratingId,
-      topIds,
-      bottomIds,
-      outerwearIds,
-      accessoriesIds,
-      shoeId,
-    } = req.body;
+    const { creatorId, workoutId, topIds, bottomIds, outerwearIds, accessoriesIds, shoeId } =
+      req.body;
 
-    // get the user, workout, rating, tops, bottoms, outerwear, accessories, shoes and create
+    // get the user, workout, tops, bottoms, outerwear, accessories, shoes and create
     // outfit object
+
+    // get the user (runner) object
+    const user = await fetchUserById(creatorId);
+
+    if ('error' in user) {
+      throw new Error(user.error as string);
+    }
+
+    // get the workout object
+    const workout = await fetchWorkoutById(workoutId);
+
+    if ('error' in workout) {
+      throw new Error(workout.error as string);
+    }
+
+    // get the top objects
+    const topPromises: Promise<TopResponse>[] = topIds.map(async t => fetchTopById(t));
+
+    const topResponses: TopResponse[] = await Promise.all(topPromises);
+
+    // check each response for errors
+    for (const response of topResponses) {
+      if ('error' in response) {
+        throw new Error(`Error occurred while fetching top: ${response.error}`);
+      }
+    }
+
+    const tops: Top[] = topResponses as Top[];
+
+    // get the bottom objects
+    const bottomPromises: Promise<BottomResponse>[] = bottomIds.map(async b => fetchBottomById(b));
+
+    const bottomResponses: BottomResponse[] = await Promise.all(bottomPromises);
+
+    // check each response for errors
+    for (const response of bottomResponses) {
+      if ('error' in response) {
+        throw new Error(`Error occurred while fetching bottom: ${response.error}`);
+      }
+    }
+
+    const bottoms: Bottom[] = bottomResponses as Bottom[];
+
+    // get the outerwear objects
+    const outerwearPromises: Promise<OuterwearResponse>[] = outerwearIds.map(async o =>
+      fetchBottomById(o),
+    );
+
+    const outerwearResponses: OuterwearResponse[] = await Promise.all(outerwearPromises);
+
+    // check each response for errors
+    for (const response of outerwearResponses) {
+      if ('error' in response) {
+        throw new Error(`Error occurred while fetching outerwear item: ${response.error}`);
+      }
+    }
+
+    const outerwears: Outerwear[] = outerwearResponses as Outerwear[];
+
+    // get the accessory objects
+    const accessoryPromises: Promise<AccessoryResponse>[] = accessoriesIds.map(async a =>
+      fetchAccessoryById(a),
+    );
+
+    const accessoryResponses: AccessoryResponse[] = await Promise.all(accessoryPromises);
+
+    // check each response for errors
+    for (const response of accessoryResponses) {
+      if ('error' in response) {
+        throw new Error(`Error occurred while fetching accessory: ${response.error}`);
+      }
+    }
+
+    const accessories: Accessory[] = accessoryResponses as Accessory[];
+
+    // get the shoe object
+    const shoe = await fetchShoeById(shoeId);
+
+    if ('error' in shoe) {
+      throw new Error(shoe.error as string);
+    }
 
     // then add this outfit to each item (top, bottom, etc)'s list of outfits
 

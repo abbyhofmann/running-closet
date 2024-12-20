@@ -561,7 +561,9 @@ export interface User {
  * - id: The unique identifier for the outfit.
  * - wearer: The user who wore and logged the outfit.
  * - workout: The workout for which this outfit was worn.
- * - rating: The rating of the outfit.
+ * - ratings: The list of ratings given to the outfit - there can
+ * be multiple ratings if the user re-wears an outfit for a different
+ * workout or on a different day.
  * - tops: The tops worn in the outfit.
  * - bottoms: The bottoms worn in the outfit.
  * - outerwear: The outerwear worn in the outfit.
@@ -572,7 +574,7 @@ export interface Outfit {
   _id?: ObjectId;
   wearer: User;
   workout: Workout;
-  rating: Rating;
+  ratings: Rating[];
   tops: Top[];
   bottoms: Bottom[];
   outerwear: Outerwear[];
@@ -584,7 +586,6 @@ export interface Outfit {
  * Interface for the request body when creating a new outfit.
  * - creatorId: The id of the user creating the outfit (i.e. the wearer).
  * - workoutId: The id of the workout the outfit was worn in.
- * - ratingId: The id of the rating associated with the outfit.
  * - topIds: The list of ids of the tops worn as part of the outfit.
  * - bottomIds: The list of ids of the bottoms worn as part of the outfit.
  * - outerwearIds: The list of ids of the outerwear items worn as part of the outfit.
@@ -595,7 +596,6 @@ export interface CreateOutfitRequest {
   body: {
     creatorId: string;
     workoutId: string;
-    ratingId: string;
     topIds: string[];
     bottomIds: string[];
     outerwearIds: string[];
@@ -603,6 +603,11 @@ export interface CreateOutfitRequest {
     shoeId: string;
   };
 }
+
+/**
+ * Type representing the possible responses for a Outfit-related operation.
+ */
+export type OutfitResponse = Outfit | { error: string };
 
 /**
  * Interface representing a Workout document, which contains:
@@ -654,15 +659,35 @@ export type WorkoutResponse = Workout | { error: string };
  * - id: The unique identifier for the rating.
  * - outfit: The outfit to which the rating is associated.
  * - stars: The number of stars (out of 5) allocated to the outfit.
- * - temperatureGuage: A measure of how the outfit performed in the weather conditions (
+ * - temperatureGauge: A measure of how the outfit performed in the weather conditions (
  * i.e. too cold, too warm, appropriate).
  */
 export interface Rating {
   _id?: ObjectId;
   outfit: Outfit;
   stars: Number;
-  temperatureGuage: String;
+  temperatureGauge: String;
 }
+
+/**
+ * Interface for the request body when creating a new rating.
+ * - outfitId: The id of the outfit to which this rating is associated.
+ * - stars: The number of stars given to the outfit (out of 5).
+ * - temperatureGauge: The string representing how well the outfit did given the temperature 
+ * conditions (too warm, too cold, appropriate).
+ */
+export interface CreateRatingRequest {
+  body: {
+    outfitId: string;
+    stars: number;
+    temperatureGauge: string;
+  };
+}
+
+/**
+ * Type representing the possible responses for a Rating-related operation.
+ */
+export type RatingResponse = Rating | { error: string };
 
 /**
  * Interface representing a Top document, which contains:

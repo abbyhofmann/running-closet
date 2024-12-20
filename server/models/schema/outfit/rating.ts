@@ -16,7 +16,7 @@ const ratingSchema: Schema = new Schema(
     stars: {
       type: Number,
     },
-    temperatureGuage: {
+    temperatureGauge: {
       type: String,
     },
   },

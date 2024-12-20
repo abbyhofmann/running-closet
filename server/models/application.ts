@@ -35,6 +35,9 @@ import {
   Shoe,
   Workout,
   WorkoutResponse,
+  OutfitResponse,
+  Rating,
+  RatingResponse,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -50,6 +53,8 @@ import OuterwearModel from './outerwears';
 import AccessoryModel from './accessories';
 import ShoeModel from './shoes';
 import WorkoutModel from './workouts';
+import OutfitModel from './outfits';
+import RatingModel from './ratings';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
@@ -1447,9 +1452,9 @@ export const sendEmail = async (
 /**
  * Saves a new top to the database.
  *
- * @param {Top} top - The top to save
+ * @param {Top} top - The top to save.
  *
- * @returns {Promise<TopResponse>} - The saved top, or an error message if the save failed
+ * @returns {Promise<TopResponse>} - The saved top, or an error message if the save failed.
  */
 export const saveTop = async (top: Top): Promise<TopResponse> => {
   try {
@@ -1463,9 +1468,9 @@ export const saveTop = async (top: Top): Promise<TopResponse> => {
 /**
  * Saves a new bottom to the database.
  *
- * @param {Bottom} bottom - The bottom to save
+ * @param {Bottom} bottom - The bottom to save.
  *
- * @returns {Promise<BottomResponse>} - The saved bottom, or an error message if the save failed
+ * @returns {Promise<BottomResponse>} - The saved bottom, or an error message if the save failed.
  */
 export const saveBottom = async (bottom: Bottom): Promise<BottomResponse> => {
   try {
@@ -1479,9 +1484,9 @@ export const saveBottom = async (bottom: Bottom): Promise<BottomResponse> => {
 /**
  * Saves a new outerwear item to the database.
  *
- * @param {Outerwear} outerwear - The outerwear to save
+ * @param {Outerwear} outerwear - The outerwear to save.
  *
- * @returns {Promise<OuterwearResponse>} - The saved outerwear item, or an error message if the save failed
+ * @returns {Promise<OuterwearResponse>} - The saved outerwear item, or an error message if the save failed.
  */
 export const saveOuterwear = async (outerwear: Outerwear): Promise<OuterwearResponse> => {
   try {
@@ -1495,9 +1500,9 @@ export const saveOuterwear = async (outerwear: Outerwear): Promise<OuterwearResp
 /**
  * Saves a new accessory to the database.
  *
- * @param {Accessory} accessory - The accessory to save
+ * @param {Accessory} accessory - The accessory to save.
  *
- * @returns {Promise<AccessoryResponse>} - The saved accessory, or an error message if the save failed
+ * @returns {Promise<AccessoryResponse>} - The saved accessory, or an error message if the save failed.
  */
 export const saveAccessory = async (accessory: Accessory): Promise<AccessoryResponse> => {
   try {
@@ -1511,9 +1516,9 @@ export const saveAccessory = async (accessory: Accessory): Promise<AccessoryResp
 /**
  * Saves a new shoe to the database.
  *
- * @param {Shoe} shoe - The shoe to save
+ * @param {Shoe} shoe - The shoe to save.
  *
- * @returns {Promise<ShoeResponse>} - The saved shoe, or an error message if the save failed
+ * @returns {Promise<ShoeResponse>} - The saved shoe, or an error message if the save failed.
  */
 export const saveShoe = async (shoe: Shoe): Promise<ShoeResponse> => {
   try {
@@ -1527,9 +1532,9 @@ export const saveShoe = async (shoe: Shoe): Promise<ShoeResponse> => {
 /**
  * Saves a new workout to the database.
  *
- * @param {Workout} workout - The workout to save
+ * @param {Workout} workout - The workout to save.
  *
- * @returns {Promise<WorkoutResponse>} - The saved shoe, or an error message if the save failed
+ * @returns {Promise<WorkoutResponse>} - The saved workout, or an error message if the save failed.
  */
 export const saveWorkout = async (workout: Workout): Promise<WorkoutResponse> => {
   try {
@@ -1564,5 +1569,202 @@ export const addWorkout = async (workout: Workout, runnerId: string): Promise<Us
     return updatedUser;
   } catch (err) {
     return { error: `Error when adding a workout to user:  ${(err as Error).message}` };
+  }
+};
+
+/**
+ * Fetches an outfit by its id.
+ *
+ * @param oid The id of the outfit being fetched.
+ * @returns The outfit or an error if the outfit is not found.
+ */
+export const fetchOutfitById = async (oid: string): Promise<OutfitResponse> => {
+  try {
+    const outfit = await OutfitModel.findOne({ _id: oid }).populate([
+      { path: 'wearer', model: UserModel },
+      { path: 'rating', model: RatingModel },
+      { path: 'tops', model: TopModel },
+      { path: 'bottoms', model: BottomModel },
+      { path: 'outerwear', model: OuterwearModel },
+      { path: 'accessories', model: AccessoryModel },
+      { path: 'shoes', model: ShoeModel },
+    ]);
+    if (!outfit) {
+      throw new Error(`Failed to fetch outfit with id ${oid}`);
+    }
+    return outfit;
+  } catch (error) {
+    return { error: `Error when fetching outfit: ${(error as Error).message}` };
+  }
+};
+
+/**
+ * Saves a new rating to the database.
+ *
+ * @param {Rating} rating - The rating to save.
+ *
+ * @returns {Promise<RatingResponse>} - The saved rating, or an error message if the save failed.
+ */
+export const saveRating = async (rating: Rating): Promise<RatingResponse> => {
+  try {
+    const result = await RatingModel.create(rating);
+    return result;
+  } catch (error) {
+    return { error: 'Error when saving a rating' };
+  }
+};
+
+/**
+ * Adds a rating to an outfit's list of ratings.
+ *
+ * @param rating The rating being added.
+ * @param outfitId The id of the outfit to which the rating is being added.
+ * @returns {Promise<OutfitResponse>} - The updated outfit, or an error message if the update failed.
+ */
+export const addRatingToOutfit = async (
+  rating: Rating,
+  outfitId: string,
+): Promise<OutfitResponse> => {
+  try {
+    const updatedOutfit = await OutfitModel.findOneAndUpdate(
+      { _id: outfitId },
+      { $addToSet: { ratings: rating } },
+      {
+        new: true,
+      },
+    );
+
+    if (!updatedOutfit) {
+      return { error: 'Outfit not found!' };
+    }
+
+    return updatedOutfit;
+  } catch (err) {
+    return { error: `Error when adding a rating to outfit:  ${(err as Error).message}` };
+  }
+};
+
+/**
+ * Fetches an workout by its id.
+ *
+ * @param oid The id of the workout being fetched.
+ * @returns The workout or an error if the workout is not found.
+ */
+export const fetchWorkoutById = async (wid: string): Promise<WorkoutResponse> => {
+  try {
+    const workout = await WorkoutModel.findOne({ _id: wid }).populate([
+      { path: 'runner', model: UserModel },
+    ]);
+    if (!workout) {
+      throw new Error(`Failed to fetch workout with id ${wid}`);
+    }
+    return workout;
+  } catch (error) {
+    return { error: `Error when fetching workout: ${(error as Error).message}` };
+  }
+};
+
+/**
+ * Fetches a top by its id.
+ *
+ * @param tid The id of the top being fetched.
+ * @returns The top or an error if the top is not found.
+ */
+export const fetchTopById = async (tid: string): Promise<TopResponse> => {
+  try {
+    const top = await TopModel.findOne({ _id: tid }).populate([
+      { path: 'runner', model: UserModel },
+      { path: 'outfits', model: OutfitModel },
+    ]);
+    if (!top) {
+      throw new Error(`Failed to fetch top with id ${tid}`);
+    }
+    return top;
+  } catch (error) {
+    return { error: `Error when fetching top: ${(error as Error).message}` };
+  }
+};
+
+/**
+ * Fetches a bottom by its id.
+ *
+ * @param bid The id of the bottom being fetched.
+ * @returns The bottom or an error if the bottom is not found.
+ */
+export const fetchBottomById = async (bid: string): Promise<BottomResponse> => {
+  try {
+    const bottom = await BottomModel.findOne({ _id: bid }).populate([
+      { path: 'runner', model: UserModel },
+      { path: 'outfits', model: OutfitModel },
+    ]);
+    if (!bottom) {
+      throw new Error(`Failed to fetch bottom with id ${bid}`);
+    }
+    return bottom;
+  } catch (error) {
+    return { error: `Error when fetching bottom: ${(error as Error).message}` };
+  }
+};
+
+/**
+ * Fetches an outerwear item by its id.
+ *
+ * @param oid The id of the outerwear item being fetched.
+ * @returns The outerwear item or an error if the outerwear item is not found.
+ */
+export const fetchOuterwearById = async (oid: string): Promise<OuterwearResponse> => {
+  try {
+    const outerwear = await OuterwearModel.findOne({ _id: oid }).populate([
+      { path: 'runner', model: UserModel },
+      { path: 'outfits', model: OutfitModel },
+    ]);
+    if (!outerwear) {
+      throw new Error(`Failed to fetch outerwear item with id ${oid}`);
+    }
+    return outerwear;
+  } catch (error) {
+    return { error: `Error when fetching outerwear: ${(error as Error).message}` };
+  }
+};
+
+/**
+ * Fetches an accessory by its id.
+ *
+ * @param aid The id of the accessory being fetched.
+ * @returns The accessory or an error if the accessory is not found.
+ */
+export const fetchAccessoryById = async (aid: string): Promise<AccessoryResponse> => {
+  try {
+    const accessory = await AccessoryModel.findOne({ _id: aid }).populate([
+      { path: 'runner', model: UserModel },
+      { path: 'outfits', model: OutfitModel },
+    ]);
+    if (!accessory) {
+      throw new Error(`Failed to fetch accessory with id ${aid}`);
+    }
+    return accessory;
+  } catch (error) {
+    return { error: `Error when fetching accessory: ${(error as Error).message}` };
+  }
+};
+
+/**
+ * Fetches a shoe by its id.
+ *
+ * @param sid The id of the shoe being fetched.
+ * @returns The shoe or an error if the shoe is not found.
+ */
+export const fetchShoeById = async (sid: string): Promise<ShoeResponse> => {
+  try {
+    const shoe = await TopModel.findOne({ _id: sid }).populate([
+      { path: 'runner', model: UserModel },
+      { path: 'outfits', model: OutfitModel },
+    ]);
+    if (!shoe) {
+      throw new Error(`Failed to fetch shoe with id ${sid}`);
+    }
+    return shoe;
+  } catch (error) {
+    return { error: `Error when fetching shoe: ${(error as Error).message}` };
   }
 };
