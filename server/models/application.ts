@@ -38,6 +38,7 @@ import {
   OutfitResponse,
   Rating,
   RatingResponse,
+  Outfit,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -1766,5 +1767,21 @@ export const fetchShoeById = async (sid: string): Promise<ShoeResponse> => {
     return shoe;
   } catch (error) {
     return { error: `Error when fetching shoe: ${(error as Error).message}` };
+  }
+};
+
+/**
+ * Saves a new outfit to the database.
+ *
+ * @param {Outfit} outfit - The outfit to save.
+ *
+ * @returns {Promise<OutfitResponse>} - The saved outfit, or an error message if the save failed.
+ */
+export const saveOutfit = async (outfit: Outfit): Promise<OutfitResponse> => {
+  try {
+    const result = await OutfitModel.create(outfit);
+    return result;
+  } catch (error) {
+    return { error: 'Error when saving an outfit' };
   }
 };

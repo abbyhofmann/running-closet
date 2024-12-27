@@ -23,6 +23,7 @@ import {
   fetchBottomById,
   fetchAccessoryById,
   fetchShoeById,
+  saveOutfit,
 } from '../models/application';
 
 const outfitController = (socket: FakeSOSocket) => {
@@ -152,6 +153,24 @@ const outfitController = (socket: FakeSOSocket) => {
 
     if ('error' in shoe) {
       throw new Error(shoe.error as string);
+    }
+
+    // create the outfit
+    const outfit = {
+      wearer: user,
+      workout,
+      ratings: [],
+      tops,
+      bottoms,
+      outerwear: outerwears,
+      accessories,
+      shoes: shoe,
+    };
+
+    const outfitFromDb = await saveOutfit(outfit);
+
+    if ('error' in outfitFromDb) {
+      throw new Error(outfitFromDb.error as string);
     }
 
     // then add this outfit to each item (top, bottom, etc)'s list of outfits
