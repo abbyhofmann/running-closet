@@ -24,6 +24,11 @@ import {
   fetchAccessoryById,
   fetchShoeById,
   saveOutfit,
+  addOutfitToTop,
+  addOutfitToBottom,
+  addOutfitToOuterwear,
+  addOutfitToAccessory,
+  addOutfitToShoe,
 } from '../models/application';
 
 const outfitController = (socket: FakeSOSocket) => {
@@ -174,6 +179,68 @@ const outfitController = (socket: FakeSOSocket) => {
     }
 
     // then add this outfit to each item (top, bottom, etc)'s list of outfits
+    // add to tops
+    const newTopPromises: Promise<TopResponse>[] = tops.map(async t => addOutfitToTop(outfitFromDb, t));
+
+    const newTopResponses: TopResponse[] = await Promise.all(newTopPromises);
+
+    // check each response for errors
+    for (const response of newTopResponses) {
+      if ('error' in response) {
+        throw new Error(`Error occurred while updating top: ${response.error}`);
+      }
+    }
+
+    const updatedTops: Top[] = newTopResponses as Top[];
+
+    // add to bottoms
+    const newBottomPromises: Promise<BottomResponse>[] = bottoms.map(async b => addOutfitToBottom(outfitFromDb, b));
+
+    const newBottomResponses: BottomResponse[] = await Promise.all(newBottomPromises);
+
+    // check each response for errors
+    for (const response of newBottomResponses) {
+      if ('error' in response) {
+        throw new Error(`Error occurred while updating bottom: ${response.error}`);
+      }
+    }
+
+    const updatedBottoms: Bottom[] = newBottomResponses as Bottom[];
+
+    // add to outerwears
+    const newOuterwearPromises: Promise<OuterwearResponse>[] = outerwears.map(async o => addOutfitToOuterwear(outfitFromDb, o));
+
+    const newOuterwearResponses: OuterwearResponse[] = await Promise.all(newOuterwearPromises);
+
+    // check each response for errors
+    for (const response of newOuterwearResponses) {
+      if ('error' in response) {
+        throw new Error(`Error occurred while updating outerwear: ${response.error}`);
+      }
+    }
+
+    const updatedOuterwears: Outerwear[] = newOuterwearResponses as Outerwear[];
+
+    // add to accessories
+    const newAccessoryPromises: Promise<AccessoryResponse>[] = accessories.map(async a => addOutfitToAccessory(outfitFromDb, a));
+
+    const newAccessoryResponses: AccessoryResponse[] = await Promise.all(newAccessoryPromises);
+
+    // check each response for errors
+    for (const response of newAccessoryResponses) {
+      if ('error' in response) {
+        throw new Error(`Error occurred while updating accessory: ${response.error}`);
+      }
+    }
+
+    const updatedAccessories: Accessory[] = newAccessoryResponses as Accessory[];
+
+    // add to shoe 
+    const updatedShoe = await addOutfitToShoe(outfit, shoe);
+
+    if ('error' in updatedShoe) {
+        throw new Error(`Error occurred while updating shoe: ${updatedShoe.error}`);
+    }
 
     // add outfit to user's list of outfits and list of workouts
 

@@ -1785,3 +1785,153 @@ export const saveOutfit = async (outfit: Outfit): Promise<OutfitResponse> => {
     return { error: 'Error when saving an outfit' };
   }
 };
+
+/**
+ * Adds an outfit to a top's list of outfits.
+ *
+ * @param outfit The outfit being added.
+ * @param top The top to which the outfit is being added.
+ * @returns {Promise<TopResponse>} - The updated top, or an error message if the update failed.
+ */
+export const addOutfitToTop = async (
+  outfit: Outfit,
+  top: Top,
+): Promise<TopResponse> => {
+  try {
+    const updatedTop = await TopModel.findOneAndUpdate(
+      { _id: top._id },
+      { $addToSet: { outfits: outfit } },
+      {
+        new: true,
+      },
+    );
+
+    if (!updatedTop) {
+      return { error: 'Top not found!' };
+    }
+
+    return updatedTop;
+  } catch (err) {
+    return { error: `Error when adding an outfit to top:  ${(err as Error).message}` };
+  }
+};
+
+/**
+ * Adds an outfit to a bottom's list of outfits.
+ *
+ * @param outfit The outfit being added.
+ * @param bottom The bottom to which the outfit is being added.
+ * @returns {Promise<BottomResponse>} - The updated bottom, or an error message if the update failed.
+ */
+export const addOutfitToBottom = async (
+  outfit: Outfit,
+  bottom: Bottom,
+): Promise<TopResponse> => {
+  try {
+    const updatedBottom = await BottomModel.findOneAndUpdate(
+      { _id: bottom._id },
+      { $addToSet: { outfits: outfit } },
+      {
+        new: true,
+      },
+    );
+
+    if (!updatedBottom) {
+      return { error: 'Bottom not found!' };
+    }
+
+    return updatedBottom;
+  } catch (err) {
+    return { error: `Error when adding an outfit to bottom:  ${(err as Error).message}` };
+  }
+};
+
+/**
+ * Adds an outfit to a outerwear item's list of outfits.
+ *
+ * @param outfit The outfit being added.
+ * @param outerwewar The outerwear to which the outfit is being added.
+ * @returns {Promise<OuterwearResponse>} - The updated outerwear item, or an error message if the update failed.
+ */
+export const addOutfitToOuterwear = async (
+  outfit: Outfit,
+  outerwear: Outerwear,
+): Promise<OuterwearResponse> => {
+  try {
+    const updatedOuterwear = await OuterwearModel.findOneAndUpdate(
+      { _id: outerwear._id },
+      { $addToSet: { outfits: outfit } },
+      {
+        new: true,
+      },
+    );
+
+    if (!updatedOuterwear) {
+      return { error: 'Outerwear item not found!' };
+    }
+
+    return updatedOuterwear;
+  } catch (err) {
+    return { error: `Error when adding an outfit to outerwear item:  ${(err as Error).message}` };
+  }
+};
+
+/**
+ * Adds an outfit to an accessory's list of outfits.
+ *
+ * @param outfit The outfit being added.
+ * @param accessory The accessory to which the outfit is being added.
+ * @returns {Promise<AccessoryResponse>} - The updated accessory, or an error message if the update failed.
+ */
+export const addOutfitToAccessory = async (
+  outfit: Outfit,
+  accessory: Accessory,
+): Promise<AccessoryResponse> => {
+  try {
+    const updatedAccessory = await AccessoryModel.findOneAndUpdate(
+      { _id: accessory._id },
+      { $addToSet: { outfits: outfit } },
+      {
+        new: true,
+      },
+    );
+
+    if (!updatedAccessory) {
+      return { error: 'Accessory not found!' };
+    }
+
+    return updatedAccessory;
+  } catch (err) {
+    return { error: `Error when adding an outfit to accessory:  ${(err as Error).message}` };
+  }
+};
+
+/**
+ * Adds an outfit to a shoe's list of outfits.
+ *
+ * @param outfit The outfit being added.
+ * @param shoe The shoe to which the outfit is being added.
+ * @returns {Promise<ShoeResponse>} - The updated shoe, or an error message if the update failed.
+ */
+export const addOutfitToShoe = async (
+  outfit: Outfit,
+  shoe: Shoe,
+): Promise<ShoeResponse> => {
+  try {
+    const updatedShoe = await ShoeModel.findOneAndUpdate(
+      { _id: shoe._id },
+      { $addToSet: { outfits: outfit } },
+      {
+        new: true,
+      },
+    );
+
+    if (!updatedShoe) {
+      return { error: 'Shoe not found!' };
+    }
+
+    return updatedShoe;
+  } catch (err) {
+    return { error: `Error when adding an outfit to shoe:  ${(err as Error).message}` };
+  }
+};
