@@ -1674,7 +1674,6 @@ export const fetchWorkoutById = async (wid: string): Promise<WorkoutResponse> =>
 export const fetchTopById = async (tid: string): Promise<TopResponse> => {
   try {
     const top = await TopModel.findOne({ _id: tid }).populate([
-      { path: 'runner', model: UserModel },
       { path: 'outfits', model: OutfitModel },
     ]);
     if (!top) {
@@ -1695,7 +1694,6 @@ export const fetchTopById = async (tid: string): Promise<TopResponse> => {
 export const fetchBottomById = async (bid: string): Promise<BottomResponse> => {
   try {
     const bottom = await BottomModel.findOne({ _id: bid }).populate([
-      { path: 'runner', model: UserModel },
       { path: 'outfits', model: OutfitModel },
     ]);
     if (!bottom) {
@@ -1716,7 +1714,6 @@ export const fetchBottomById = async (bid: string): Promise<BottomResponse> => {
 export const fetchOuterwearById = async (oid: string): Promise<OuterwearResponse> => {
   try {
     const outerwear = await OuterwearModel.findOne({ _id: oid }).populate([
-      { path: 'runner', model: UserModel },
       { path: 'outfits', model: OutfitModel },
     ]);
     if (!outerwear) {
@@ -1737,7 +1734,6 @@ export const fetchOuterwearById = async (oid: string): Promise<OuterwearResponse
 export const fetchAccessoryById = async (aid: string): Promise<AccessoryResponse> => {
   try {
     const accessory = await AccessoryModel.findOne({ _id: aid }).populate([
-      { path: 'runner', model: UserModel },
       { path: 'outfits', model: OutfitModel },
     ]);
     if (!accessory) {
@@ -1757,8 +1753,7 @@ export const fetchAccessoryById = async (aid: string): Promise<AccessoryResponse
  */
 export const fetchShoeById = async (sid: string): Promise<ShoeResponse> => {
   try {
-    const shoe = await TopModel.findOne({ _id: sid }).populate([
-      { path: 'runner', model: UserModel },
+    const shoe = await ShoeModel.findOne({ _id: sid }).populate([
       { path: 'outfits', model: OutfitModel },
     ]);
     if (!shoe) {
@@ -1782,7 +1777,7 @@ export const saveOutfit = async (outfit: Outfit): Promise<OutfitResponse> => {
     const result = await OutfitModel.create(outfit);
     return result;
   } catch (error) {
-    return { error: 'Error when saving an outfit' };
+    return { error: `Error when saving an outfit: ${error}` };
   }
 };
 
@@ -1793,10 +1788,7 @@ export const saveOutfit = async (outfit: Outfit): Promise<OutfitResponse> => {
  * @param top The top to which the outfit is being added.
  * @returns {Promise<TopResponse>} - The updated top, or an error message if the update failed.
  */
-export const addOutfitToTop = async (
-  outfit: Outfit,
-  top: Top,
-): Promise<TopResponse> => {
+export const addOutfitToTop = async (outfit: Outfit, top: Top): Promise<TopResponse> => {
   try {
     const updatedTop = await TopModel.findOneAndUpdate(
       { _id: top._id },
@@ -1823,10 +1815,7 @@ export const addOutfitToTop = async (
  * @param bottom The bottom to which the outfit is being added.
  * @returns {Promise<BottomResponse>} - The updated bottom, or an error message if the update failed.
  */
-export const addOutfitToBottom = async (
-  outfit: Outfit,
-  bottom: Bottom,
-): Promise<TopResponse> => {
+export const addOutfitToBottom = async (outfit: Outfit, bottom: Bottom): Promise<TopResponse> => {
   try {
     const updatedBottom = await BottomModel.findOneAndUpdate(
       { _id: bottom._id },
@@ -1913,10 +1902,7 @@ export const addOutfitToAccessory = async (
  * @param shoe The shoe to which the outfit is being added.
  * @returns {Promise<ShoeResponse>} - The updated shoe, or an error message if the update failed.
  */
-export const addOutfitToShoe = async (
-  outfit: Outfit,
-  shoe: Shoe,
-): Promise<ShoeResponse> => {
+export const addOutfitToShoe = async (outfit: Outfit, shoe: Shoe): Promise<ShoeResponse> => {
   try {
     const updatedShoe = await ShoeModel.findOneAndUpdate(
       { _id: shoe._id },
@@ -1933,5 +1919,32 @@ export const addOutfitToShoe = async (
     return updatedShoe;
   } catch (err) {
     return { error: `Error when adding an outfit to shoe:  ${(err as Error).message}` };
+  }
+};
+
+/**
+ * Adds an outfit to a user's list of outfits.
+ *
+ * @param outfit The outfit being added.
+ * @param userId The id of the user to which the outfit is being added.
+ * @returns {Promise<UserResponse>} - The updated user, or an error message if the update failed.
+ */
+export const addOutfitToUser = async (outfit: Outfit, userId: string): Promise<UserResponse> => {
+  try {
+    const updatedUser = await UserModel.findOneAndUpdate(
+      { _id: userId },
+      { $addToSet: { outfits: outfit } },
+      {
+        new: true,
+      },
+    );
+
+    if (!updatedUser) {
+      return { error: 'User not found!' };
+    }
+
+    return updatedUser;
+  } catch (err) {
+    return { error: `Error when adding an outfit to user:  ${(err as Error).message}` };
   }
 };

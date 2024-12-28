@@ -1,8 +1,6 @@
 import express, { Request, Response } from 'express';
-import { ObjectId } from 'mongodb';
 import {
   FakeSOSocket,
-  RegisterUserRequest,
   CreateOutfitRequest,
   GetUserRequest,
   Top,
@@ -15,7 +13,6 @@ import {
   Accessory,
 } from '../types';
 import {
-  saveUser,
   fetchUserByUsername,
   fetchUserById,
   fetchWorkoutById,
@@ -29,6 +26,9 @@ import {
   addOutfitToOuterwear,
   addOutfitToAccessory,
   addOutfitToShoe,
+  addOutfitToUser,
+  fetchOuterwearById,
+  fetchOutfitById,
 } from '../models/application';
 
 const outfitController = (socket: FakeSOSocket) => {
@@ -76,185 +76,204 @@ const outfitController = (socket: FakeSOSocket) => {
     const { creatorId, workoutId, topIds, bottomIds, outerwearIds, accessoriesIds, shoeId } =
       req.body;
 
-    // get the user, workout, tops, bottoms, outerwear, accessories, shoes and create
-    // outfit object
+    try {
+      // get the user, workout, tops, bottoms, outerwear, accessories, shoes and create
+      // outfit object
 
-    // get the user (runner) object
-    const user = await fetchUserById(creatorId);
+      // get the user (runner) object
+      const user = await fetchUserById(creatorId);
 
-    if ('error' in user) {
-      throw new Error(user.error as string);
-    }
-
-    // get the workout object
-    const workout = await fetchWorkoutById(workoutId);
-
-    if ('error' in workout) {
-      throw new Error(workout.error as string);
-    }
-
-    // get the top objects
-    const topPromises: Promise<TopResponse>[] = topIds.map(async t => fetchTopById(t));
-
-    const topResponses: TopResponse[] = await Promise.all(topPromises);
-
-    // check each response for errors
-    for (const response of topResponses) {
-      if ('error' in response) {
-        throw new Error(`Error occurred while fetching top: ${response.error}`);
+      if ('error' in user) {
+        throw new Error(user.error as string);
       }
-    }
 
-    const tops: Top[] = topResponses as Top[];
+      // get the workout object
+      const workout = await fetchWorkoutById(workoutId);
 
-    // get the bottom objects
-    const bottomPromises: Promise<BottomResponse>[] = bottomIds.map(async b => fetchBottomById(b));
-
-    const bottomResponses: BottomResponse[] = await Promise.all(bottomPromises);
-
-    // check each response for errors
-    for (const response of bottomResponses) {
-      if ('error' in response) {
-        throw new Error(`Error occurred while fetching bottom: ${response.error}`);
+      if ('error' in workout) {
+        throw new Error(workout.error as string);
       }
-    }
 
-    const bottoms: Bottom[] = bottomResponses as Bottom[];
+      // get the top objects
+      const topPromises: Promise<TopResponse>[] = topIds.map(async t => fetchTopById(t));
 
-    // get the outerwear objects
-    const outerwearPromises: Promise<OuterwearResponse>[] = outerwearIds.map(async o =>
-      fetchBottomById(o),
-    );
+      const topResponses: TopResponse[] = await Promise.all(topPromises);
 
-    const outerwearResponses: OuterwearResponse[] = await Promise.all(outerwearPromises);
-
-    // check each response for errors
-    for (const response of outerwearResponses) {
-      if ('error' in response) {
-        throw new Error(`Error occurred while fetching outerwear item: ${response.error}`);
+      // check each response for errors
+      for (const response of topResponses) {
+        if ('error' in response) {
+          throw new Error(`Error occurred while fetching top: ${response.error}`);
+        }
       }
-    }
 
-    const outerwears: Outerwear[] = outerwearResponses as Outerwear[];
+      const tops: Top[] = topResponses as Top[];
 
-    // get the accessory objects
-    const accessoryPromises: Promise<AccessoryResponse>[] = accessoriesIds.map(async a =>
-      fetchAccessoryById(a),
-    );
+      // get the bottom objects
+      const bottomPromises: Promise<BottomResponse>[] = bottomIds.map(async b =>
+        fetchBottomById(b),
+      );
 
-    const accessoryResponses: AccessoryResponse[] = await Promise.all(accessoryPromises);
+      const bottomResponses: BottomResponse[] = await Promise.all(bottomPromises);
 
-    // check each response for errors
-    for (const response of accessoryResponses) {
-      if ('error' in response) {
-        throw new Error(`Error occurred while fetching accessory: ${response.error}`);
+      // check each response for errors
+      for (const response of bottomResponses) {
+        if ('error' in response) {
+          throw new Error(`Error occurred while fetching bottom: ${response.error}`);
+        }
       }
-    }
 
-    const accessories: Accessory[] = accessoryResponses as Accessory[];
+      const bottoms: Bottom[] = bottomResponses as Bottom[];
 
-    // get the shoe object
-    const shoe = await fetchShoeById(shoeId);
+      // get the outerwear objects
+      const outerwearPromises: Promise<OuterwearResponse>[] = outerwearIds.map(async o =>
+        fetchOuterwearById(o),
+      );
 
-    if ('error' in shoe) {
-      throw new Error(shoe.error as string);
-    }
+      const outerwearResponses: OuterwearResponse[] = await Promise.all(outerwearPromises);
 
-    // create the outfit
-    const outfit = {
-      wearer: user,
-      workout,
-      ratings: [],
-      tops,
-      bottoms,
-      outerwear: outerwears,
-      accessories,
-      shoes: shoe,
-    };
-
-    const outfitFromDb = await saveOutfit(outfit);
-
-    if ('error' in outfitFromDb) {
-      throw new Error(outfitFromDb.error as string);
-    }
-
-    // then add this outfit to each item (top, bottom, etc)'s list of outfits
-    // add to tops
-    const newTopPromises: Promise<TopResponse>[] = tops.map(async t => addOutfitToTop(outfitFromDb, t));
-
-    const newTopResponses: TopResponse[] = await Promise.all(newTopPromises);
-
-    // check each response for errors
-    for (const response of newTopResponses) {
-      if ('error' in response) {
-        throw new Error(`Error occurred while updating top: ${response.error}`);
+      // check each response for errors
+      for (const response of outerwearResponses) {
+        if ('error' in response) {
+          throw new Error(`Error occurred while fetching outerwear item: ${response.error}`);
+        }
       }
-    }
 
-    const updatedTops: Top[] = newTopResponses as Top[];
+      const outerwears: Outerwear[] = outerwearResponses as Outerwear[];
 
-    // add to bottoms
-    const newBottomPromises: Promise<BottomResponse>[] = bottoms.map(async b => addOutfitToBottom(outfitFromDb, b));
+      // get the accessory objects
+      const accessoryPromises: Promise<AccessoryResponse>[] = accessoriesIds.map(async a =>
+        fetchAccessoryById(a),
+      );
 
-    const newBottomResponses: BottomResponse[] = await Promise.all(newBottomPromises);
+      const accessoryResponses: AccessoryResponse[] = await Promise.all(accessoryPromises);
 
-    // check each response for errors
-    for (const response of newBottomResponses) {
-      if ('error' in response) {
-        throw new Error(`Error occurred while updating bottom: ${response.error}`);
+      // check each response for errors
+      for (const response of accessoryResponses) {
+        if ('error' in response) {
+          throw new Error(`Error occurred while fetching accessory: ${response.error}`);
+        }
       }
-    }
 
-    const updatedBottoms: Bottom[] = newBottomResponses as Bottom[];
+      const accessories: Accessory[] = accessoryResponses as Accessory[];
 
-    // add to outerwears
-    const newOuterwearPromises: Promise<OuterwearResponse>[] = outerwears.map(async o => addOutfitToOuterwear(outfitFromDb, o));
+      // get the shoe object
+      const shoe = await fetchShoeById(shoeId);
 
-    const newOuterwearResponses: OuterwearResponse[] = await Promise.all(newOuterwearPromises);
-
-    // check each response for errors
-    for (const response of newOuterwearResponses) {
-      if ('error' in response) {
-        throw new Error(`Error occurred while updating outerwear: ${response.error}`);
+      if ('error' in shoe) {
+        throw new Error(shoe.error as string);
       }
-    }
 
-    const updatedOuterwears: Outerwear[] = newOuterwearResponses as Outerwear[];
+      // create the outfit
+      const outfit = {
+        wearer: user,
+        workout,
+        ratings: [],
+        tops,
+        bottoms,
+        outerwear: outerwears,
+        accessories,
+        shoes: shoe,
+      };
 
-    // add to accessories
-    const newAccessoryPromises: Promise<AccessoryResponse>[] = accessories.map(async a => addOutfitToAccessory(outfitFromDb, a));
+      const outfitFromDb = await saveOutfit(outfit);
 
-    const newAccessoryResponses: AccessoryResponse[] = await Promise.all(newAccessoryPromises);
-
-    // check each response for errors
-    for (const response of newAccessoryResponses) {
-      if ('error' in response) {
-        throw new Error(`Error occurred while updating accessory: ${response.error}`);
+      if ('error' in outfitFromDb) {
+        throw new Error(outfitFromDb.error as string);
       }
-    }
 
-    const updatedAccessories: Accessory[] = newAccessoryResponses as Accessory[];
+      // then add this outfit to each item (top, bottom, etc)'s list of outfits
+      // add to tops
+      const newTopPromises: Promise<TopResponse>[] = tops.map(async t =>
+        addOutfitToTop(outfitFromDb, t),
+      );
 
-    // add to shoe 
-    const updatedShoe = await addOutfitToShoe(outfit, shoe);
+      const newTopResponses: TopResponse[] = await Promise.all(newTopPromises);
 
-    if ('error' in updatedShoe) {
+      // check each response for errors
+      for (const response of newTopResponses) {
+        if ('error' in response) {
+          throw new Error(`Error occurred while updating top: ${response.error}`);
+        }
+      }
+
+      const updatedTops: Top[] = newTopResponses as Top[];
+
+      // add to bottoms
+      const newBottomPromises: Promise<BottomResponse>[] = bottoms.map(async b =>
+        addOutfitToBottom(outfitFromDb, b),
+      );
+
+      const newBottomResponses: BottomResponse[] = await Promise.all(newBottomPromises);
+
+      // check each response for errors
+      for (const response of newBottomResponses) {
+        if ('error' in response) {
+          throw new Error(`Error occurred while updating bottom: ${response.error}`);
+        }
+      }
+
+      const updatedBottoms: Bottom[] = newBottomResponses as Bottom[];
+
+      // add to outerwears
+      const newOuterwearPromises: Promise<OuterwearResponse>[] = outerwears.map(async o =>
+        addOutfitToOuterwear(outfitFromDb, o),
+      );
+
+      const newOuterwearResponses: OuterwearResponse[] = await Promise.all(newOuterwearPromises);
+
+      // check each response for errors
+      for (const response of newOuterwearResponses) {
+        if ('error' in response) {
+          throw new Error(`Error occurred while updating outerwear: ${response.error}`);
+        }
+      }
+
+      const updatedOuterwears: Outerwear[] = newOuterwearResponses as Outerwear[];
+
+      // add to accessories
+      const newAccessoryPromises: Promise<AccessoryResponse>[] = accessories.map(async a =>
+        addOutfitToAccessory(outfitFromDb, a),
+      );
+
+      const newAccessoryResponses: AccessoryResponse[] = await Promise.all(newAccessoryPromises);
+
+      // check each response for errors
+      for (const response of newAccessoryResponses) {
+        if ('error' in response) {
+          throw new Error(`Error occurred while updating accessory: ${response.error}`);
+        }
+      }
+
+      const updatedAccessories: Accessory[] = newAccessoryResponses as Accessory[];
+
+      // add to shoe
+      const updatedShoe = await addOutfitToShoe(outfitFromDb, shoe);
+
+      if ('error' in updatedShoe) {
         throw new Error(`Error occurred while updating shoe: ${updatedShoe.error}`);
+      }
+
+      // add outfit to user's list of outfits and list of workouts
+      const updatedUser = await addOutfitToUser(outfitFromDb, creatorId);
+
+      if ('error' in updatedUser) {
+        throw new Error(`Error occurred while updating user's outfits: ${updatedUser.error}`);
+      }
+
+      // fetch the most updated outfit
+      if (!outfitFromDb._id) {
+        throw new Error('Outfit ID is undefined');
+      }
+
+      const updatedOutfit = await fetchOutfitById(outfitFromDb._id.toString());
+
+      if ('error' in updatedOutfit) {
+        throw new Error(`Error occurred while fetching outfit: ${updatedOutfit.error}`);
+      }
+      res.json(updatedOutfit);
+    } catch (err) {
+      res.status(500).send(`Error when creating outfit: ${(err as Error).message}`);
     }
-
-    // add outfit to user's list of outfits and list of workouts
-
-    // try {
-    //   const userFromDb = await saveUser(newUser);
-
-    //   if ('error' in userFromDb) {
-    //     throw new Error(userFromDb.error as string);
-    //   }
-
-    //   res.json(userFromDb);
-    // } catch (err) {
-    //   res.status(500).send(`Error when registering user: ${(err as Error).message}`);
-    // }
   };
 
   /**
