@@ -65,7 +65,7 @@ const outfitController = (socket: FakeSOSocket) => {
       req.body;
 
     try {
-      // function to fetch and validate resources
+      // function to fetch and validate the components of the outfit
       const fetchAndValidate = async <T extends object>(
         fetchFunction: (id: string) => Promise<T | { error: string }>,
         ids: string[],
@@ -81,8 +81,8 @@ const outfitController = (socket: FakeSOSocket) => {
         return responses as T[];
       };
 
-      // fetch related resources
-      const [user, workout, tops, bottoms, outerwears, accessories, shoe] = await Promise.all([
+      // fetch the components of the outfit, as provided in the initial request
+      const [user, workout, tops, bottoms, outerwear, accessories, shoe] = await Promise.all([
         fetchUserById(creatorId).then(userRes => {
           if ('error' in userRes) throw new Error(userRes.error);
           return userRes;
@@ -101,16 +101,16 @@ const outfitController = (socket: FakeSOSocket) => {
         }),
       ]);
 
-      // Create and save outfit
+      // create and save the outfit
       const outfit = {
         wearer: user,
         workout,
         ratings: [],
         tops,
         bottoms,
-        outerwear: outerwears,
+        outerwear,
         accessories,
-        shoes: shoe,
+        shoe,
       };
 
       const outfitFromDb = await saveOutfit(outfit);
@@ -136,7 +136,7 @@ const outfitController = (socket: FakeSOSocket) => {
       await Promise.all([
         updateWithOutfit(addOutfitToTop, tops),
         updateWithOutfit(addOutfitToBottom, bottoms),
-        updateWithOutfit(addOutfitToOuterwear, outerwears),
+        updateWithOutfit(addOutfitToOuterwear, outerwear),
         updateWithOutfit(addOutfitToAccessory, accessories),
         addOutfitToShoe(outfitFromDb, shoe).then(outfitToShoeRes => {
           if ('error' in outfitToShoeRes) throw new Error(outfitToShoeRes.error);
@@ -146,7 +146,7 @@ const outfitController = (socket: FakeSOSocket) => {
         }),
       ]);
 
-      // Fetch the most updated outfit
+      // fetch the most updated outfit
       if (!outfitFromDb._id) {
         throw new Error('Outfit ID is undefined');
       }
