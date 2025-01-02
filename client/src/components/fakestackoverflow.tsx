@@ -15,8 +15,8 @@ import Register from './register';
 import ProfilePage from './main/profile';
 import NewOutfitPage from './main/newOutfitPage';
 import OutfitContext from '../contexts/OutfitContext';
-import TopForm from './main/newOutfitPage/newTop/topForm';
-import BottomForm from './main/newOutfitPage/newBottom/bottomForm';
+import ClothingItemForm from './main/newOutfitPage/newClothingItem/clothingItemForm';
+import RatingForm from './main/newOutfitPage/newRatingPage/ratingForm';
 
 const ProtectedRoute = ({
   user,
@@ -84,8 +84,47 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
                 <OutfitContext.Provider value={{ outfit, setOutfit }}>
                   <Routes>
                     <Route path='/' element={<NewOutfitPage />} />
-                    <Route path='tops' element={<TopForm />} />
-                    <Route path='bottoms' element={<BottomForm />} />
+                    <Route
+                      path='top'
+                      element={
+                        <ClothingItemForm clothingItem={'top'} nextClothingItem={'bottom'} />
+                      }
+                    />
+                    <Route
+                      path='bottom'
+                      element={
+                        <ClothingItemForm clothingItem={'bottom'} nextClothingItem={'outerwear'} />
+                      }
+                    />
+                    <Route
+                      path='outerwear'
+                      element={
+                        <ClothingItemForm
+                          clothingItem={'outerwear'}
+                          nextClothingItem={'accessory'}
+                        />
+                      }
+                    />
+                    <Route
+                      path='accessory'
+                      element={
+                        <ClothingItemForm clothingItem={'accessory'} nextClothingItem={'shoe'} />
+                      }
+                    />
+                    <Route
+                      path='shoe'
+                      element={
+                        <ClothingItemForm
+                          clothingItem={'shoe'}
+                          nextClothingItem={'outfitOverview'}
+                        />
+                      }
+                    />
+                    {/* <Route
+                      path='outfitOverview'
+                      element={<OutfitOverviewPage />}
+                    /> */}
+                    <Route path='rating' element={<RatingForm />} />
                     {/* <Route path='accessories' element={<AccessoriesForm />} />
                     <Route path='shoes' element={<ShoesForm />} /> */}
                   </Routes>

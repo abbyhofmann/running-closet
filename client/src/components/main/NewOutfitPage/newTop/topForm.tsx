@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Box, TextField, Button, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Outfit, Top } from '../../../../types';
-import useTopForm from '../../../../hooks/useClothingItemForm';
+import useClothingItemForm from '../../../../hooks/useClothingItemForm';
 import OutfitContext from '../../../../contexts/OutfitContext';
 import useOutfitContext from '../../../../hooks/useOutfitContext';
 
@@ -12,12 +12,12 @@ const TopForm = () => {
   const {
     brand,
     model,
-    createTopError,
-    showCreateTopError,
+    createClothingItemError,
+    showCreateClothingItemError,
     handleBrandChange,
     handleModelChange,
     handleSubmit,
-  } = useTopForm();
+  } = useClothingItemForm('top');
 
   const handleNext = () => {
     navigate('createOutfit/bottoms');
@@ -62,10 +62,10 @@ const TopForm = () => {
           />
         </div>
 
-        {showCreateTopError && (
+        {showCreateClothingItemError && (
           <div className='alert-container'>
             <Alert severity='error' className='error-alert'>
-              {createTopError}
+              {createClothingItemError}
             </Alert>
           </div>
         )}

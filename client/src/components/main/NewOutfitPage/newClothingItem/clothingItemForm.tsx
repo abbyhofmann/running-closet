@@ -1,26 +1,24 @@
-import React, { useState, useContext } from 'react';
 import { Box, TextField, Button, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { Outfit, Bottom } from '../../../../types';
-import useBottomForm from '../../../../hooks/useBottomForm';
-import OutfitContext from '../../../../contexts/OutfitContext';
-import useOutfitContext from '../../../../hooks/useOutfitContext';
+import { Outfit, ClothingItemFormProps } from '../../../../types';
+import useClothingItemForm from '../../../../hooks/useClothingItemForm';
 
-const BottomForm = () => {
+const ClothingItemForm = (props: ClothingItemFormProps) => {
+  const { clothingItem, nextClothingItem } = props;
   const navigate = useNavigate();
 
   const {
     brand,
     model,
-    createBottomError,
-    showCreateBottomError,
+    createClothingItemError,
+    showCreateClothingItemError,
     handleBrandChange,
     handleModelChange,
     handleSubmit,
-  } = useBottomForm();
+  } = useClothingItemForm(clothingItem);
 
   const handleNext = () => {
-    navigate('createOutfit/outerwear');
+    navigate(`../${nextClothingItem}`);
   };
 
   return (
@@ -33,14 +31,14 @@ const BottomForm = () => {
           color: '#32292F',
           display: 'flex',
         }}></Box>
-      <h4>Please enter bottom details below.</h4>
+      <h4>Please enter {clothingItem} details below.</h4>
       <form
         onSubmit={e => {
           handleSubmit(e).then(() => handleNext());
         }}>
         <div className='row'>
-          <label className='bottom-photo' htmlFor='bottom-photo'>
-            Upload Bottom Photo:
+          <label className='clothing-item-photo' htmlFor='clothing-item-photo'>
+            Upload Photo:
           </label>
         </div>
         <div className='row'>
@@ -62,19 +60,19 @@ const BottomForm = () => {
           />
         </div>
 
-        {showCreateBottomError && (
+        {showCreateClothingItemError && (
           <div className='alert-container'>
             <Alert severity='error' className='error-alert'>
-              {createBottomError}
+              {createClothingItemError}
             </Alert>
           </div>
         )}
         <Button variant='contained' type='submit' sx={{ mt: 2, width: '25ch', bgcolor: '#5171A5' }}>
-          Create Bottom
+          Create {clothingItem}
         </Button>
       </form>
     </div>
   );
 };
 
-export default BottomForm;
+export default ClothingItemForm;

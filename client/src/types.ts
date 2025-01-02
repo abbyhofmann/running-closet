@@ -411,3 +411,13 @@ export interface NotificationUpdatePayload {
   notification: Notification;
   type: 'add' | 'remove';
 }
+
+/**
+ * Represent the inputs for ClothingItemForm.
+ * - clothingItem: string of the clothing item = 'top', 'bottom', etc
+ * - nextClothingItem: string of the clothing item that will be created next
+ */
+export interface ClothingItemFormProps {
+  clothingItem: string;
+  nextClothingItem: string;
+}

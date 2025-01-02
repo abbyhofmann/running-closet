@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Drawer, List, ListItem, ListItemText, Button } from '@mui/material';
+import { Box, Drawer, List, ListItem, ListItemText, Button, Typography } from '@mui/material';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import TopForm from './newTop/topForm';
 import { Accessory, Bottom, Outerwear, Outfit, Rating, Shoe, Top, Workout } from '../../../types';
@@ -22,6 +22,7 @@ const NewOutfitPage = () => {
   });
 
   const { outfit, setOutfit } = useOutfitContext();
+  setOutfit({ ...outfit, wearer: user });
 
   return (
     <Box display='flex'>
@@ -59,14 +60,29 @@ const NewOutfitPage = () => {
       </Drawer>
 
       {/* need to navigate between top page, bottom page, etc and pass outfit object between */}
+      <Typography>What workout was this outfit for?</Typography>
+      <div className='scrolling-wrapper'>
+        <div className='card'>
+          <h2>Card</h2>
+        </div>
+      </div>
       <Button
         onClick={() => {
-          navigate(`/createOutfit/tops`);
+          navigate(`/createOutfit/top`);
         }}
         variant='contained'
         type='submit'
         sx={{ mt: 2, width: '25ch', bgcolor: '#5171A5' }}>
-        Create a Top
+        Select Workout
+      </Button>
+      <Button
+        onClick={() => {
+          navigate(`/createOutfit/top`);
+        }}
+        variant='contained'
+        type='submit'
+        sx={{ mt: 2, width: '25ch', bgcolor: '#5171A5' }}>
+        Start Creating Outfit...
       </Button>
     </Box>
   );
