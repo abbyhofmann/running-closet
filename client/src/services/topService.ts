@@ -27,6 +27,4 @@ const createTop = async (
   return res.data;
 };
 
-export {
-  createTop,
-};
+export default createTop;

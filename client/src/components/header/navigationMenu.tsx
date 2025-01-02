@@ -69,6 +69,14 @@ export default function NavigationMenu() {
           }}>
           Messages
         </MenuItem>
+        <MenuItem
+          key='create-outfit'
+          onClick={() => {
+            navigate(`/createOutfit`);
+            handleClose();
+          }}>
+          Create Outfit
+        </MenuItem>
       </Menu>
     </div>
   );

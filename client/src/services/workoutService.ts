@@ -5,13 +5,13 @@ const WORKOUT_API_URL = `${process.env.REACT_APP_SERVER_URL}/workout`;
 
 /**
  * Creates a new workout.
- * 
- * @param runnerId 
- * @param runType 
- * @param dateCompleted 
- * @param distance 
- * @param duration 
- * @param location 
+ *
+ * @param runnerId
+ * @param runType
+ * @param dateCompleted
+ * @param distance
+ * @param duration
+ * @param location
  * @throws Error Throws an error if the request fails or the response status is not 200.
  */
 const createWorkout = async (
@@ -20,7 +20,7 @@ const createWorkout = async (
   dateCompleted: Date,
   distance: number,
   duration: number,
-  location: String,
+  location: string,
 ): Promise<Workout> => {
   const data = { runnerId, runType, dateCompleted, distance, duration, location };
 
@@ -31,6 +31,4 @@ const createWorkout = async (
   return res.data;
 };
 
-export {
-  createWorkout,
-};
+export default createWorkout;

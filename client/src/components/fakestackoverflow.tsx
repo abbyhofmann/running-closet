@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import Layout from './layout';
 import Login from './login';
-import { FakeSOSocket, User } from '../types';
+import { FakeSOSocket, Outfit, User } from '../types';
 import LoginContext from '../contexts/LoginContext';
 import UserContext from '../contexts/UserContext';
 import QuestionPage from './main/questionPage';
@@ -13,6 +13,10 @@ import AnswerPage from './main/answerPage';
 import ConversationsPage from './main/conversationsPage';
 import Register from './register';
 import ProfilePage from './main/profile';
+import NewOutfitPage from './main/newOutfitPage';
+import OutfitContext from '../contexts/OutfitContext';
+import TopForm from './main/newOutfitPage/newTop/topForm';
+import BottomForm from './main/newOutfitPage/newBottom/bottomForm';
 
 const ProtectedRoute = ({
   user,
@@ -36,6 +40,20 @@ const ProtectedRoute = ({
  */
 const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
   const [user, setUser] = useState<User | null>(null);
+
+  // Initial state for OutfitContext
+  const initialOutfit: Outfit = {
+    wearer: null,
+    workout: null,
+    ratings: [],
+    tops: [],
+    bottoms: [],
+    outerwear: [],
+    accessories: [],
+    shoe: null,
+  };
+  const [outfit, setOutfit] = useState<Outfit>(initialOutfit);
+
   return (
     <LoginContext.Provider value={{ setUser }}>
       <Routes>
@@ -59,7 +77,21 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
             <Route path='/conversations' element={<ConversationsPage />}>
               <Route path=':cid' element={<ConversationsPage />} />
             </Route>
-            <Route path ='/outfits' element={<NewOutfitPage />} />
+            {/* Outfit Routes */}
+            <Route
+              path='/createOutfit/*'
+              element={
+                <OutfitContext.Provider value={{ outfit, setOutfit }}>
+                  <Routes>
+                    <Route path='/' element={<NewOutfitPage />} />
+                    <Route path='tops' element={<TopForm />} />
+                    <Route path='bottoms' element={<BottomForm />} />
+                    {/* <Route path='accessories' element={<AccessoriesForm />} />
+                    <Route path='shoes' element={<ShoesForm />} /> */}
+                  </Routes>
+                </OutfitContext.Provider>
+              }
+            />
           </Route>
         }
       </Routes>

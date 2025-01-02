@@ -52,14 +52,14 @@ export interface User {
  */
 export interface Outfit {
   _id?: string;
-  wearer: User;
-  workout: Workout;
+  wearer: User | null;
+  workout: Workout | null;
   ratings: Rating[];
   tops: Top[];
   bottoms: Bottom[];
   outerwear: Outerwear[];
   accessories: Accessory[];
-  shoe: Shoe[];
+  shoe: Shoe | null;
 }
 
 /**
