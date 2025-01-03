@@ -4,6 +4,7 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 import { Accessory, Bottom, Outerwear, Outfit, Rating, Shoe, Top, Workout } from '../../../types';
 import useUserContext from '../../../hooks/useUserContext';
 import useOutfitContext from '../../../hooks/useOutfitContext';
+import WorkoutScroller from './workoutScroller';
 
 /**
  *
@@ -11,22 +12,41 @@ import useOutfitContext from '../../../hooks/useOutfitContext';
 const NewOutfitPage = () => {
   const { user, socket } = useUserContext();
   const navigate = useNavigate();
-  const [workout, setWorkout] = useState<Workout>({
-    runner: user,
-    runType: '',
-    dateCompleted: new Date(),
-    distance: 0,
-    duration: 0,
-    location: '',
-  });
+  //   const [workout, setWorkout] = useState<Workout>({
+  //     runner: user,
+  //     runType: '',
+  //     dateCompleted: new Date(),
+  //     distance: 0,
+  //     duration: 0,
+  //     location: '',
+  //   });
 
+  // outfit
   const { outfit, setOutfit } = useOutfitContext();
-  // Set the wearer of the outfit
+
+  // selected workout for the new outfit
+  const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
+
+  // user's workouts
+  const workouts = user?.workouts || [];
+
+  // set the wearer of the outfit
   useEffect(() => {
     if (user && outfit.wearer === null) {
       setOutfit({ ...outfit, wearer: user });
     }
   }, [user, outfit.wearer, setOutfit]);
+
+  const handleWorkoutSelection = (workout: Workout) => {
+    setSelectedWorkout(workout);
+    setOutfit({ ...outfit, workout });
+  };
+
+  const handleCreateWorkout = () => {
+    // logic for creating a new workout (e.g., navigate to a workout creation page)
+    // navigate('/createWorkout');
+    console.log('create new workout clicked...');
+  };
 
   return (
     <Box display='flex'>
@@ -65,11 +85,24 @@ const NewOutfitPage = () => {
 
       {/* need to navigate between top page, bottom page, etc and pass outfit object between */}
       <Typography>What workout was this outfit for?</Typography>
-      <div className='scrolling-wrapper'>
-        {/* <div className='card'>
-          <h2>Card</h2>
-        </div> */}
-      </div>
+
+      {/* Horizontal Workout Scroller */}
+      <WorkoutScroller workouts={workouts} onCreateWorkout={handleCreateWorkout} />
+
+      {/* Display Selected Workout */}
+      {selectedWorkout && (
+        <Box mt={3}>
+          <Typography variant='h6'>Selected Workout:</Typography>
+          <Typography>Type: {selectedWorkout.runType}</Typography>
+          <Typography>
+            Date: {new Date(selectedWorkout.dateCompleted).toLocaleDateString()}
+          </Typography>
+          <Typography>Distance: {selectedWorkout.distance} miles</Typography>
+          <Typography>Duration: {selectedWorkout.duration} minutes</Typography>
+          <Typography>Location: {selectedWorkout.location}</Typography>
+        </Box>
+      )}
+
       <Button
         onClick={() => {
           navigate(`/createOutfit/top`);
