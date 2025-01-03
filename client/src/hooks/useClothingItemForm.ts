@@ -9,7 +9,7 @@ import createShoe from '../services/shoeService';
 import createOutfit from '../services/outfitService';
 
 /**
- * Custom hook to handle login input and submission.
+ * Custom hook to handle creating the specified clothing item.
  *
  * */
 const useClothingItemForm = (clothingType: string) => {
@@ -48,6 +48,7 @@ const useClothingItemForm = (clothingType: string) => {
     try {
       setCreateClothingItemError('');
       setShowCreateClothingItemError(false);
+
       if (clothingType === 'top') {
         const newTop = await createTop(user._id!, brand, model, 'newTopUrl.com');
         setOutfit({
@@ -78,17 +79,38 @@ const useClothingItemForm = (clothingType: string) => {
           ...outfit,
           shoe: newShoe,
         });
+        if (!outfit.wearer || !outfit.wearer._id) {
+          throw new Error('Wearer not defined.');
+        }
+        if (!outfit.workout || !outfit.workout._id) {
+          throw new Error('Workout not defined.');
+        }
+        if (!outfit.shoe?._id) {
+          throw new Error('Shoe not defined.');
+        }
         // only send the ids when creating the outfit in the db
         const newOutfit = await createOutfit(
-          outfit.wearer?._id!,
-          outfit.workout?._id!,
-          outfit.tops.map(t => t._id!),
-          outfit.bottoms.map(b => b._id!),
-          outfit.outerwear.map(o => o._id!),
-          outfit.accessories.map(a => a._id!),
-          outfit.shoe?._id!,
-        ); // TODO - is this null check valid? !
-        setOutfit({...outfit, _id: newOutfit._id});
+          outfit.wearer._id,
+          outfit.workout?._id,
+          outfit.tops.map(t => {
+            if (!t._id) throw new Error('One or more tops are missing an id.');
+            return t._id;
+          }),
+          outfit.bottoms.map(b => {
+            if (!b._id) throw new Error('One or more bottoms are missing an id.');
+            return b._id;
+          }),
+          outfit.outerwear.map(o => {
+            if (!o._id) throw new Error('One or more outerwear itmes are missing an id.');
+            return o._id;
+          }),
+          outfit.accessories.map(a => {
+            if (!a._id) throw new Error('One or more accessories are missing an id.');
+            return a._id;
+          }),
+          outfit.shoe._id,
+        ); // TODO - fix this error checking bc it's ugly
+        setOutfit({ ...outfit, _id: newOutfit._id });
       }
       // TODO - error message here for string not equal to one of the above clothing items?
     } catch (err) {

@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Drawer, List, ListItem, ListItemText, Button, Typography } from '@mui/material';
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import TopForm from './newTop/topForm';
 import { Accessory, Bottom, Outerwear, Outfit, Rating, Shoe, Top, Workout } from '../../../types';
 import useUserContext from '../../../hooks/useUserContext';
 import useOutfitContext from '../../../hooks/useOutfitContext';
@@ -22,7 +21,12 @@ const NewOutfitPage = () => {
   });
 
   const { outfit, setOutfit } = useOutfitContext();
-  setOutfit({ ...outfit, wearer: user });
+  // Set the wearer of the outfit
+  useEffect(() => {
+    if (user && outfit.wearer === null) {
+      setOutfit({ ...outfit, wearer: user });
+    }
+  }, [user, outfit.wearer, setOutfit]);
 
   return (
     <Box display='flex'>
@@ -62,9 +66,9 @@ const NewOutfitPage = () => {
       {/* need to navigate between top page, bottom page, etc and pass outfit object between */}
       <Typography>What workout was this outfit for?</Typography>
       <div className='scrolling-wrapper'>
-        <div className='card'>
+        {/* <div className='card'>
           <h2>Card</h2>
-        </div>
+        </div> */}
       </div>
       <Button
         onClick={() => {

@@ -19,8 +19,6 @@ interface ClothingItemCardProps {
  */
 const ClothingItemCard = (props: ClothingItemCardProps) => {
   const { clothingItemType, brand, model, s3PhotoUrl } = props;
-  const navigate = useNavigate();
-  const { user } = useUserContext();
 
   return (
     <Card key={s3PhotoUrl}>
