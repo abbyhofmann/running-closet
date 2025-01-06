@@ -655,6 +655,16 @@ export interface CreateWorkoutRequest {
 export type WorkoutResponse = Workout | { error: string };
 
 /**
+ * Interface for the request params when getting a workout by id.
+ * - wid - The id of the workout being fetched.
+ */
+export interface GetWorkoutRequest {
+  params: {
+    wid: string;
+  }
+}
+
+/**
  * Interface representing a Rating document, which contains:
  * - id: The unique identifier for the rating.
  * - outfit: The outfit to which the rating is associated.

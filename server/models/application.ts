@@ -830,6 +830,8 @@ export const fetchUserByUsername = async (username: string): Promise<UserRespons
     const user = await UserModel.findOne({ username, deleted: false }).populate([
       { path: 'following', model: UserModel },
       { path: 'followers', model: UserModel },
+      { path: 'outfits', model: OutfitModel },
+      { path: 'workouts', model: WorkoutModel },
     ]);
 
     if (!user) {

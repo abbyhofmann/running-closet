@@ -1,6 +1,7 @@
 import express, { Response } from 'express';
-import { FakeSOSocket, CreateWorkoutRequest } from '../types';
-import { addWorkout, fetchUserById, saveWorkout } from '../models/application';
+import { ObjectId } from 'mongodb';
+import { FakeSOSocket, CreateWorkoutRequest, GetWorkoutRequest } from '../types';
+import { addWorkout, fetchUserById, saveWorkout, fetchWorkoutById } from '../models/application';
 
 const workoutController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -67,9 +68,9 @@ const workoutController = (socket: FakeSOSocket) => {
       }
 
       // add the workout to the runner's list of workouts
-      const userWithNewError = await addWorkout(workoutFromDb, runnerId);
-      if ('error' in userWithNewError) {
-        throw new Error(userWithNewError.error as string);
+      const userWithNewWorkout = await addWorkout(workoutFromDb, runnerId);
+      if ('error' in userWithNewWorkout) {
+        throw new Error(userWithNewWorkout.error as string);
       }
 
       res.json(workoutFromDb);
@@ -78,8 +79,36 @@ const workoutController = (socket: FakeSOSocket) => {
     }
   };
 
+  /**
+   * Retrieves the workout with the given workout id from the database.
+   * If there is an error, the HTTP response's status is updated.
+   *
+   * @param req The request object with the id of the workout to retrieve.
+   * @param res The HTTP response object used to send back the result of the operation.
+   * @returns A Promise that resolves to void.
+   */
+  const getWorkout = async (req: GetWorkoutRequest, res: Response): Promise<void> => {
+    const { wid } = req.params;
+
+    try {
+      if (!ObjectId.isValid(wid)) {
+        res.status(400).send('Invalid ID format');
+        return;
+      }
+      const workout = await fetchWorkoutById(wid);
+      if ('error' in workout) {
+        throw new Error(workout.error as string);
+      }
+
+      res.json(workout);
+    } catch (err) {
+      res.status(500).send(`Error when fetching workout: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/createWorkout', createWorkout);
+  router.get('/getWorkout/:wid', getWorkout);
 
   return router;
 };

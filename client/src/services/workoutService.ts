@@ -31,4 +31,18 @@ const createWorkout = async (
   return res.data;
 };
 
-export default createWorkout;
+/**
+ * Function to get a workout by its ID.
+ *
+ * @param wid - The ID of the workout to retrieve.
+ * @throws Error if there is an issue fetching the workout by ID.
+ */
+const getWorkout = async (wid: string): Promise<Workout> => {
+  const res = await api.get(`${WORKOUT_API_URL}/getWorkout/${wid}`);
+  if (res.status !== 200) {
+    throw new Error('Error when fetching workout by id');
+  }
+  return res.data;
+};
+
+export { createWorkout, getWorkout };

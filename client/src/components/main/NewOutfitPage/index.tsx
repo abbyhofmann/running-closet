@@ -12,14 +12,6 @@ import WorkoutScroller from './workoutScroller';
 const NewOutfitPage = () => {
   const { user, socket } = useUserContext();
   const navigate = useNavigate();
-  //   const [workout, setWorkout] = useState<Workout>({
-  //     runner: user,
-  //     runType: '',
-  //     dateCompleted: new Date(),
-  //     distance: 0,
-  //     duration: 0,
-  //     location: '',
-  //   });
 
   // outfit
   const { outfit, setOutfit } = useOutfitContext();
@@ -102,16 +94,6 @@ const NewOutfitPage = () => {
           <Typography>Location: {selectedWorkout.location}</Typography>
         </Box>
       )}
-
-      <Button
-        onClick={() => {
-          navigate(`/createOutfit/top`);
-        }}
-        variant='contained'
-        type='submit'
-        sx={{ mt: 2, width: '25ch', bgcolor: '#5171A5' }}>
-        Select Workout
-      </Button>
       <Button
         onClick={() => {
           navigate(`/createOutfit/top`);
