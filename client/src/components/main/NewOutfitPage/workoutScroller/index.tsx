@@ -5,9 +5,11 @@ import { Workout } from '../../../../types';
 const WorkoutScroller = ({
   workouts,
   onCreateWorkout,
+  onSelectWorkout,
 }: {
   workouts: Workout[];
   onCreateWorkout: () => void;
+  onSelectWorkout: (workout: Workout) => void;
 }) => (
   <Box
     sx={{
@@ -18,7 +20,11 @@ const WorkoutScroller = ({
       scrollbarWidth: 'thin', // Optional: style scrollbar
     }}>
     {workouts.map(workout => (
-      <WorkoutCard key={workout._id?.toString()} workout={workout} />
+      <WorkoutCard
+        key={workout._id?.toString()}
+        workout={workout}
+        onSelectWorkout={onSelectWorkout}
+      />
     ))}
 
     {/* Card to Create New Workout */}

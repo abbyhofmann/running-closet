@@ -1,26 +1,52 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Card, Typography } from '@mui/material';
+import { grey } from '@mui/material/colors';
 import { Workout } from '../../../../types';
 
-const WorkoutCard = ({ workout }: { workout: Workout }) => (
-  <Box
+const WorkoutCard = ({
+  workout,
+  onSelectWorkout,
+}: {
+  workout: Workout;
+  onSelectWorkout: (workout: Workout) => void;
+}) => (
+  <Card
     sx={{
-      minWidth: 300,
-      maxWidth: 300,
-      border: '1px solid #ccc',
-      borderRadius: 2,
-      padding: 2,
-      margin: 1,
-      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-      bgcolor: '#fff',
+      'display': 'flex',
+      'cursor': 'pointer',
+      '&:hover': {
+        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+        transform: 'scale(1.03)',
+      },
+      'borderRadius': 2,
+    }}
+    onClick={() => {
+      onSelectWorkout(workout);
     }}>
-    <Typography variant='h6'>{workout.runType}</Typography>
-    <Typography variant='body2'>
-      Date: {new Date(workout.dateCompleted).toLocaleDateString()}
-    </Typography>
-    <Typography variant='body2'>Distance: {workout.distance} miles</Typography>
-    <Typography variant='body2'>Duration: {workout.duration} minutes</Typography>
-    <Typography variant='body2'>Location: {workout.location}</Typography>
-  </Box>
+    <Box
+      sx={{
+        backgroundColor: grey[400],
+        padding: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+      }}>
+      <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+        {workout.runType}
+      </Typography>
+      <Typography variant='body2' sx={{ color: 'rgba(0,0,0,0.6)' }}>
+        Date: {new Date(workout.dateCompleted).toLocaleDateString()}
+      </Typography>
+      <Typography variant='body2' sx={{ color: 'rgba(0,0,0,0.6)' }}>
+        Distance: {workout.distance} miles
+      </Typography>
+      <Typography variant='body2' sx={{ color: 'rgba(0,0,0,0.6)' }}>
+        Duration: {workout.duration} minutes
+      </Typography>
+      <Typography variant='body2' sx={{ color: 'rgba(0,0,0,0.6)' }}>
+        Location: {workout.location}
+      </Typography>
+    </Box>
+  </Card>
 );
 
 export default WorkoutCard;

@@ -79,7 +79,11 @@ const NewOutfitPage = () => {
       <Typography>What workout was this outfit for?</Typography>
 
       {/* Horizontal Workout Scroller */}
-      <WorkoutScroller workouts={workouts} onCreateWorkout={handleCreateWorkout} />
+      <WorkoutScroller
+        workouts={workouts}
+        onCreateWorkout={handleCreateWorkout}
+        onSelectWorkout={handleWorkoutSelection}
+      />
 
       {/* Display Selected Workout */}
       {selectedWorkout && (
