@@ -6,6 +6,7 @@ import useUserContext from '../../../hooks/useUserContext';
 import useOutfitContext from '../../../hooks/useOutfitContext';
 import WorkoutScroller from './workoutScroller';
 import OutfitItemScroller from './outfitItemScroller';
+import { getAllOutfitItems } from '../../../services/outfitService';
 
 /**
  *
@@ -23,25 +24,27 @@ const NewOutfitPage = () => {
   // user's workouts
   const workouts = user?.workouts || [];
 
-  // user's various outfit items 
-  const [tops, setTops] = useState<Top[]>([]);
-  const [bottoms, setBottoms] = useState<Bottom[]>([]);
-  const [outerwears, setOuterwears] = useState<Outerwear[]>([]);
-  const [accessories, setAccessories] = useState<Accessory[]>([]);
-  const [shoes, setShoes] = useState<Shoe[]>([]);
+  // user's various outfit items
+  const [userTops, setUserTops] = useState<Top[]>([]);
+  const [userBottoms, setUserBottoms] = useState<Bottom[]>([]);
+  const [userOuterwears, setUserOuterwears] = useState<Outerwear[]>([]);
+  const [userAccessories, setUserAccessories] = useState<Accessory[]>([]);
+  const [userShoes, setUserShoes] = useState<Shoe[]>([]);
 
-  // set the outfit items 
+  // set the outfit items
   useEffect(() => {
     async function fetchData() {
-        if (user) {
-          const userTops = await getOutfitItems(user._id);
-          setTops(userTops);
-          const userBottoms = await getBottoms(user._id);
-          setTops(userTops);
-        }
+      if (user._id) {
+        const allOutfitItems = await getAllOutfitItems(user._id);
+        setUserTops(allOutfitItems.tops);
+        setUserBottoms(allOutfitItems.bottoms);
+        setUserAccessories(allOutfitItems.accessories);
+        setUserOuterwears(allOutfitItems.outerwears);
+        setUserShoes(allOutfitItems.shoes);
       }
-      fetchData();
-  }), [];
+    }
+    fetchData();
+  }, []); // TODO - this may need to be changed to re-render when these change/new outfit is created
 
   // set the wearer of the outfit
   useEffect(() => {
@@ -56,6 +59,18 @@ const NewOutfitPage = () => {
   };
 
   const handleCreateWorkout = () => {
+    // logic for creating a new workout (e.g., navigate to a workout creation page)
+    // navigate('/createWorkout');
+    console.log('create new workout clicked...');
+  };
+
+  const handleTopSelection = (top: Top) => {
+    // TODO - have top selection highlight the selected top
+    // setSelectedTop(top);
+    setOutfit({ ...outfit, tops: [...outfit.tops, top] });
+  };
+
+  const handleCreateTop = () => {
     // logic for creating a new workout (e.g., navigate to a workout creation page)
     // navigate('/createWorkout');
     console.log('create new workout clicked...');
@@ -108,9 +123,10 @@ const NewOutfitPage = () => {
 
       {/* Horizontal OutfitItem Scrollers */}
       <OutfitItemScroller
-        workouts={workouts}
-        onCreateWorkout={handleCreateWorkout}
-        onSelectWorkout={handleWorkoutSelection}
+        outfitItems={userTops}
+        outfitItemType='top'
+        onCreateOutfitItem={handleCreateTop}
+        onSelectOutfitItem={handleTopSelection}
       />
 
       {/* Display Selected Workout */}

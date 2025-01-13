@@ -46,4 +46,4 @@ const getAllOutfitItems = async (uid: string): Promise<AllOutfitItemsObject> => 
   return res.data;
 };
 
-export default createOutfit;
+export { createOutfit, getAllOutfitItems };
