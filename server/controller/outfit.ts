@@ -49,7 +49,7 @@ const outfitController = (socket: FakeSOSocket) => {
       req.body.bottomIds.length > 0 &&
       !!req.body.outerwearIds &&
       !!req.body.accessoriesIds &&
-      !!req.body.shoeId
+      !!req.body.shoesId
     );
   }
 
@@ -69,7 +69,7 @@ const outfitController = (socket: FakeSOSocket) => {
       return;
     }
 
-    const { creatorId, workoutId, topIds, bottomIds, outerwearIds, accessoriesIds, shoeId } =
+    const { creatorId, workoutId, topIds, bottomIds, outerwearIds, accessoriesIds, shoesId } =
       req.body;
 
     try {
@@ -90,7 +90,7 @@ const outfitController = (socket: FakeSOSocket) => {
       };
 
       // fetch the components of the outfit, as provided in the initial request
-      const [user, workout, tops, bottoms, outerwear, accessories, shoe] = await Promise.all([
+      const [user, workout, tops, bottoms, outerwear, accessories, shoes] = await Promise.all([
         fetchUserById(creatorId).then(userRes => {
           if ('error' in userRes) throw new Error(userRes.error);
           return userRes;
@@ -103,7 +103,7 @@ const outfitController = (socket: FakeSOSocket) => {
         fetchAndValidate(fetchBottomById, bottomIds),
         fetchAndValidate(fetchOuterwearById, outerwearIds),
         fetchAndValidate(fetchAccessoryById, accessoriesIds),
-        fetchShoeById(shoeId).then(shoeRes => {
+        fetchShoeById(shoesId).then(shoeRes => {
           if ('error' in shoeRes) throw new Error(shoeRes.error);
           return shoeRes;
         }),
@@ -118,7 +118,7 @@ const outfitController = (socket: FakeSOSocket) => {
         bottoms,
         outerwear,
         accessories,
-        shoe,
+        shoes,
       };
 
       const outfitFromDb = await saveOutfit(outfit);
@@ -146,7 +146,7 @@ const outfitController = (socket: FakeSOSocket) => {
         updateWithOutfit(addOutfitToBottom, bottoms),
         updateWithOutfit(addOutfitToOuterwear, outerwear),
         updateWithOutfit(addOutfitToAccessory, accessories),
-        addOutfitToShoe(outfitFromDb, shoe).then(outfitToShoeRes => {
+        addOutfitToShoe(outfitFromDb, shoes).then(outfitToShoeRes => {
           if ('error' in outfitToShoeRes) throw new Error(outfitToShoeRes.error);
         }),
         addOutfitToUser(outfitFromDb, creatorId).then(outfitToUserRes => {

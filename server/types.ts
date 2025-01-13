@@ -624,7 +624,7 @@ export interface Outfit {
   bottoms: Bottom[];
   outerwear: Outerwear[];
   accessories: Accessory[];
-  shoe: Shoe;
+  shoes: Shoe;
 }
 
 /**
@@ -645,7 +645,7 @@ export interface CreateOutfitRequest {
     bottomIds: string[];
     outerwearIds: string[];
     accessoriesIds: string[];
-    shoeId: string;
+    shoesId: string;
   };
 }
 

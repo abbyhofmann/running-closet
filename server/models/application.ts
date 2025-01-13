@@ -1977,7 +1977,7 @@ export const extractOutfitItems = async (outfits: Outfit[]): Promise<AllOutfitIt
       outfit.bottoms.forEach(bottom => bottoms.add(bottom));
       outfit.outerwear.forEach(outerwear => outerwears.add(outerwear));
       outfit.accessories.forEach(accessory => accessories.add(accessory));
-      shoes.add(outfit.shoe);
+      shoes.add(outfit.shoes);
     });
     const allOutfitItems: AllOutfitItemsObject = {
       tops: Array.from(tops),
