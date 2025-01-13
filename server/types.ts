@@ -557,6 +557,51 @@ export interface User {
 }
 
 /**
+ * Interface representing an OutfitItem, which contains:
+ * - id: The unique identifier for the outfit item.
+ * - runner: The runner who created the outfit item.
+ * - brand: The brand name of the outfit item.
+ * - model: The model name of the outfit item.
+ * - s3PhotoUrl: The URL link to the S3 bucket where the outfit item photo is stored.
+ * - outfits: The list of outfits that the outfit item is a part of.
+ */
+export interface OutfitItem {
+  _id?: string;
+  runner: User;
+  brand: string;
+  model: string;
+  s3PhotoUrl: string;
+  outfits: Outfit[];
+}
+
+/**
+ * Interface for the request parameter when fetching the outfit items associated with a user given
+ * their user ID.
+ * - uid - The unique identifier of the user.
+ */
+
+export interface FindOutfitItemsByUserIdRequest extends Request {
+  params: {
+    uid: string;
+  };
+}
+
+// used when getting all the outfit items a user has created for the create outfit page (when selecting existing itmes)
+export interface AllOutfitItemsObject {
+  tops: Top[];
+  bottoms: Bottom[];
+  accessories: Accessory[];
+  outerwears: Outerwear[];
+  shoes: Shoe[];
+}
+
+/**
+ * Type representing the possible responses for fetching all outfit items.
+ */
+export type AllOutfitItemsResponse = AllOutfitItemsObject | { error: string };
+
+
+/**
  * Interface representing an Outfit document, which contains:
  * - id: The unique identifier for the outfit.
  * - wearer: The user who wore and logged the outfit.
@@ -708,14 +753,7 @@ export type RatingResponse = Rating | { error: string };
  * - s3PhotoUrl: The URL link to the S3 bucket where the top photo is stored.
  * - outfits: The list of outfits that the top is a part of.
  */
-export interface Top {
-  _id?: ObjectId;
-  runner: User;
-  brand: String;
-  model: String;
-  s3PhotoUrl: String;
-  outfits: Outfit[];
-}
+export interface Top extends OutfitItem {}
 
 /**
  * Interface for the request body when creating a new top.
@@ -747,14 +785,7 @@ export type TopResponse = Top | { error: string };
  * - s3PhotoUrl: The URL link to the S3 bucket where the bottom photo is stored.
  * - outfits: The list of outfits that the bottom is a part of.
  */
-export interface Bottom {
-  _id?: ObjectId;
-  runner: User;
-  brand: String;
-  model: String;
-  s3PhotoUrl: String;
-  outfits: Outfit[];
-}
+export interface Bottom extends OutfitItem {}
 
 /**
  * Interface for the request body when creating a new bottom.
@@ -786,14 +817,7 @@ export type BottomResponse = Bottom | { error: string };
  * - s3PhotoUrl: The URL link to the S3 bucket where the accessory photo is stored.
  * - outfits: The list of outfits that the accessory is a part of.
  */
-export interface Accessory {
-  _id?: ObjectId;
-  runner: User;
-  brand: String;
-  model: String;
-  s3PhotoUrl: String;
-  outfits: Outfit[];
-}
+export interface Accessory extends OutfitItem {}
 
 /**
  * Interface for the request body when creating a new accessory.
@@ -825,14 +849,7 @@ export type AccessoryResponse = Accessory | { error: string };
  * - s3PhotoUrl: The URL link to the S3 bucket where the outerwear photo is stored.
  * - outfits: The list of outfits that the outerwear item is a part of.
  */
-export interface Outerwear {
-  _id?: ObjectId;
-  runner: User;
-  brand: String;
-  model: String;
-  s3PhotoUrl: String;
-  outfits: Outfit[];
-}
+export interface Outerwear extends OutfitItem {}
 
 /**
  * Interface for the request body when creating a new outerwear item.
@@ -864,14 +881,7 @@ export type OuterwearResponse = Outerwear | { error: string };
  * - s3PhotoUrl: The URL link to the S3 bucket where the shoe photo is stored.
  * - outfits: The list of outfits that the shoe is a part of.
  */
-export interface Shoe {
-  _id?: ObjectId;
-  runner: User;
-  brand: String;
-  model: String;
-  s3PhotoUrl: String;
-  outfits: Outfit[];
-}
+export interface Shoe extends OutfitItem {}
 
 /**
  * Interface for the request body when creating a new shoe.

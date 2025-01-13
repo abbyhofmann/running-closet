@@ -1,5 +1,12 @@
 import express, { Request, Response } from 'express';
-import { FakeSOSocket, CreateOutfitRequest, GetUserRequest, Outfit } from '../types';
+import { ObjectId } from 'mongodb';
+import {
+  FakeSOSocket,
+  CreateOutfitRequest,
+  GetUserRequest,
+  Outfit,
+  FindOutfitItemsByUserIdRequest,
+} from '../types';
 import {
   fetchUserByUsername,
   fetchUserById,
@@ -17,6 +24,7 @@ import {
   addOutfitToUser,
   fetchOuterwearById,
   fetchOutfitById,
+  extractOutfitItems,
 } from '../models/application';
 
 const outfitController = (socket: FakeSOSocket) => {
@@ -208,8 +216,37 @@ const outfitController = (socket: FakeSOSocket) => {
     }
   };
 
+  const getAllOutfitItems = async (
+    req: FindOutfitItemsByUserIdRequest,
+    res: Response,
+  ): Promise<void> => {
+    const { uid } = req.params;
+
+    if (!ObjectId.isValid(uid)) {
+      res.status(400).send('Invalid ID format');
+      return;
+    }
+
+    try {
+      const user = await fetchUserById(uid);
+
+      if ('error' in user) {
+        throw new Error(user.error as string);
+      }
+
+      const allOutfitItems = await extractOutfitItems(user.outfits);
+      if ('error' in allOutfitItems) {
+        throw new Error(allOutfitItems.error as string);
+      }
+      res.json(allOutfitItems);
+    } catch (err) {
+      res.status(500).send(`Error when fetching all outfit items: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/createOutfit', createOutfit);
+  router.get('/getAllOutfitItems/:uid', getAllOutfitItems);
 
   return router;
 };

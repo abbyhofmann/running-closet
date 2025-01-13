@@ -98,6 +98,33 @@ export interface Rating {
 }
 
 /**
+ * Interface representing an OutfitItem, which contains:
+ * - id: The unique identifier for the outfit item.
+ * - runner: The runner who created the outfit item.
+ * - brand: The brand name of the outfit item.
+ * - model: The model name of the outfit item.
+ * - s3PhotoUrl: The URL link to the S3 bucket where the outfit item photo is stored.
+ * - outfits: The list of outfits that the outfit item is a part of.
+ */
+export interface OutfitItem {
+  _id?: string;
+  runner: User;
+  brand: string;
+  model: string;
+  s3PhotoUrl: string;
+  outfits: Outfit[];
+}
+
+// used when getting all the outfit items a user has created for the create outfit page (when selecting existing itmes)
+export interface AllOutfitItemsObject {
+  tops: Top[];
+  bottoms: Bottom[];
+  accessories: Accessory[];
+  outerwears: Outerwear[];
+  shoes: Shoe[];
+}
+
+/**
  * Interface representing a Top, which contains:
  * - id: The unique identifier for the top.
  * - runner: The runner who created the top.
@@ -106,14 +133,7 @@ export interface Rating {
  * - s3PhotoUrl: The URL link to the S3 bucket where the top photo is stored.
  * - outfits: The list of outfits that the top is a part of.
  */
-export interface Top {
-  _id?: string;
-  runner: User;
-  brand: string;
-  model: string;
-  s3PhotoUrl: string;
-  outfits: Outfit[];
-}
+export interface Top extends OutfitItem {}
 
 /**
  * Interface representing a Botton, which contains:
@@ -124,14 +144,7 @@ export interface Top {
  * - s3PhotoUrl: The URL link to the S3 bucket where the bottom photo is stored.
  * - outfits: The list of outfits that the bottom is a part of.
  */
-export interface Bottom {
-  _id?: string;
-  runner: User;
-  brand: string;
-  model: string;
-  s3PhotoUrl: string;
-  outfits: Outfit[];
-}
+export interface Bottom extends OutfitItem {}
 
 /**
  * Interface representing an Accessory, which contains:
@@ -142,14 +155,7 @@ export interface Bottom {
  * - s3PhotoUrl: The URL link to the S3 bucket where the accessory photo is stored.
  * - outfits: The list of outfits that the accessory is a part of.
  */
-export interface Accessory {
-  _id?: string;
-  runner: User;
-  brand: string;
-  model: string;
-  s3PhotoUrl: string;
-  outfits: Outfit[];
-}
+export interface Accessory extends OutfitItem {}
 
 /**
  * Interface representing an Outerwear object, which contains:
@@ -160,14 +166,7 @@ export interface Accessory {
  * - s3PhotoUrl: The URL link to the S3 bucket where the outerwear photo is stored.
  * - outfits: The list of outfits that the outerwear item is a part of.
  */
-export interface Outerwear {
-  _id?: string;
-  runner: User;
-  brand: string;
-  model: string;
-  s3PhotoUrl: string;
-  outfits: Outfit[];
-}
+export interface Outerwear extends OutfitItem {}
 
 /**
  * Interface representing a Shoe, which contains:
@@ -178,14 +177,7 @@ export interface Outerwear {
  * - s3PhotoUrl: The URL link to the S3 bucket where the shoe photo is stored.
  * - outfits: The list of outfits that the shoe is a part of.
  */
-export interface Shoe {
-  _id?: string;
-  runner: User;
-  brand: string;
-  model: string;
-  s3PhotoUrl: string;
-  outfits: Outfit[];
-}
+export interface Shoe extends OutfitItem {}
 
 /**
  * Enum representing the possible ordering options for questions.

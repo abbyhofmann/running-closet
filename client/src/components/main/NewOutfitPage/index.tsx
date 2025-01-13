@@ -5,6 +5,7 @@ import { Accessory, Bottom, Outerwear, Outfit, Rating, Shoe, Top, Workout } from
 import useUserContext from '../../../hooks/useUserContext';
 import useOutfitContext from '../../../hooks/useOutfitContext';
 import WorkoutScroller from './workoutScroller';
+import OutfitItemScroller from './outfitItemScroller';
 
 /**
  *
@@ -21,6 +22,26 @@ const NewOutfitPage = () => {
 
   // user's workouts
   const workouts = user?.workouts || [];
+
+  // user's various outfit items 
+  const [tops, setTops] = useState<Top[]>([]);
+  const [bottoms, setBottoms] = useState<Bottom[]>([]);
+  const [outerwears, setOuterwears] = useState<Outerwear[]>([]);
+  const [accessories, setAccessories] = useState<Accessory[]>([]);
+  const [shoes, setShoes] = useState<Shoe[]>([]);
+
+  // set the outfit items 
+  useEffect(() => {
+    async function fetchData() {
+        if (user) {
+          const userTops = await getOutfitItems(user._id);
+          setTops(userTops);
+          const userBottoms = await getBottoms(user._id);
+          setTops(userTops);
+        }
+      }
+      fetchData();
+  }), [];
 
   // set the wearer of the outfit
   useEffect(() => {
@@ -80,6 +101,13 @@ const NewOutfitPage = () => {
 
       {/* Horizontal Workout Scroller */}
       <WorkoutScroller
+        workouts={workouts}
+        onCreateWorkout={handleCreateWorkout}
+        onSelectWorkout={handleWorkoutSelection}
+      />
+
+      {/* Horizontal OutfitItem Scrollers */}
+      <OutfitItemScroller
         workouts={workouts}
         onCreateWorkout={handleCreateWorkout}
         onSelectWorkout={handleWorkoutSelection}

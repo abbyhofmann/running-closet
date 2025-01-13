@@ -1,4 +1,4 @@
-import { Outfit } from '../types';
+import { AllOutfitItemsObject, Outfit } from '../types';
 import api from './config';
 
 const OUTFIT_API_URL = `${process.env.REACT_APP_SERVER_URL}/outfit`;
@@ -27,6 +27,22 @@ const createOutfit = async (
   if (res.status !== 200) {
     throw new Error('Error while creating a new outfit');
   }
+  return res.data;
+};
+
+/**
+ * Gets all the outfit items a user has created.
+ *
+ * @param uid The id of the user whose outfit items are being retrieved.
+ * @throws Error if there is an issue fetching the outfit items by user ID.
+ */
+const getAllOutfitItems = async (uid: string): Promise<AllOutfitItemsObject> => {
+  const res = await api.get(`${OUTFIT_API_URL}/getAllOutfitItems/${uid}`);
+
+  if (res.status !== 200) {
+    throw new Error('Error while fetching all outfit items');
+  }
+
   return res.data;
 };
 

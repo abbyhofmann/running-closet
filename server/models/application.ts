@@ -39,6 +39,8 @@ import {
   Rating,
   RatingResponse,
   Outfit,
+  AllOutfitItemsResponse,
+  AllOutfitItemsObject,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -810,6 +812,16 @@ export const fetchUserById = async (uid: string): Promise<UserResponse> => {
     const user = await UserModel.findOne({ _id: uid, deleted: false }).populate([
       { path: 'following', model: UserModel },
       { path: 'followers', model: UserModel },
+      {
+        path: 'outfits',
+        populate: [
+          { path: 'tops' },
+          { path: 'bottoms' },
+          { path: 'outerwear' },
+          { path: 'accessories' },
+          { path: 'shoes' },
+        ],
+      },
     ]);
     if (!user) {
       throw new Error(`Failed to fetch user with id ${uid}`);
@@ -1948,5 +1960,34 @@ export const addOutfitToUser = async (outfit: Outfit, userId: string): Promise<U
     return updatedUser;
   } catch (err) {
     return { error: `Error when adding an outfit to user:  ${(err as Error).message}` };
+  }
+};
+
+export const extractOutfitItems = async (outfits: Outfit[]): Promise<AllOutfitItemsResponse> => {
+  try {
+    // use a set because outfits may have the same items
+    const tops = new Set<Top>();
+    const bottoms = new Set<Bottom>();
+    const outerwears = new Set<Outerwear>();
+    const accessories = new Set<Accessory>();
+    const shoes = new Set<Shoe>();
+
+    outfits.forEach(outfit => {
+      outfit.tops.forEach(top => tops.add(top));
+      outfit.bottoms.forEach(bottom => bottoms.add(bottom));
+      outfit.outerwear.forEach(outerwear => outerwears.add(outerwear));
+      outfit.accessories.forEach(accessory => accessories.add(accessory));
+      shoes.add(outfit.shoe);
+    });
+    const allOutfitItems: AllOutfitItemsObject = {
+      tops: Array.from(tops),
+      bottoms: Array.from(bottoms),
+      accessories: Array.from(accessories),
+      outerwears: Array.from(outerwears),
+      shoes: Array.from(shoes),
+    };
+    return allOutfitItems;
+  } catch (error) {
+    return { error: 'Error when fetching the outfit items' };
   }
 };
