@@ -1,5 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Box, Drawer, List, ListItem, ListItemText, Button, Typography } from '@mui/material';
+import {
+  Box,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Button,
+  Typography,
+  Stack,
+  Grid2,
+} from '@mui/material';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { Accessory, Bottom, Outerwear, Outfit, Rating, Shoe, Top, Workout } from '../../../types';
 import useUserContext from '../../../hooks/useUserContext';
@@ -53,6 +63,11 @@ const NewOutfitPage = () => {
     }
   }, [user, outfit.wearer, setOutfit]);
 
+  //   DEBUGGG
+  useEffect(() => {
+    console.log('Outfit state updated:', outfit);
+  }, [outfit]);
+
   const handleWorkoutSelection = (workout: Workout) => {
     setSelectedWorkout(workout);
     setOutfit({ ...outfit, workout });
@@ -67,91 +82,175 @@ const NewOutfitPage = () => {
   const handleTopSelection = (top: Top) => {
     // TODO - have top selection highlight the selected top
     // setSelectedTop(top);
-    setOutfit({ ...outfit, tops: [...outfit.tops, top] });
+    if (!outfit.tops.includes(top)) {
+      setOutfit({ ...outfit, tops: [...outfit.tops, top] });
+      console.log('added to toppsss');
+    }
+    if (outfit.tops.includes(top)) {
+      const index = outfit.tops.indexOf(top);
+      setOutfit({ ...outfit, tops: outfit.tops.filter(existingTop => existingTop !== top) });
+      console.log('removed from tops');
+    }
   };
 
   const handleCreateTop = () => {
-    // logic for creating a new workout (e.g., navigate to a workout creation page)
+    // navigate
+    console.log('create new top clicked...');
+  };
+
+  const handleBottomSelection = (bottom: Bottom) => {
+    // TODO - have bottom selection highlight the selected bottom
+    // setSelectedBottom(bottom);
+    setOutfit({ ...outfit, bottoms: [...outfit.bottoms, bottom] });
+  };
+
+  const handleCreateBottom = () => {
     // navigate('/createWorkout');
-    console.log('create new workout clicked...');
+    console.log('create new bottom clicked...');
+  };
+
+  const handleAccessorySelection = (accessory: Accessory) => {
+    // TODO - have accessory selection highlight the selected accessory
+    // setSelectedAccessory(accessory);
+    setOutfit({ ...outfit, accessories: [...outfit.accessories, accessory] });
+  };
+
+  const handleCreateAccessory = () => {
+    // navigate('/createWorkout');
+    console.log('create new accessory clicked...');
+  };
+
+  const handleOuterwearSelection = (outerwear: Outerwear) => {
+    // TODO - have outerwear selection highlight the selected outerwear
+    // setSelectedOuterwear(outerwear);
+    setOutfit({ ...outfit, outerwear: [...outfit.outerwear, outerwear] });
+  };
+
+  const handleCreateOuterwear = () => {
+    // navigate('/createWorkout');
+    console.log('create new outerwear clicked...');
+  };
+
+  const handleShoeSelection = (shoe: Shoe) => {
+    // TODO - have shoe selection highlight the selected shoe
+    // setSelectedShoe(shoe);
+    setOutfit({ ...outfit, shoe });
+  };
+
+  const handleCreateShoe = () => {
+    // navigate('/createWorkout');
+    console.log('create new shoe clicked...');
   };
 
   return (
-    <Box display='flex'>
-      {/* Sidebar */}
-      <Drawer variant='permanent' sx={{ width: 240, flexShrink: 0 }}>
-        <Box sx={{ width: 240 }}>
-          <List>
-            <ListItem>
-              <ListItemText
-                primary={`Top: ${outfit.tops.length > 0 ? outfit.tops[0].brand : 'Not Selected'}`}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary={`Bottom: ${outfit.bottoms.length > 0 ? 'Added' : 'Not Selected'}`}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary={`Outerwear: ${outfit.outerwear.length > 0 ? 'Added' : 'Not Selected'}`}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary={`Accessory: ${outfit.accessories.length > 0 ? 'Added' : 'Not Selected'}`}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary={`Shoes: ${outfit.shoe ? outfit.shoe.brand : 'Not Selected'}`}
-              />
-            </ListItem>
-          </List>
+    <Grid2>
+      <Stack direction='column' spacing={{ xs: 1, sm: 2, md: 4 }}>
+        {/* Sidebar */}
+        <Box>
+          <Box sx={{ width: 240 }}>
+            <List>
+              <ListItem>
+                <ListItemText
+                  primary={`Top: ${outfit.tops.length > 0 ? outfit.tops[0].brand : 'Not Selected'}`}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemText
+                  primary={`Bottom: ${outfit.bottoms.length > 0 ? 'Added' : 'Not Selected'}`}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemText
+                  primary={`Outerwear: ${outfit.outerwear.length > 0 ? 'Added' : 'Not Selected'}`}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemText
+                  primary={`Accessory: ${outfit.accessories.length > 0 ? 'Added' : 'Not Selected'}`}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemText
+                  primary={`Shoes: ${outfit.shoe ? outfit.shoe.brand : 'Not Selected'}`}
+                />
+              </ListItem>
+            </List>
+          </Box>
         </Box>
-      </Drawer>
-
-      {/* need to navigate between top page, bottom page, etc and pass outfit object between */}
-      <Typography>What workout was this outfit for?</Typography>
-
-      {/* Horizontal Workout Scroller */}
-      <WorkoutScroller
-        workouts={workouts}
-        onCreateWorkout={handleCreateWorkout}
-        onSelectWorkout={handleWorkoutSelection}
-      />
-
-      {/* Horizontal OutfitItem Scrollers */}
-      <OutfitItemScroller
-        outfitItems={userTops}
-        outfitItemType='top'
-        onCreateOutfitItem={handleCreateTop}
-        onSelectOutfitItem={handleTopSelection}
-      />
-
-      {/* Display Selected Workout */}
-      {selectedWorkout && (
-        <Box mt={3}>
-          <Typography variant='h6'>Selected Workout:</Typography>
-          <Typography>Type: {selectedWorkout.runType}</Typography>
-          <Typography>
-            Date: {new Date(selectedWorkout.dateCompleted).toLocaleDateString()}
-          </Typography>
-          <Typography>Distance: {selectedWorkout.distance} miles</Typography>
-          <Typography>Duration: {selectedWorkout.duration} minutes</Typography>
-          <Typography>Location: {selectedWorkout.location}</Typography>
-        </Box>
-      )}
-      <Button
-        onClick={() => {
-          navigate(`/createOutfit/top`);
-        }}
-        variant='contained'
-        type='submit'
-        sx={{ mt: 2, width: '25ch', bgcolor: '#5171A5' }}>
-        Start Creating Outfit...
-      </Button>
-    </Box>
+        {/* need to navigate between top page, bottom page, etc and pass outfit object between */}
+        <Typography>What workout was this outfit for?</Typography>
+        {/* Horizontal Workout Scroller */}
+        <WorkoutScroller
+          workouts={workouts}
+          onCreateWorkout={handleCreateWorkout}
+          onSelectWorkout={handleWorkoutSelection}
+        />
+        {/* Display Selected Workout */}
+        {selectedWorkout && (
+          <Box mt={3}>
+            <Typography variant='h6'>Selected Workout:</Typography>
+            <Typography>Type: {selectedWorkout.runType}</Typography>
+            <Typography>
+              Date: {new Date(selectedWorkout.dateCompleted).toLocaleDateString()}
+            </Typography>
+            <Typography>Distance: {selectedWorkout.distance} miles</Typography>
+            <Typography>Duration: {selectedWorkout.duration} minutes</Typography>
+            <Typography>Location: {selectedWorkout.location}</Typography>
+          </Box>
+        )}
+        <Button
+          onClick={() => {
+            navigate(`/createOutfit/top`);
+          }}
+          variant='contained'
+          type='submit'
+          sx={{ mt: 2, width: '25ch', bgcolor: '#5171A5' }}>
+          Start Creating Outfit...
+        </Button>
+        {/* Horizontal OutfitItem Scrollers */}
+        {/* Top Scroller */}
+        <OutfitItemScroller
+          outfitItems={userTops}
+          outfitItemType='top'
+          onCreateOutfitItem={handleCreateTop}
+          onSelectOutfitItem={handleTopSelection}
+          currentSelectedOutfitItems={outfit.tops}
+        />
+        {/* Bottom Scroller */}
+        <OutfitItemScroller
+          outfitItems={userBottoms}
+          outfitItemType='bottom'
+          onCreateOutfitItem={handleCreateBottom}
+          onSelectOutfitItem={handleBottomSelection}
+          currentSelectedOutfitItems={outfit.bottoms}
+        />
+        {/* Shoes Scroller */}
+        <OutfitItemScroller
+          outfitItems={userShoes}
+          outfitItemType='shoes'
+          onCreateOutfitItem={handleCreateShoe}
+          onSelectOutfitItem={handleShoeSelection}
+          currentSelectedOutfitItems={[]}
+        />{' '}
+        {/* fix this logic */}
+        {/* Outerwears Scroller */}
+        <OutfitItemScroller
+          outfitItems={userOuterwears}
+          outfitItemType='outerwear'
+          onCreateOutfitItem={handleCreateOuterwear}
+          onSelectOutfitItem={handleOuterwearSelection}
+          currentSelectedOutfitItems={outfit.outerwear}
+        />
+        {/* Accessories Scroller */}
+        <OutfitItemScroller
+          outfitItems={userAccessories}
+          outfitItemType='accessory'
+          onCreateOutfitItem={handleCreateAccessory}
+          onSelectOutfitItem={handleAccessorySelection}
+          currentSelectedOutfitItems={outfit.accessories}
+        />
+      </Stack>
+    </Grid2>
   );
 };
 

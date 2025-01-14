@@ -1,13 +1,15 @@
 import { Box, Card, Typography } from '@mui/material';
-import { grey } from '@mui/material/colors';
+import { blue, grey } from '@mui/material/colors';
 import { OutfitItem, Workout } from '../../../../types';
 
 const OutfitItemCard = ({
   outfitItem,
   onSelectOutfitItem,
+  selected,
 }: {
   outfitItem: OutfitItem;
   onSelectOutfitItem: (outfitItem: OutfitItem) => void;
+  selected: boolean;
 }) => (
   <Card
     sx={{
@@ -18,6 +20,7 @@ const OutfitItemCard = ({
         transform: 'scale(1.03)',
       },
       'borderRadius': 2,
+      'backgroundColor': selected ? blue[100] : grey[400],
     }}
     onClick={() => {
       onSelectOutfitItem(outfitItem);

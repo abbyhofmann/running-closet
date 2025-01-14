@@ -19,9 +19,9 @@ const createOutfit = async (
   bottomIds: string[],
   outerwearIds: string[],
   accessoriesIds: string[],
-  shoeId: string,
+  shoesId: string,
 ): Promise<Outfit> => {
-  const data = { creatorId, workoutId, topIds, bottomIds, outerwearIds, accessoriesIds, shoeId };
+  const data = { creatorId, workoutId, topIds, bottomIds, outerwearIds, accessoriesIds, shoesId };
 
   const res = await api.post(`${OUTFIT_API_URL}/createOutfit`, data);
   if (res.status !== 200) {

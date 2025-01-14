@@ -233,7 +233,6 @@ const outfitController = (socket: FakeSOSocket) => {
       if ('error' in user) {
         throw new Error(user.error as string);
       }
-
       const allOutfitItems = await extractOutfitItems(user.outfits);
       if ('error' in allOutfitItems) {
         throw new Error(allOutfitItems.error as string);

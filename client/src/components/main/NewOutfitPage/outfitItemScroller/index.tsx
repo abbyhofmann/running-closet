@@ -8,11 +8,13 @@ const OutfitItemScroller = ({
   outfitItemType,
   onCreateOutfitItem,
   onSelectOutfitItem,
+  currentSelectedOutfitItems,
 }: {
   outfitItems: OutfitItem[];
   outfitItemType: string;
   onCreateOutfitItem: () => void;
   onSelectOutfitItem: (outfitItem: OutfitItem) => void;
+  currentSelectedOutfitItems: OutfitItem[];
 }) => (
   <Box
     sx={{
@@ -27,6 +29,7 @@ const OutfitItemScroller = ({
         key={outfitItem._id?.toString()}
         outfitItem={outfitItem}
         onSelectOutfitItem={onSelectOutfitItem}
+        selected={currentSelectedOutfitItems.includes(outfitItem)}
       />
     ))}
 
