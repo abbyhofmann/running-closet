@@ -27,7 +27,6 @@ const OutfitItemCard = ({
     }}>
     <Box
       sx={{
-        backgroundColor: grey[400],
         padding: 2,
         display: 'flex',
         flexDirection: 'column',

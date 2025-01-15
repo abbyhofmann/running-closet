@@ -80,16 +80,10 @@ const NewOutfitPage = () => {
   };
 
   const handleTopSelection = (top: Top) => {
-    // TODO - have top selection highlight the selected top
-    // setSelectedTop(top);
     if (!outfit.tops.includes(top)) {
       setOutfit({ ...outfit, tops: [...outfit.tops, top] });
-      console.log('added to toppsss');
-    }
-    if (outfit.tops.includes(top)) {
-      const index = outfit.tops.indexOf(top);
+    } else {
       setOutfit({ ...outfit, tops: outfit.tops.filter(existingTop => existingTop !== top) });
-      console.log('removed from tops');
     }
   };
 
@@ -99,9 +93,15 @@ const NewOutfitPage = () => {
   };
 
   const handleBottomSelection = (bottom: Bottom) => {
-    // TODO - have bottom selection highlight the selected bottom
-    // setSelectedBottom(bottom);
-    setOutfit({ ...outfit, bottoms: [...outfit.bottoms, bottom] });
+    if (!outfit.bottoms.includes(bottom)) {
+      setOutfit({ ...outfit, bottoms: [...outfit.bottoms, bottom] });
+    } else {
+      setOutfit({
+        ...outfit,
+        bottoms: outfit.bottoms.filter(existingBottom => existingBottom !== bottom),
+      });
+    }
+    // setOutfit({ ...outfit, bottoms: [...outfit.bottoms, bottom] });
   };
 
   const handleCreateBottom = () => {
@@ -110,9 +110,16 @@ const NewOutfitPage = () => {
   };
 
   const handleAccessorySelection = (accessory: Accessory) => {
-    // TODO - have accessory selection highlight the selected accessory
-    // setSelectedAccessory(accessory);
-    setOutfit({ ...outfit, accessories: [...outfit.accessories, accessory] });
+    if (!outfit.accessories.includes(accessory)) {
+      setOutfit({ ...outfit, accessories: [...outfit.accessories, accessory] });
+    } else {
+      setOutfit({
+        ...outfit,
+        accessories: outfit.accessories.filter(
+          existingAccessory => existingAccessory !== accessory,
+        ),
+      });
+    }
   };
 
   const handleCreateAccessory = () => {
@@ -121,9 +128,14 @@ const NewOutfitPage = () => {
   };
 
   const handleOuterwearSelection = (outerwear: Outerwear) => {
-    // TODO - have outerwear selection highlight the selected outerwear
-    // setSelectedOuterwear(outerwear);
-    setOutfit({ ...outfit, outerwear: [...outfit.outerwear, outerwear] });
+    if (!outfit.outerwear.includes(outerwear)) {
+      setOutfit({ ...outfit, outerwear: [...outfit.outerwear, outerwear] });
+    } else {
+      setOutfit({
+        ...outfit,
+        outerwear: outfit.outerwear.filter(existingOuterwear => existingOuterwear !== outerwear),
+      });
+    }
   };
 
   const handleCreateOuterwear = () => {
