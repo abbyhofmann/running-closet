@@ -1,26 +1,11 @@
-import { useState, useEffect } from 'react';
-import {
-  Box,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  Button,
-  Typography,
-  Stack,
-  Grid2,
-} from '@mui/material';
-import { Route, Routes, useNavigate } from 'react-router-dom';
-import { Accessory, Bottom, Outerwear, Outfit, Rating, Shoe, Top, Workout } from '../../../types';
-import useUserContext from '../../../hooks/useUserContext';
-import useOutfitContext from '../../../hooks/useOutfitContext';
+import { Box, List, ListItem, ListItemText, Button, Typography, Stack, Grid2 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import WorkoutScroller from './workoutScroller';
 import OutfitItemScroller from './outfitItemScroller';
-import { getAllOutfitItems } from '../../../services/outfitService';
 import useNewOutfitPage from '../../../hooks/useNewOutfitPage';
 
 /**
- *
+ * Renders a page where the user can create a new outfit.
  */
 const NewOutfitPage = () => {
   const {
@@ -48,7 +33,7 @@ const NewOutfitPage = () => {
   const navigate = useNavigate();
 
   return (
-    <Grid2>
+    <Grid2 sx={{ marginTop: 3 }}>
       <Stack direction='column' spacing={{ xs: 1, sm: 2, md: 4 }}>
         {/* Sidebar */}
         <Box>
@@ -112,48 +97,61 @@ const NewOutfitPage = () => {
           sx={{ mt: 2, width: '25ch', bgcolor: '#5171A5' }}>
           Start Creating Outfit...
         </Button>
-        {/* Horizontal OutfitItem Scrollers */}
-        {/* Top Scroller */}
-        <OutfitItemScroller
-          outfitItems={userTops}
-          outfitItemType='top'
-          onCreateOutfitItem={handleCreateTop}
-          onSelectOutfitItem={handleTopSelection}
-          currentSelectedOutfitItems={outfit.tops}
-        />
-        {/* Bottom Scroller */}
-        <OutfitItemScroller
-          outfitItems={userBottoms}
-          outfitItemType='bottom'
-          onCreateOutfitItem={handleCreateBottom}
-          onSelectOutfitItem={handleBottomSelection}
-          currentSelectedOutfitItems={outfit.bottoms}
-        />
-        {/* Shoes Scroller */}
-        <OutfitItemScroller
-          outfitItems={userShoes}
-          outfitItemType='shoes'
-          onCreateOutfitItem={handleCreateShoe}
-          onSelectOutfitItem={handleShoeSelection}
-          currentSelectedOutfitItems={[]}
-        />{' '}
-        {/* fix this logic */}
-        {/* Outerwears Scroller */}
-        <OutfitItemScroller
-          outfitItems={userOuterwears}
-          outfitItemType='outerwear'
-          onCreateOutfitItem={handleCreateOuterwear}
-          onSelectOutfitItem={handleOuterwearSelection}
-          currentSelectedOutfitItems={outfit.outerwear}
-        />
-        {/* Accessories Scroller */}
-        <OutfitItemScroller
-          outfitItems={userAccessories}
-          outfitItemType='accessory'
-          onCreateOutfitItem={handleCreateAccessory}
-          onSelectOutfitItem={handleAccessorySelection}
-          currentSelectedOutfitItems={outfit.accessories}
-        />
+        <Box
+          id='outfit_scrollers'
+          className='outfit_scrollers'
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center', // centers horizontally
+            justifyContent: 'center', // centers vertically
+            gap: 4, // space between scrollers
+            marginTop: 4, // vertical positioning
+            minHeight: '50vh', // content occupies at least half the viewport height
+          }}>
+          {/* Horizontal OutfitItem Scrollers */}
+          {/* Top Scroller */}
+          <OutfitItemScroller
+            outfitItems={userTops}
+            outfitItemType='top'
+            onCreateOutfitItem={handleCreateTop}
+            onSelectOutfitItem={handleTopSelection}
+            currentSelectedOutfitItems={outfit.tops}
+          />
+          {/* Bottom Scroller */}
+          <OutfitItemScroller
+            outfitItems={userBottoms}
+            outfitItemType='bottom'
+            onCreateOutfitItem={handleCreateBottom}
+            onSelectOutfitItem={handleBottomSelection}
+            currentSelectedOutfitItems={outfit.bottoms}
+          />
+          {/* Shoes Scroller */}
+          <OutfitItemScroller
+            outfitItems={userShoes}
+            outfitItemType='shoes'
+            onCreateOutfitItem={handleCreateShoe}
+            onSelectOutfitItem={handleShoeSelection}
+            currentSelectedOutfitItems={[]}
+          />{' '}
+          {/* fix this logic */}
+          {/* Outerwears Scroller */}
+          <OutfitItemScroller
+            outfitItems={userOuterwears}
+            outfitItemType='outerwear'
+            onCreateOutfitItem={handleCreateOuterwear}
+            onSelectOutfitItem={handleOuterwearSelection}
+            currentSelectedOutfitItems={outfit.outerwear}
+          />
+          {/* Accessories Scroller */}
+          <OutfitItemScroller
+            outfitItems={userAccessories}
+            outfitItemType='accessory'
+            onCreateOutfitItem={handleCreateAccessory}
+            onSelectOutfitItem={handleAccessorySelection}
+            currentSelectedOutfitItems={outfit.accessories}
+          />
+        </Box>
       </Stack>
     </Grid2>
   );
