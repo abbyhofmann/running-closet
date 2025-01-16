@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllOutfitItems } from '../services/outfitService';
-import { Accessory, Bottom, Outerwear, Shoe, Top, Workout } from '../types';
+import { Accessory, Bottom, Outerwear, OutfitItem, Shoe, Top, Workout } from '../types';
 import useUserContext from './useUserContext';
 import useOutfitContext from './useOutfitContext';
 
@@ -16,6 +16,9 @@ const useNewOutfitPage = () => {
 
   // selected workout for the new outfit
   const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
+
+  // create outfit item popup open 
+  const [open, setOpen] = useState(false);
 
   // user's workouts
   const workouts = user?.workouts || [];
@@ -74,7 +77,6 @@ const useNewOutfitPage = () => {
   };
 
   const handleCreateTop = () => {
-    // navigate
     console.log('create new top clicked...');
   };
 
@@ -140,6 +142,15 @@ const useNewOutfitPage = () => {
     console.log('create new shoe clicked...');
   };
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  }
+
+  const handleClose = (outfit: OutfitItem) => {
+    setOpen(false);
+    // do something with outfit item
+  }
+
   return {
     outfit,
     workouts,
@@ -161,6 +172,8 @@ const useNewOutfitPage = () => {
     userShoes,
     handleCreateShoe,
     handleShoeSelection,
+    handleClickOpen,
+    open
   };
 };
 

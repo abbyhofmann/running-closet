@@ -29,6 +29,8 @@ const NewOutfitPage = () => {
     userShoes,
     handleCreateShoe,
     handleShoeSelection,
+    handleClickOpen,
+    open
   } = useNewOutfitPage();
   const navigate = useNavigate();
 
@@ -103,20 +105,21 @@ const NewOutfitPage = () => {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center', // centers horizontally
-            justifyContent: 'center', // centers vertically
-            gap: 4, // space between scrollers
-            marginTop: 4, // vertical positioning
-            minHeight: '50vh', // content occupies at least half the viewport height
+            alignItems: 'center', // Centers horizontally
+            justifyContent: 'center', // Centers vertically
+            gap: 4, // Adds space between scrollers
+            marginTop: 4, // Adjusts vertical positioning
+            minHeight: '50vh', // Ensures the content occupies at least half the viewport height
           }}>
           {/* Horizontal OutfitItem Scrollers */}
           {/* Top Scroller */}
           <OutfitItemScroller
             outfitItems={userTops}
             outfitItemType='top'
-            onCreateOutfitItem={handleCreateTop}
+            onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleTopSelection}
             currentSelectedOutfitItems={outfit.tops}
+            newOutfitItemPopupOpen={open}
           />
           {/* Bottom Scroller */}
           <OutfitItemScroller

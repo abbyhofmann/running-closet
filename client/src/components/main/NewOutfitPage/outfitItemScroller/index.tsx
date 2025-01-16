@@ -2,6 +2,7 @@ import { Box, Button } from '@mui/material';
 import WorkoutCard from '../workoutCard';
 import { OutfitItem, Workout } from '../../../../types';
 import OutfitItemCard from '../outfitItemCard';
+import NewOutfitItemPopup from '../newOutfitItemPopup';
 
 const OutfitItemScroller = ({
   outfitItems,
@@ -9,12 +10,14 @@ const OutfitItemScroller = ({
   onCreateOutfitItem,
   onSelectOutfitItem,
   currentSelectedOutfitItems,
+  newOutfitItemPopupOpen,
 }: {
   outfitItems: OutfitItem[];
   outfitItemType: string;
   onCreateOutfitItem: () => void;
   onSelectOutfitItem: (outfitItem: OutfitItem) => void;
   currentSelectedOutfitItems: OutfitItem[];
+  newOutfitItemPopupOpen: boolean;
 }) => (
   <Box
     sx={{
@@ -54,6 +57,11 @@ const OutfitItemScroller = ({
         + Create New{' '}
         {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)}
       </Button>
+      <NewOutfitItemPopup
+        newOutfitItem={newOutfitItem}
+        open={newOutfitItemPopupOpen}
+        onClose={handleClose}
+      />
     </Box>
   </Box>
 );
