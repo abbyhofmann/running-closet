@@ -30,7 +30,7 @@ const NewOutfitPage = () => {
     handleCreateShoe,
     handleShoeSelection,
     handleClickOpen,
-    open
+    open,
   } = useNewOutfitPage();
   const navigate = useNavigate();
 
@@ -120,6 +120,7 @@ const NewOutfitPage = () => {
             onSelectOutfitItem={handleTopSelection}
             currentSelectedOutfitItems={outfit.tops}
             newOutfitItemPopupOpen={open}
+            onNewOutfitItemCreated={handleCreateTop}
           />
           {/* Bottom Scroller */}
           <OutfitItemScroller
@@ -128,6 +129,8 @@ const NewOutfitPage = () => {
             onCreateOutfitItem={handleCreateBottom}
             onSelectOutfitItem={handleBottomSelection}
             currentSelectedOutfitItems={outfit.bottoms}
+            newOutfitItemPopupOpen={open}
+            onNewOutfitItemCreated={handleCreateTop} // TODO - change from top
           />
           {/* Shoes Scroller */}
           <OutfitItemScroller
@@ -136,7 +139,9 @@ const NewOutfitPage = () => {
             onCreateOutfitItem={handleCreateShoe}
             onSelectOutfitItem={handleShoeSelection}
             currentSelectedOutfitItems={[]}
-          />{' '}
+            newOutfitItemPopupOpen={open}
+            onNewOutfitItemCreated={handleCreateTop} // TODO - change from top
+          />
           {/* fix this logic */}
           {/* Outerwears Scroller */}
           <OutfitItemScroller
@@ -145,6 +150,8 @@ const NewOutfitPage = () => {
             onCreateOutfitItem={handleCreateOuterwear}
             onSelectOutfitItem={handleOuterwearSelection}
             currentSelectedOutfitItems={outfit.outerwear}
+            newOutfitItemPopupOpen={open}
+            onNewOutfitItemCreated={handleCreateTop} // TODO - change from top
           />
           {/* Accessories Scroller */}
           <OutfitItemScroller
@@ -153,6 +160,8 @@ const NewOutfitPage = () => {
             onCreateOutfitItem={handleCreateAccessory}
             onSelectOutfitItem={handleAccessorySelection}
             currentSelectedOutfitItems={outfit.accessories}
+            newOutfitItemPopupOpen={open}
+            onNewOutfitItemCreated={handleCreateTop} // TODO - change from top
           />
         </Box>
       </Stack>

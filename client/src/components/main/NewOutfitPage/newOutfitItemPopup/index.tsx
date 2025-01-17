@@ -1,69 +1,101 @@
-import { Avatar, Dialog, DialogTitle, List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemButton,
+  ListItemText,
+  TextField,
+} from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
-import { useState } from "react";
-
+import { useState } from 'react';
+import { OutfitItem } from '../../../../types';
+import useUserContext from '../../../../hooks/useUserContext';
 
 interface NewOutfitItemPopupProps {
-    open: boolean;
-    selectedValue: string;
-    onClose: (value: string) => void;
-  }
-  
-  const NewOutfitItemPopup = (props: NewOutfitItemPopupProps) => {
-    const { onClose, selectedValue, open } = props;
-    const [brand, setBrand] = useState<string>('');
-    const [model, setModel] = useState<string>('');
-    const [s3url, setS3url] = useState<string>('');
+  open: boolean;
+  onClose: (value: OutfitItem | null) => void;
+}
 
-  
-    const handleClose = () => {
-      onClose(selectedValue);
-    };
-  
-    const handleListItemClick = (value: string) => {
-      onClose(value);
-    };
-  
-    return (
-      <Dialog onClose={handleClose} open={open}>
-        <DialogTitle>Specify Outfit Item Elements</DialogTitle>
-        <List sx={{ pt: 0 }}>
-            <ListItem disablePadding key={'brand'}>
-              <ListItemButton onClick={() => handleListItemClick(email)}>
-                <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
-                    <PersonIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={email} />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding key={'submit'}>
-              <ListItemButton onClick={() => handleListItemClick(brand, model, s3url)}>
-                <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
-                    <PersonIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={email} />
-              </ListItemButton>
-            </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton
-              autoFocus
-              onClick={() => handleListItemClick('addAccount')}
-            >
-              <ListItemAvatar>
-                <Avatar>
-                  <AddIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="Add account" />
-            </ListItemButton>
-          </ListItem>
-        </List>
-      </Dialog>
-    );
+const NewOutfitItemPopup = (props: NewOutfitItemPopupProps) => {
+  const { open, onClose } = props;
+  const [brand, setBrand] = useState<string>('');
+  const [model, setModel] = useState<string>('');
+  const [s3url, setS3url] = useState<string>('');
+  const { user } = useUserContext();
+
+  // clear the form after the object is created
+  const resetForm = () => {
+    setBrand('');
+    setModel('');
+    setS3url('');
   };
-  export default NewOutfitItemPopup;
+
+  const handleSubmit = () => {
+    if (brand && model && s3url) {
+      const newOutfitItem: OutfitItem = {
+        runner: user,
+        outfits: [],
+        brand,
+        model,
+        s3PhotoUrl: s3url,
+      };
+
+      onClose(newOutfitItem);
+      resetForm();
+    }
+  };
+
+  // cancel object creation if popup is closed prematurely
+  const handleCancel = () => {
+    onClose(null);
+    resetForm();
+  };
+
+  return (
+    <Dialog onClose={handleCancel} open={open}>
+      <DialogTitle>Specify Outfit Item Elements</DialogTitle>
+      <DialogContent>
+        <TextField
+          autoFocus
+          margin='dense'
+          label='Brand'
+          type='text'
+          fullWidth
+          value={brand}
+          onChange={e => setBrand(e.target.value)}
+        />
+        <TextField
+          autoFocus
+          margin='dense'
+          label='Model'
+          type='text'
+          fullWidth
+          value={model}
+          onChange={e => setModel(e.target.value)}
+        />
+        <TextField
+          autoFocus
+          margin='dense'
+          label='Photo URL'
+          type='text'
+          fullWidth
+          value={s3url}
+          onChange={e => setS3url(e.target.value)}
+        />
+        <Button onClick={handleSubmit} variant='contained' color='primary' sx={{ mt: 2 }}>
+          Create!
+        </Button>
+        <Button onClick={handleCancel} variant='outlined' color='secondary' sx={{ mt: 2, ml: 1 }}>
+          Cancel Item Creation
+        </Button>
+      </DialogContent>
+    </Dialog>
+  );
+};
+export default NewOutfitItemPopup;

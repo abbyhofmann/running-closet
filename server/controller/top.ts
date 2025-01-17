@@ -1,7 +1,7 @@
 import express, { Response } from 'express';
 import { ObjectId } from 'mongodb';
-import { FakeSOSocket, CreateTopRequest } from '../types';
-import { fetchUserById, saveTop } from '../models/application';
+import { FakeSOSocket, CreateTopRequest, FindOutfitItemsByUserIdRequest } from '../types';
+import { fetchAllTopsByUser, fetchUserById, saveTop } from '../models/application';
 
 const topController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -63,9 +63,33 @@ const topController = (socket: FakeSOSocket) => {
     }
   };
 
+  const getTops = async (req: FindOutfitItemsByUserIdRequest, res: Response): Promise<void> => {
+    const { uid } = req.params;
+
+    if (!ObjectId.isValid(uid)) {
+      res.status(400).send('Invalid ID format');
+      return;
+    }
+
+    try {
+      const user = await fetchUserById(uid);
+
+      if ('error' in user) {
+        throw new Error(user.error as string);
+      }
+      const userTops = await fetchAllTopsByUser(uid);
+      if ('error' in userTops) {
+        throw new Error(userTops.error as string);
+      }
+      res.json(userTops);
+    } catch (err) {
+      res.status(500).send(`Error when fetching all tops: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/createTop', createTop);
-
+  router.get('/getTops/:uid', getTops);
   return router;
 };
 

@@ -41,6 +41,7 @@ import {
   Outfit,
   AllOutfitItemsResponse,
   AllOutfitItemsObject,
+  MultipleTopResponse,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -1989,5 +1990,17 @@ export const extractOutfitItems = async (outfits: Outfit[]): Promise<AllOutfitIt
     return allOutfitItems;
   } catch (error) {
     return { error: 'Error when fetching the outfit items' };
+  }
+};
+
+export const fetchAllTopsByUser = async (uid: string): Promise<MultipleTopResponse> => {
+  try {
+    const tlist = await TopModel.find({ runner: uid }).populate([
+      { path: 'outfits', model: OutfitModel },
+    ]);
+
+    return tlist;
+  } catch (error) {
+    return { error: 'Error when fetching all user tops' };
   }
 };

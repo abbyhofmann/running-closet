@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-import createTop from '../services/topService';
+import { createTop } from '../services/topService';
 import createBottom from '../services/bottomService';
 import useUserContext from './useUserContext';
 import useOutfitContext from './useOutfitContext';

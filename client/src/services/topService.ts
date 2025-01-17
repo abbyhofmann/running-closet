@@ -27,4 +27,14 @@ const createTop = async (
   return res.data;
 };
 
-export default createTop;
+const getTops = async (uid: string): Promise<Top[]> => {
+  const res = await api.get(`${TOP_API_URL}/getTops/${uid}`);
+
+  if (res.status !== 200) {
+    throw new Error('Error while fetching user tops');
+  }
+
+  return res.data;
+};
+
+export { createTop, getTops };

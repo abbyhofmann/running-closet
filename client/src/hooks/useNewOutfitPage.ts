@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllOutfitItems } from '../services/outfitService';
-import { Accessory, Bottom, Outerwear, OutfitItem, Shoe, Top, Workout } from '../types';
+import { Accessory, Bottom, Outerwear, Outfit, OutfitItem, Shoe, Top, Workout } from '../types';
 import useUserContext from './useUserContext';
 import useOutfitContext from './useOutfitContext';
+import { createTop, getTops } from '../services/topService';
 
 /**
  * Custom hook for managing the new outfit page state.
@@ -17,7 +18,7 @@ const useNewOutfitPage = () => {
   // selected workout for the new outfit
   const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
 
-  // create outfit item popup open 
+  // create outfit item popup open
   const [open, setOpen] = useState(false);
 
   // user's workouts
@@ -30,12 +31,16 @@ const useNewOutfitPage = () => {
   const [userAccessories, setUserAccessories] = useState<Accessory[]>([]);
   const [userShoes, setUserShoes] = useState<Shoe[]>([]);
 
+  // state variable for re-rendering scrollbars when user creates new outfit item
+  const [createdNewOutfitItem, setCreatedNewOutfitItem] = useState<OutfitItem | null>(null);
+
   // set the outfit items
   useEffect(() => {
     async function fetchData() {
       if (user._id) {
         const allOutfitItems = await getAllOutfitItems(user._id);
-        setUserTops(allOutfitItems.tops);
+        const fetchedTops = await getTops(user._id);
+        setUserTops(fetchedTops);
         setUserBottoms(allOutfitItems.bottoms);
         setUserAccessories(allOutfitItems.accessories);
         setUserOuterwears(allOutfitItems.outerwears);
@@ -43,7 +48,8 @@ const useNewOutfitPage = () => {
       }
     }
     fetchData();
-  }, []); // TODO - this may need to be changed to re-render when these change/new outfit is created
+    setCreatedNewOutfitItem(null);
+  }, [createdNewOutfitItem]); // TODO - this may need to be changed to re-render when these change/new outfit is created
 
   // set the wearer of the outfit
   useEffect(() => {
@@ -76,8 +82,28 @@ const useNewOutfitPage = () => {
     }
   };
 
-  const handleCreateTop = () => {
+  const handleCreateTop = async (newOutfitItem: OutfitItem | null) => {
     console.log('create new top clicked...');
+    if (user._id && newOutfitItem) {
+      const newTop = await createTop(
+        user._id,
+        newOutfitItem?.brand,
+        newOutfitItem?.model,
+        newOutfitItem?.s3PhotoUrl,
+      );
+      setCreatedNewOutfitItem(newTop);
+    }
+    setOpen(false);
+    // if (user._id && newOutfitItem !== null) {
+    //   const newTop = await createTop(
+    //     user._id,
+    //     newOutfitItem?.brand,
+    //     newOutfitItem?.model,
+    //     newOutfitItem?.s3PhotoUrl,
+    //   );
+    //   setNewOutfitItem(newTop); // TODO idk about this - also need to create the new tile; figure out how to add the top to the display (but it is not yet associated with an outfit... need to delete from db if not actually added to an outfit)
+    //   // may need to have the scrollers be populated by any of the user's top's, not just those in outfits - would need to query the tops db by user id
+    // }
   };
 
   const handleBottomSelection = (bottom: Bottom) => {
@@ -144,12 +170,13 @@ const useNewOutfitPage = () => {
 
   const handleClickOpen = () => {
     setOpen(true);
-  }
+  };
 
-  const handleClose = (outfit: OutfitItem) => {
-    setOpen(false);
-    // do something with outfit item
-  }
+  //   const handleClose = (createdOutfitItem: OutfitItem | null) => {
+  //     setOpen(false);
+  //     setNewOutfitItem(createdOutfitItem);
+  //     // add item-specific function calls for top, bottom, etc in handleCreateTop (instead of handle close)
+  //   };
 
   return {
     outfit,
@@ -173,7 +200,7 @@ const useNewOutfitPage = () => {
     handleCreateShoe,
     handleShoeSelection,
     handleClickOpen,
-    open
+    open,
   };
 };
 

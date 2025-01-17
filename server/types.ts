@@ -777,6 +777,12 @@ export interface CreateTopRequest {
 export type TopResponse = Top | { error: string };
 
 /**
+ * Type representing the possible responses for fetching numerous tops.
+ */
+export type MultipleTopResponse = Top[] | { error: string };
+
+
+/**
  * Interface representing a Botton document, which contains:
  * - id: The unique identifier for the bottom.
  * - runner: The runner who created the bottom.

@@ -11,6 +11,7 @@ const OutfitItemScroller = ({
   onSelectOutfitItem,
   currentSelectedOutfitItems,
   newOutfitItemPopupOpen,
+  onNewOutfitItemCreated,
 }: {
   outfitItems: OutfitItem[];
   outfitItemType: string;
@@ -18,6 +19,7 @@ const OutfitItemScroller = ({
   onSelectOutfitItem: (outfitItem: OutfitItem) => void;
   currentSelectedOutfitItems: OutfitItem[];
   newOutfitItemPopupOpen: boolean;
+  onNewOutfitItemCreated: (newOutfitItem: OutfitItem | null) => void;
 }) => (
   <Box
     sx={{
@@ -57,11 +59,7 @@ const OutfitItemScroller = ({
         + Create New{' '}
         {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)}
       </Button>
-      <NewOutfitItemPopup
-        newOutfitItem={newOutfitItem}
-        open={newOutfitItemPopupOpen}
-        onClose={handleClose}
-      />
+      <NewOutfitItemPopup open={newOutfitItemPopupOpen} onClose={onNewOutfitItemCreated} />
     </Box>
   </Box>
 );
