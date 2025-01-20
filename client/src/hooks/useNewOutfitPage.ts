@@ -5,6 +5,10 @@ import { Accessory, Bottom, Outerwear, Outfit, OutfitItem, Shoe, Top, Workout } 
 import useUserContext from './useUserContext';
 import useOutfitContext from './useOutfitContext';
 import { createTop, getTops } from '../services/topService';
+import createBottom from '../services/bottomService';
+import createAccessory from '../services/accessoryService';
+import createOuterwear from '../services/outerwearService';
+import createShoe from '../services/shoeService';
 
 /**
  * Custom hook for managing the new outfit page state.
@@ -83,7 +87,6 @@ const useNewOutfitPage = () => {
   };
 
   const handleCreateTop = async (newOutfitItem: OutfitItem | null) => {
-    console.log('create new top clicked...');
     if (user._id && newOutfitItem) {
       const newTop = await createTop(
         user._id,
@@ -118,9 +121,17 @@ const useNewOutfitPage = () => {
     // setOutfit({ ...outfit, bottoms: [...outfit.bottoms, bottom] });
   };
 
-  const handleCreateBottom = () => {
-    // navigate('/createWorkout');
-    console.log('create new bottom clicked...');
+  const handleCreateBottom = async (newOutfitItem: OutfitItem | null) => {
+    if (user._id && newOutfitItem) {
+      const newBottom = await createBottom(
+        user._id,
+        newOutfitItem?.brand,
+        newOutfitItem?.model,
+        newOutfitItem?.s3PhotoUrl,
+      );
+      setCreatedNewOutfitItem(newBottom);
+    }
+    setOpen(false);
   };
 
   const handleAccessorySelection = (accessory: Accessory) => {
@@ -136,9 +147,17 @@ const useNewOutfitPage = () => {
     }
   };
 
-  const handleCreateAccessory = () => {
-    // navigate('/createWorkout');
-    console.log('create new accessory clicked...');
+  const handleCreateAccessory = async (newOutfitItem: OutfitItem | null) => {
+    if (user._id && newOutfitItem) {
+      const newAccessory = await createAccessory(
+        user._id,
+        newOutfitItem?.brand,
+        newOutfitItem?.model,
+        newOutfitItem?.s3PhotoUrl,
+      );
+      setCreatedNewOutfitItem(newAccessory);
+    }
+    setOpen(false);
   };
 
   const handleOuterwearSelection = (outerwear: Outerwear) => {
@@ -152,9 +171,17 @@ const useNewOutfitPage = () => {
     }
   };
 
-  const handleCreateOuterwear = () => {
-    // navigate('/createWorkout');
-    console.log('create new outerwear clicked...');
+  const handleCreateOuterwear = async (newOutfitItem: OutfitItem | null) => {
+    if (user._id && newOutfitItem) {
+      const newOuterwearItem = await createOuterwear(
+        user._id,
+        newOutfitItem?.brand,
+        newOutfitItem?.model,
+        newOutfitItem?.s3PhotoUrl,
+      );
+      setCreatedNewOutfitItem(newOuterwearItem);
+    }
+    setOpen(false);
   };
 
   const handleShoeSelection = (shoe: Shoe) => {
@@ -163,9 +190,17 @@ const useNewOutfitPage = () => {
     setOutfit({ ...outfit, shoe });
   };
 
-  const handleCreateShoe = () => {
-    // navigate('/createWorkout');
-    console.log('create new shoe clicked...');
+  const handleCreateShoe = async (newOutfitItem: OutfitItem | null) => {
+    if (user._id && newOutfitItem) {
+      const newShoe = await createShoe(
+        user._id,
+        newOutfitItem?.brand,
+        newOutfitItem?.model,
+        newOutfitItem?.s3PhotoUrl,
+      );
+      setCreatedNewOutfitItem(newShoe);
+    }
+    setOpen(false);
   };
 
   const handleClickOpen = () => {

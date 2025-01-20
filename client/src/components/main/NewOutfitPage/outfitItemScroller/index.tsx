@@ -1,4 +1,5 @@
 import { Box, Button } from '@mui/material';
+import { useState } from 'react';
 import WorkoutCard from '../workoutCard';
 import { OutfitItem, Workout } from '../../../../types';
 import OutfitItemCard from '../outfitItemCard';
@@ -10,7 +11,6 @@ const OutfitItemScroller = ({
   onCreateOutfitItem,
   onSelectOutfitItem,
   currentSelectedOutfitItems,
-  newOutfitItemPopupOpen,
   onNewOutfitItemCreated,
 }: {
   outfitItems: OutfitItem[];
@@ -18,50 +18,62 @@ const OutfitItemScroller = ({
   onCreateOutfitItem: () => void;
   onSelectOutfitItem: (outfitItem: OutfitItem) => void;
   currentSelectedOutfitItems: OutfitItem[];
-  newOutfitItemPopupOpen: boolean;
   onNewOutfitItemCreated: (newOutfitItem: OutfitItem | null) => void;
-}) => (
-  <Box
-    sx={{
-      display: 'flex',
-      overflowX: 'auto',
-      padding: 2,
-      gap: 2,
-      scrollbarWidth: 'thin', // Optional: style scrollbar
-    }}>
-    {outfitItems.map(outfitItem => (
-      <OutfitItemCard
-        key={outfitItem._id?.toString()}
-        outfitItem={outfitItem}
-        onSelectOutfitItem={onSelectOutfitItem}
-        selected={currentSelectedOutfitItems.includes(outfitItem)}
-      />
-    ))}
+}) => {
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [currentType, setCurrentType] = useState<string>(outfitItemType); // Track current type dynamically
 
-    {/* Card to Create New OutfitItem */}
+  const handleCreateClick = () => {
+    setCurrentType(outfitItemType); // Set the current type for this scroller
+    setPopupOpen(true); // Open the popup
+  };
+
+  const handlePopupClose = (newOutfitItem: OutfitItem | null) => {
+    setPopupOpen(false); // Close the popup
+    if (newOutfitItem) {
+      onNewOutfitItemCreated(newOutfitItem); // Notify parent about the new item
+    }
+  };
+  return (
     <Box
       sx={{
-        minWidth: 300,
-        maxWidth: 300,
-        border: '1px dashed #ccc',
-        borderRadius: 2,
-        padding: 2,
-        margin: 1,
         display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        cursor: 'pointer',
-        bgcolor: '#f9f9f9',
-      }}
-      onClick={onCreateOutfitItem}>
-      <Button variant='contained' color='primary'>
-        + Create New{' '}
-        {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)}
-      </Button>
-      <NewOutfitItemPopup open={newOutfitItemPopupOpen} onClose={onNewOutfitItemCreated} />
+        overflowX: 'auto',
+        padding: 2,
+        gap: 2,
+        scrollbarWidth: 'thin', // Optional: style scrollbar
+      }}>
+      {outfitItems.map(outfitItem => (
+        <OutfitItemCard
+          key={outfitItem._id?.toString()}
+          outfitItem={outfitItem}
+          onSelectOutfitItem={onSelectOutfitItem}
+          selected={currentSelectedOutfitItems.includes(outfitItem)}
+        />
+      ))}
+
+      {/* Card to Create New OutfitItem */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          cursor: 'pointer',
+        }}
+        onClick={handleCreateClick}>
+        <Button variant='contained' color='primary'>
+          + Create New{' '}
+          {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)}
+        </Button>
+        <NewOutfitItemPopup
+          open={popupOpen}
+          onClose={handlePopupClose}
+          outfitItemType={currentType}
+        />
+      </Box>
     </Box>
-  </Box>
-);
+  );
+};
 
 export default OutfitItemScroller;

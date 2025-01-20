@@ -13,17 +13,18 @@ import {
 } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { OutfitItem } from '../../../../types';
 import useUserContext from '../../../../hooks/useUserContext';
 
 interface NewOutfitItemPopupProps {
   open: boolean;
   onClose: (value: OutfitItem | null) => void;
+  outfitItemType: string;
 }
 
 const NewOutfitItemPopup = (props: NewOutfitItemPopupProps) => {
-  const { open, onClose } = props;
+  const { open, onClose, outfitItemType } = props;
   const [brand, setBrand] = useState<string>('');
   const [model, setModel] = useState<string>('');
   const [s3url, setS3url] = useState<string>('');
@@ -53,13 +54,15 @@ const NewOutfitItemPopup = (props: NewOutfitItemPopupProps) => {
 
   // cancel object creation if popup is closed prematurely
   const handleCancel = () => {
-    onClose(null);
     resetForm();
+    onClose(null);
   };
 
   return (
     <Dialog onClose={handleCancel} open={open}>
-      <DialogTitle>Specify Outfit Item Elements</DialogTitle>
+      <DialogTitle>
+        {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)} Details
+      </DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
@@ -92,7 +95,8 @@ const NewOutfitItemPopup = (props: NewOutfitItemPopupProps) => {
           Create!
         </Button>
         <Button onClick={handleCancel} variant='outlined' color='secondary' sx={{ mt: 2, ml: 1 }}>
-          Cancel Item Creation
+          Cancel {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)}{' '}
+          Creation
         </Button>
       </DialogContent>
     </Dialog>

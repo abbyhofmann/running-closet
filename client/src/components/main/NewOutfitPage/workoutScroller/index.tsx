@@ -30,18 +30,11 @@ const WorkoutScroller = ({
     {/* Card to Create New Workout */}
     <Box
       sx={{
-        minWidth: 300,
-        maxWidth: 300,
-        border: '1px dashed #ccc',
-        borderRadius: 2,
-        padding: 2,
-        margin: 1,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         cursor: 'pointer',
-        bgcolor: '#f9f9f9',
       }}
       onClick={onCreateWorkout}>
       <Button variant='contained' color='primary'>

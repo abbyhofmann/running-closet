@@ -69,14 +69,6 @@ const NewOutfitPage = () => {
             </List>
           </Box>
         </Box>
-        {/* need to navigate between top page, bottom page, etc and pass outfit object between */}
-        <Typography>What workout was this outfit for?</Typography>
-        {/* Horizontal Workout Scroller */}
-        <WorkoutScroller
-          workouts={workouts}
-          onCreateWorkout={handleCreateWorkout}
-          onSelectWorkout={handleWorkoutSelection}
-        />
         {/* Display Selected Workout */}
         {selectedWorkout && (
           <Box mt={3}>
@@ -90,7 +82,7 @@ const NewOutfitPage = () => {
             <Typography>Location: {selectedWorkout.location}</Typography>
           </Box>
         )}
-        <Button
+        {/* <Button
           onClick={() => {
             navigate(`/createOutfit/top`);
           }}
@@ -98,10 +90,10 @@ const NewOutfitPage = () => {
           type='submit'
           sx={{ mt: 2, width: '25ch', bgcolor: '#5171A5' }}>
           Start Creating Outfit...
-        </Button>
+        </Button> */}
         <Box
-          id='outfit_scrollers'
-          className='outfit_scrollers'
+          id='scrollers'
+          className='scrollers'
           sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -111,6 +103,13 @@ const NewOutfitPage = () => {
             marginTop: 4, // Adjusts vertical positioning
             minHeight: '50vh', // Ensures the content occupies at least half the viewport height
           }}>
+          {/* Horizontal Workout Scroller */}
+          <WorkoutScroller
+            workouts={workouts}
+            onCreateWorkout={handleCreateWorkout}
+            onSelectWorkout={handleWorkoutSelection}
+          />
+          <Typography>Select Outfit Clothing Items</Typography>
           {/* Horizontal OutfitItem Scrollers */}
           {/* Top Scroller */}
           <OutfitItemScroller
@@ -119,50 +118,46 @@ const NewOutfitPage = () => {
             onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleTopSelection}
             currentSelectedOutfitItems={outfit.tops}
-            newOutfitItemPopupOpen={open}
             onNewOutfitItemCreated={handleCreateTop}
           />
           {/* Bottom Scroller */}
           <OutfitItemScroller
             outfitItems={userBottoms}
             outfitItemType='bottom'
-            onCreateOutfitItem={handleCreateBottom}
+            onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleBottomSelection}
             currentSelectedOutfitItems={outfit.bottoms}
-            newOutfitItemPopupOpen={open}
-            onNewOutfitItemCreated={handleCreateTop} // TODO - change from top
+            onNewOutfitItemCreated={handleCreateBottom} // TODO - change from top
           />
           {/* Shoes Scroller */}
           <OutfitItemScroller
             outfitItems={userShoes}
             outfitItemType='shoes'
-            onCreateOutfitItem={handleCreateShoe}
+            onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleShoeSelection}
             currentSelectedOutfitItems={[]}
-            newOutfitItemPopupOpen={open}
-            onNewOutfitItemCreated={handleCreateTop} // TODO - change from top
+            onNewOutfitItemCreated={handleCreateShoe} // TODO - change from top
           />
           {/* fix this logic */}
           {/* Outerwears Scroller */}
           <OutfitItemScroller
             outfitItems={userOuterwears}
             outfitItemType='outerwear'
-            onCreateOutfitItem={handleCreateOuterwear}
+            onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleOuterwearSelection}
             currentSelectedOutfitItems={outfit.outerwear}
-            newOutfitItemPopupOpen={open}
-            onNewOutfitItemCreated={handleCreateTop} // TODO - change from top
+            onNewOutfitItemCreated={handleCreateOuterwear} // TODO - change from top
           />
           {/* Accessories Scroller */}
           <OutfitItemScroller
             outfitItems={userAccessories}
             outfitItemType='accessory'
-            onCreateOutfitItem={handleCreateAccessory}
+            onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleAccessorySelection}
             currentSelectedOutfitItems={outfit.accessories}
-            newOutfitItemPopupOpen={open}
-            onNewOutfitItemCreated={handleCreateTop} // TODO - change from top
+            onNewOutfitItemCreated={handleCreateAccessory} // TODO - change from top
           />
+          <Button>Create Outfit!</Button>
         </Box>
       </Stack>
     </Grid2>
