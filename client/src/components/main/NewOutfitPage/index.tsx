@@ -126,7 +126,7 @@ const NewOutfitPage = () => {
             // onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleBottomSelection}
             currentSelectedOutfitItems={outfit.bottoms}
-            onNewOutfitItemCreated={handleCreateBottom} // TODO - change from top
+            onNewOutfitItemCreated={handleCreateBottom}
           />
           {/* Shoes Scroller */}
           <OutfitItemScroller
@@ -135,7 +135,7 @@ const NewOutfitPage = () => {
             // onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleShoeSelection}
             currentSelectedOutfitItems={[]}
-            onNewOutfitItemCreated={handleCreateShoe} // TODO - change from top
+            onNewOutfitItemCreated={handleCreateShoe}
           />
           {/* fix this logic */}
           {/* Outerwears Scroller */}
@@ -145,7 +145,7 @@ const NewOutfitPage = () => {
             // onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleOuterwearSelection}
             currentSelectedOutfitItems={outfit.outerwear}
-            onNewOutfitItemCreated={handleCreateOuterwear} // TODO - change from top
+            onNewOutfitItemCreated={handleCreateOuterwear}
           />
           {/* Accessories Scroller */}
           <OutfitItemScroller
@@ -154,7 +154,7 @@ const NewOutfitPage = () => {
             // onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleAccessorySelection}
             currentSelectedOutfitItems={outfit.accessories}
-            onNewOutfitItemCreated={handleCreateAccessory} // TODO - change from top
+            onNewOutfitItemCreated={handleCreateAccessory}
           />
           <Button>Create Outfit!</Button>
         </Box>

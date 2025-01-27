@@ -41,7 +41,7 @@ const useNewOutfitPage = () => {
         const fetchedTops = await getTops(user._id);
         setUserTops(fetchedTops);
         const fetchedBottoms = await getBottoms(user._id);
-        setUserBottoms(fetchedBottoms); // TODO - add the getBottoms, getAccessories, etc functions
+        setUserBottoms(fetchedBottoms);
         const fetchedAccessories = await getAccessories(user._id);
         setUserAccessories(fetchedAccessories);
         const fetchedOuterwearItems = await getOuterwearItems(user._id);
@@ -106,7 +106,6 @@ const useNewOutfitPage = () => {
         bottoms: outfit.bottoms.filter(existingBottom => existingBottom !== bottom),
       });
     }
-    // setOutfit({ ...outfit, bottoms: [...outfit.bottoms, bottom] });
   };
 
   const handleCreateBottom = async (newOutfitItem: OutfitItem | null) => {
