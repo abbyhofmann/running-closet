@@ -30,6 +30,10 @@ const NewOutfitItemPopup = (props: NewOutfitItemPopupProps) => {
   const [s3url, setS3url] = useState<string>('');
   const { user } = useUserContext();
 
+  useEffect(() => {
+    console.log('popup open var:', open);
+  }, [open, onClose]);
+
   // clear the form after the object is created
   const resetForm = () => {
     setBrand('');
@@ -54,6 +58,7 @@ const NewOutfitItemPopup = (props: NewOutfitItemPopupProps) => {
 
   // cancel object creation if popup is closed prematurely
   const handleCancel = () => {
+    console.log('Cancel clicked, closing popup...');
     resetForm();
     onClose(null);
   };

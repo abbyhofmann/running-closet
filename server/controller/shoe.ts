@@ -1,6 +1,7 @@
 import express, { Response } from 'express';
-import { FakeSOSocket, CreateShoeRequest } from '../types';
-import { fetchUserById, saveShoe } from '../models/application';
+import { ObjectId } from 'mongodb';
+import { FakeSOSocket, CreateShoeRequest, FindOutfitItemsByUserIdRequest } from '../types';
+import { fetchAllShoesByUser, fetchUserById, saveShoe } from '../models/application';
 
 const shoeController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -62,8 +63,33 @@ const shoeController = (socket: FakeSOSocket) => {
     }
   };
 
+  const getShoes = async (req: FindOutfitItemsByUserIdRequest, res: Response): Promise<void> => {
+    const { uid } = req.params;
+
+    if (!ObjectId.isValid(uid)) {
+      res.status(400).send('Invalid ID format');
+      return;
+    }
+
+    try {
+      const user = await fetchUserById(uid);
+
+      if ('error' in user) {
+        throw new Error(user.error as string);
+      }
+      const userShoes = await fetchAllShoesByUser(uid);
+      if ('error' in userShoes) {
+        throw new Error(userShoes.error as string);
+      }
+      res.json(userShoes);
+    } catch (err) {
+      res.status(500).send(`Error when fetching all shoes: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/createShoe', createShoe);
+  router.get('/getShoes/:uid', getShoes);
 
   return router;
 };

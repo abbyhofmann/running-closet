@@ -1,6 +1,7 @@
 import express, { Response } from 'express';
-import { FakeSOSocket, CreateBottomRequest } from '../types';
-import { fetchUserById, saveBottom } from '../models/application';
+import { ObjectId } from 'mongodb';
+import { FakeSOSocket, CreateBottomRequest, FindOutfitItemsByUserIdRequest } from '../types';
+import { fetchAllBottomsByUser, fetchUserById, saveBottom } from '../models/application';
 
 const bottomController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -62,8 +63,33 @@ const bottomController = (socket: FakeSOSocket) => {
     }
   };
 
+  const getBottoms = async (req: FindOutfitItemsByUserIdRequest, res: Response): Promise<void> => {
+    const { uid } = req.params;
+
+    if (!ObjectId.isValid(uid)) {
+      res.status(400).send('Invalid ID format');
+      return;
+    }
+
+    try {
+      const user = await fetchUserById(uid);
+
+      if ('error' in user) {
+        throw new Error(user.error as string);
+      }
+      const userBottoms = await fetchAllBottomsByUser(uid);
+      if ('error' in userBottoms) {
+        throw new Error(userBottoms.error as string);
+      }
+      res.json(userBottoms);
+    } catch (err) {
+      res.status(500).send(`Error when fetching all bottoms: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/createBottom', createBottom);
+  router.get('/getBottoms/:uid', getBottoms);
 
   return router;
 };

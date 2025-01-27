@@ -815,6 +815,12 @@ export interface CreateBottomRequest {
 export type BottomResponse = Bottom | { error: string };
 
 /**
+ * Type representing the possible responses for fetching numerous bottoms.
+ */
+export type MultipleBottomResponse = Bottom[] | { error: string };
+
+
+/**
  * Interface representing an Accessory document, which contains:
  * - id: The unique identifier for the accessory.
  * - runner: The runner who created the accessory.
@@ -845,6 +851,12 @@ export interface CreateAccessoryRequest {
  * Type representing the possible responses for a Accessory-related operation.
  */
 export type AccessoryResponse = Accessory | { error: string };
+
+/**
+ * Type representing the possible responses for fetching numerous accessories.
+ */
+export type MultipleAccessoryResponse = Accessory[] | { error: string };
+
 
 /**
  * Interface representing an Outerwear document, which contains:
@@ -879,6 +891,12 @@ export interface CreateOuterwearRequest {
 export type OuterwearResponse = Outerwear | { error: string };
 
 /**
+ * Type representing the possible responses for fetching numerous outerwear items.
+ */
+export type MultipleOuterwearItemResponse = Outerwear[] | { error: string };
+
+
+/**
  * Interface representing a Shoe document, which contains:
  * - id: The unique identifier for the shoe.
  * - runner: The runner who created the shoe.
@@ -909,3 +927,8 @@ export interface CreateShoeRequest {
  * Type representing the possible responses for a Shoe-related operation.
  */
 export type ShoeResponse = Shoe | { error: string };
+
+/**
+ * Type representing the possible responses for fetching numerous shoes.
+ */
+export type MultipleShoeResponse = Shoe[] | { error: string };

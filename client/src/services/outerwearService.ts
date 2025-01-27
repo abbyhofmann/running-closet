@@ -27,4 +27,14 @@ const createOuterwear = async (
   return res.data;
 };
 
-export default createOuterwear;
+const getOuterwearItems = async (uid: string): Promise<Outerwear[]> => {
+  const res = await api.get(`${OUTERWEAR_API_URL}/getOuterwearItems/${uid}`);
+
+  if (res.status !== 200) {
+    throw new Error('Error while fetching user outerwear items');
+  }
+
+  return res.data;
+};
+
+export { createOuterwear, getOuterwearItems };

@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllOutfitItems } from '../services/outfitService';
 import { Accessory, Bottom, Outerwear, Outfit, OutfitItem, Shoe, Top, Workout } from '../types';
 import useUserContext from './useUserContext';
 import useOutfitContext from './useOutfitContext';
 import { createTop, getTops } from '../services/topService';
-import createBottom from '../services/bottomService';
-import createAccessory from '../services/accessoryService';
-import createOuterwear from '../services/outerwearService';
-import createShoe from '../services/shoeService';
+import { createBottom, getBottoms } from '../services/bottomService';
+import { createAccessory, getAccessories } from '../services/accessoryService';
+import { createOuterwear, getOuterwearItems } from '../services/outerwearService';
+import { createShoe, getShoes } from '../services/shoeService';
 
 /**
  * Custom hook for managing the new outfit page state.
@@ -21,9 +20,6 @@ const useNewOutfitPage = () => {
 
   // selected workout for the new outfit
   const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
-
-  // create outfit item popup open
-  const [open, setOpen] = useState(false);
 
   // user's workouts
   const workouts = user?.workouts || [];
@@ -42,13 +38,16 @@ const useNewOutfitPage = () => {
   useEffect(() => {
     async function fetchData() {
       if (user._id) {
-        const allOutfitItems = await getAllOutfitItems(user._id);
         const fetchedTops = await getTops(user._id);
         setUserTops(fetchedTops);
-        setUserBottoms(allOutfitItems.bottoms);
-        setUserAccessories(allOutfitItems.accessories);
-        setUserOuterwears(allOutfitItems.outerwears);
-        setUserShoes(allOutfitItems.shoes);
+        const fetchedBottoms = await getBottoms(user._id);
+        setUserBottoms(fetchedBottoms); // TODO - add the getBottoms, getAccessories, etc functions
+        const fetchedAccessories = await getAccessories(user._id);
+        setUserAccessories(fetchedAccessories);
+        const fetchedOuterwearItems = await getOuterwearItems(user._id);
+        setUserOuterwears(fetchedOuterwearItems);
+        const fetchedShoeItems = await getShoes(user._id);
+        setUserShoes(fetchedShoeItems);
       }
     }
     fetchData();
@@ -96,17 +95,6 @@ const useNewOutfitPage = () => {
       );
       setCreatedNewOutfitItem(newTop);
     }
-    setOpen(false);
-    // if (user._id && newOutfitItem !== null) {
-    //   const newTop = await createTop(
-    //     user._id,
-    //     newOutfitItem?.brand,
-    //     newOutfitItem?.model,
-    //     newOutfitItem?.s3PhotoUrl,
-    //   );
-    //   setNewOutfitItem(newTop); // TODO idk about this - also need to create the new tile; figure out how to add the top to the display (but it is not yet associated with an outfit... need to delete from db if not actually added to an outfit)
-    //   // may need to have the scrollers be populated by any of the user's top's, not just those in outfits - would need to query the tops db by user id
-    // }
   };
 
   const handleBottomSelection = (bottom: Bottom) => {
@@ -131,7 +119,6 @@ const useNewOutfitPage = () => {
       );
       setCreatedNewOutfitItem(newBottom);
     }
-    setOpen(false);
   };
 
   const handleAccessorySelection = (accessory: Accessory) => {
@@ -157,7 +144,6 @@ const useNewOutfitPage = () => {
       );
       setCreatedNewOutfitItem(newAccessory);
     }
-    setOpen(false);
   };
 
   const handleOuterwearSelection = (outerwear: Outerwear) => {
@@ -181,7 +167,6 @@ const useNewOutfitPage = () => {
       );
       setCreatedNewOutfitItem(newOuterwearItem);
     }
-    setOpen(false);
   };
 
   const handleShoeSelection = (shoe: Shoe) => {
@@ -200,12 +185,11 @@ const useNewOutfitPage = () => {
       );
       setCreatedNewOutfitItem(newShoe);
     }
-    setOpen(false);
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  //   const handleClickOpen = () => {
+  //     setOpen(true);
+  //   };
 
   //   const handleClose = (createdOutfitItem: OutfitItem | null) => {
   //     setOpen(false);
@@ -234,8 +218,6 @@ const useNewOutfitPage = () => {
     userShoes,
     handleCreateShoe,
     handleShoeSelection,
-    handleClickOpen,
-    open,
   };
 };
 

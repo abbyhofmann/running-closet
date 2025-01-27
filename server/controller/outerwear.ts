@@ -1,6 +1,7 @@
 import express, { Response } from 'express';
-import { FakeSOSocket, CreateOuterwearRequest } from '../types';
-import { fetchUserById, saveOuterwear } from '../models/application';
+import { ObjectId } from 'mongodb';
+import { FakeSOSocket, CreateOuterwearRequest, FindOutfitItemsByUserIdRequest } from '../types';
+import { fetchAllOuterwearItemsByUser, fetchUserById, saveOuterwear } from '../models/application';
 
 const outerwearController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -62,8 +63,36 @@ const outerwearController = (socket: FakeSOSocket) => {
     }
   };
 
+  const getOuterwearItems = async (
+    req: FindOutfitItemsByUserIdRequest,
+    res: Response,
+  ): Promise<void> => {
+    const { uid } = req.params;
+
+    if (!ObjectId.isValid(uid)) {
+      res.status(400).send('Invalid ID format');
+      return;
+    }
+
+    try {
+      const user = await fetchUserById(uid);
+
+      if ('error' in user) {
+        throw new Error(user.error as string);
+      }
+      const userOuterwearItems = await fetchAllOuterwearItemsByUser(uid);
+      if ('error' in userOuterwearItems) {
+        throw new Error(userOuterwearItems.error as string);
+      }
+      res.json(userOuterwearItems);
+    } catch (err) {
+      res.status(500).send(`Error when fetching all outerwear items: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/createOuterwear', createOuterwear);
+  router.get('/getOuterwearItems/:uid', getOuterwearItems);
 
   return router;
 };

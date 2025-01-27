@@ -1,11 +1,11 @@
 import { ChangeEvent, useState } from 'react';
 import { createTop } from '../services/topService';
-import createBottom from '../services/bottomService';
+import { createBottom } from '../services/bottomService';
 import useUserContext from './useUserContext';
 import useOutfitContext from './useOutfitContext';
-import createAccessory from '../services/accessoryService';
-import createOuterwear from '../services/outerwearService';
-import createShoe from '../services/shoeService';
+import { createAccessory } from '../services/accessoryService';
+import { createOuterwear } from '../services/outerwearService';
+import { createShoe } from '../services/shoeService';
 import { createOutfit } from '../services/outfitService';
 
 /**

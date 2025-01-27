@@ -27,4 +27,14 @@ const createAccessory = async (
   return res.data;
 };
 
-export default createAccessory;
+const getAccessories = async (uid: string): Promise<Accessory[]> => {
+  const res = await api.get(`${ACCESSORY_API_URL}/getAccessories/${uid}`);
+
+  if (res.status !== 200) {
+    throw new Error('Error while fetching user accessories');
+  }
+
+  return res.data;
+};
+
+export { createAccessory, getAccessories };

@@ -42,6 +42,10 @@ import {
   AllOutfitItemsResponse,
   AllOutfitItemsObject,
   MultipleTopResponse,
+  MultipleBottomResponse,
+  MultipleAccessoryResponse,
+  MultipleOuterwearItemResponse,
+  MultipleShoeResponse,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -2002,5 +2006,57 @@ export const fetchAllTopsByUser = async (uid: string): Promise<MultipleTopRespon
     return tlist;
   } catch (error) {
     return { error: 'Error when fetching all user tops' };
+  }
+};
+
+export const fetchAllBottomsByUser = async (uid: string): Promise<MultipleBottomResponse> => {
+  try {
+    const blist = await BottomModel.find({ runner: uid }).populate([
+      { path: 'outfits', model: OutfitModel },
+    ]);
+
+    return blist;
+  } catch (error) {
+    return { error: 'Error when fetching all user bottoms' };
+  }
+};
+
+export const fetchAllAccessoriesByUser = async (
+  uid: string,
+): Promise<MultipleAccessoryResponse> => {
+  try {
+    const alist = await AccessoryModel.find({ runner: uid }).populate([
+      { path: 'outfits', model: OutfitModel },
+    ]);
+
+    return alist;
+  } catch (error) {
+    return { error: 'Error when fetching all user accessories' };
+  }
+};
+
+export const fetchAllOuterwearItemsByUser = async (
+  uid: string,
+): Promise<MultipleOuterwearItemResponse> => {
+  try {
+    const olist = await OuterwearModel.find({ runner: uid }).populate([
+      { path: 'outfits', model: OutfitModel },
+    ]);
+
+    return olist;
+  } catch (error) {
+    return { error: 'Error when fetching all user outerwear items' };
+  }
+};
+
+export const fetchAllShoesByUser = async (uid: string): Promise<MultipleShoeResponse> => {
+  try {
+    const slist = await ShoeModel.find({ runner: uid }).populate([
+      { path: 'outfits', model: OutfitModel },
+    ]);
+
+    return slist;
+  } catch (error) {
+    return { error: 'Error when fetching all user shoes' };
   }
 };

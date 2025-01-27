@@ -1,6 +1,7 @@
 import express, { Response } from 'express';
-import { FakeSOSocket, CreateAccessoryRequest } from '../types';
-import { fetchUserById, saveAccessory } from '../models/application';
+import { ObjectId } from 'mongodb';
+import { FakeSOSocket, CreateAccessoryRequest, FindOutfitItemsByUserIdRequest } from '../types';
+import { fetchAllAccessoriesByUser, fetchUserById, saveAccessory } from '../models/application';
 
 const accessoryController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -62,8 +63,36 @@ const accessoryController = (socket: FakeSOSocket) => {
     }
   };
 
+  const getAccessories = async (
+    req: FindOutfitItemsByUserIdRequest,
+    res: Response,
+  ): Promise<void> => {
+    const { uid } = req.params;
+
+    if (!ObjectId.isValid(uid)) {
+      res.status(400).send('Invalid ID format');
+      return;
+    }
+
+    try {
+      const user = await fetchUserById(uid);
+
+      if ('error' in user) {
+        throw new Error(user.error as string);
+      }
+      const userAccessories = await fetchAllAccessoriesByUser(uid);
+      if ('error' in userAccessories) {
+        throw new Error(userAccessories.error as string);
+      }
+      res.json(userAccessories);
+    } catch (err) {
+      res.status(500).send(`Error when fetching all accessories: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/createAccessory', createAccessory);
+  router.get('/getAccessories/:uid', getAccessories);
 
   return router;
 };

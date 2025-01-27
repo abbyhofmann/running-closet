@@ -1,5 +1,6 @@
 import { Box, List, ListItem, ListItemText, Button, Typography, Stack, Grid2 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import WorkoutScroller from './workoutScroller';
 import OutfitItemScroller from './outfitItemScroller';
 import useNewOutfitPage from '../../../hooks/useNewOutfitPage';
@@ -29,8 +30,6 @@ const NewOutfitPage = () => {
     userShoes,
     handleCreateShoe,
     handleShoeSelection,
-    handleClickOpen,
-    open,
   } = useNewOutfitPage();
   const navigate = useNavigate();
 
@@ -115,7 +114,7 @@ const NewOutfitPage = () => {
           <OutfitItemScroller
             outfitItems={userTops}
             outfitItemType='top'
-            onCreateOutfitItem={handleClickOpen}
+            // onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleTopSelection}
             currentSelectedOutfitItems={outfit.tops}
             onNewOutfitItemCreated={handleCreateTop}
@@ -124,7 +123,7 @@ const NewOutfitPage = () => {
           <OutfitItemScroller
             outfitItems={userBottoms}
             outfitItemType='bottom'
-            onCreateOutfitItem={handleClickOpen}
+            // onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleBottomSelection}
             currentSelectedOutfitItems={outfit.bottoms}
             onNewOutfitItemCreated={handleCreateBottom} // TODO - change from top
@@ -133,7 +132,7 @@ const NewOutfitPage = () => {
           <OutfitItemScroller
             outfitItems={userShoes}
             outfitItemType='shoes'
-            onCreateOutfitItem={handleClickOpen}
+            // onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleShoeSelection}
             currentSelectedOutfitItems={[]}
             onNewOutfitItemCreated={handleCreateShoe} // TODO - change from top
@@ -143,7 +142,7 @@ const NewOutfitPage = () => {
           <OutfitItemScroller
             outfitItems={userOuterwears}
             outfitItemType='outerwear'
-            onCreateOutfitItem={handleClickOpen}
+            // onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleOuterwearSelection}
             currentSelectedOutfitItems={outfit.outerwear}
             onNewOutfitItemCreated={handleCreateOuterwear} // TODO - change from top
@@ -152,7 +151,7 @@ const NewOutfitPage = () => {
           <OutfitItemScroller
             outfitItems={userAccessories}
             outfitItemType='accessory'
-            onCreateOutfitItem={handleClickOpen}
+            // onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleAccessorySelection}
             currentSelectedOutfitItems={outfit.accessories}
             onNewOutfitItemCreated={handleCreateAccessory} // TODO - change from top

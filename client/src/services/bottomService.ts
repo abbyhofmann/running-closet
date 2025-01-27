@@ -27,4 +27,14 @@ const createBottom = async (
   return res.data;
 };
 
-export default createBottom;
+const getBottoms = async (uid: string): Promise<Bottom[]> => {
+  const res = await api.get(`${BOTTOM_API_URL}/getBottoms/${uid}`);
+
+  if (res.status !== 200) {
+    throw new Error('Error while fetching user bottoms');
+  }
+
+  return res.data;
+};
+
+export { createBottom, getBottoms };

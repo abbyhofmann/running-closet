@@ -27,4 +27,14 @@ const createShoe = async (
   return res.data;
 };
 
-export default createShoe;
+const getShoes = async (uid: string): Promise<Shoe[]> => {
+  const res = await api.get(`${SHOE_API_URL}/getShoes/${uid}`);
+
+  if (res.status !== 200) {
+    throw new Error('Error while fetching user shoes');
+  }
+
+  return res.data;
+};
+
+export { createShoe, getShoes };
