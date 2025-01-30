@@ -7,11 +7,11 @@ import {
   IconButton,
   InputAdornment,
   InputLabel,
-  OutlinedInput,
   TextField,
   Typography,
   Select,
   MenuItem,
+  Input,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -89,18 +89,20 @@ const Register = () => {
         </div>
         <div className='row'>
           <TextField
-            id='outlined-first-name-input'
-            label='First Name'
             required
+            id='standard-first-name-input'
+            label='First Name'
             value={firstName}
+            variant='standard'
             sx={{ marginX: 'auto', width: '25ch' }}
             onChange={handleFirstNameChange}
           />
           <TextField
-            id='outlined-lastname-input'
-            label='Last Name'
             required
+            id='standard-last-name-input'
+            label='Last Name'
             value={lastName}
+            variant='standard'
             sx={{ marginX: 'auto', width: '25ch' }}
             onChange={handleLastNameChange}
           />
@@ -110,6 +112,7 @@ const Register = () => {
             <InputLabel id='gender-select-label'>Gender</InputLabel>
             <Select
               labelId='gender-select-label'
+              variant='standard'
               id='gender-select'
               value={gender}
               label='Gender'
@@ -121,6 +124,7 @@ const Register = () => {
           </FormControl>
           <TextField
             id='age-input'
+            variant='standard'
             label='Age'
             type='text'
             required
@@ -139,6 +143,7 @@ const Register = () => {
         <div className='row'>
           <TextField
             id='outlined-username-input'
+            variant='standard'
             label='Username'
             type='username'
             required
@@ -151,6 +156,7 @@ const Register = () => {
         <div className='row'>
           <TextField
             id='outlined-email-input'
+            variant='standard'
             label='Email'
             required
             value={email}
@@ -159,10 +165,10 @@ const Register = () => {
           />
         </div>
         <div className='row'>
-          <FormControl sx={{ m: 1, width: '25ch', marginX: 'auto' }} variant='outlined'>
-            <InputLabel htmlFor='outlined-adornment-password'>Password *</InputLabel>
-            <OutlinedInput
-              id='outlined-adornment-password'
+          <FormControl sx={{ width: '25ch', marginX: 'auto' }} variant='standard'>
+            <InputLabel htmlFor='standard-adornment-password'>Password *</InputLabel>
+            <Input
+              id='standard-adornment-password'
               type={showPassword ? 'text' : 'password'}
               endAdornment={
                 <InputAdornment position='end'>
@@ -174,7 +180,6 @@ const Register = () => {
                   </IconButton>
                 </InputAdornment>
               }
-              label='Password'
               value={pass}
               onChange={handlePassChange}
             />
@@ -202,7 +207,6 @@ const Register = () => {
         <Button
           variant='text'
           sx={{
-            ml: 1,
             fontWeight: 'bold',
             textTransform: 'none',
             whiteSpace: 'nowrap',
