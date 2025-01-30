@@ -41,29 +41,6 @@ const Header = () => {
           marginX: 'auto',
           color: '#32292F',
         }}>
-        <Grid size={{ xs: 1, md: 4 }}>
-          <Box
-            sx={{
-              justifyContent: 'flex-end',
-              display: 'flex',
-              alignItems: 'end',
-              marginTop: 0.5,
-              paddingRight: 3,
-              paddingLeft: 5,
-            }}
-            onClick={() => {
-              navigate(`/home`);
-            }}>
-            <img
-              src='/logos/cc-logo.png'
-              style={{
-                height: '50px',
-              }}
-              alt='code connect logo'
-              loading='lazy'
-            />
-          </Box>
-        </Grid>
         <Grid
           size={{ xs: 0, md: 0, xl: 8 }}
           sx={{ display: { xs: 'none', sm: 'none', md: 'none', lg: 'flex' } }}>
@@ -77,11 +54,11 @@ const Header = () => {
               navigate(`/home`);
             }}>
             <img
-              src='/logos/code-connect-name.png'
+              src='/logos/stridestyle-logo.png'
               style={{
-                height: '50px',
+                height: '55px',
               }}
-              alt='code connect logo'
+              alt='stridesytle logo'
               loading='lazy'
             />
           </Box>

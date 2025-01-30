@@ -42,27 +42,13 @@ const Login = () => {
           color: '#32292F',
           display: 'flex',
         }}>
-        <Box
-          sx={{
-            marginTop: 0.5,
-            paddingRight: 3,
-          }}>
-          <img
-            src='/logos/blue-logo.png'
-            style={{
-              height: '50px',
-            }}
-            alt='code connect logo'
-            loading='lazy'
-          />
-        </Box>
         <Box>
           <img
-            src='/logos/blue-name.png'
+            src='/logos/stridestyle-logo.png'
             style={{
-              height: '50px',
+              height: '60px',
             }}
-            alt='code connect logo'
+            alt='stridestyle logo'
             loading='lazy'
           />
         </Box>
