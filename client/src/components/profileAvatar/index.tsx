@@ -15,7 +15,7 @@ interface ProfileAvatarProps {
 const ProfileAvatar = ({ profileGraphic, size }: ProfileAvatarProps) => (
   <Avatar style={{ width: size, height: size }}>
     <img
-      src={`/profileGraphics/image${profileGraphic}.jpeg`}
+      src={`/profileGraphics/image${profileGraphic}.png`}
       style={{
         width: '110%',
         height: '110%',

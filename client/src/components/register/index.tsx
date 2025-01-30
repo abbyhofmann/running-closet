@@ -62,7 +62,7 @@ const Register = () => {
           <img
             src='/logos/stridestyle-logo.png'
             style={{
-              height: '50px',
+              height: '60px',
             }}
             alt='stridestyle logo'
             loading='lazy'
@@ -80,7 +80,7 @@ const Register = () => {
           {[1, 2, 3, 4, 5, 6].map(num => (
             <img
               key={num}
-              src={`/profileGraphics/image${num}.jpeg`}
+              src={`/profileGraphics/image${num}.png`}
               alt={`Profile option ${num}`}
               className={`profile-photo ${profileGraphic === num ? 'selected' : ''}`}
               onClick={() => handleProfileGraphicSelect(num)}

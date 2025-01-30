@@ -46,7 +46,7 @@ const Login = () => {
           <img
             src='/logos/stridestyle-logo.png'
             style={{
-              height: '60px',
+              height: '70px',
             }}
             alt='stridestyle logo'
             loading='lazy'

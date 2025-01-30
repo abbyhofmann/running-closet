@@ -1434,7 +1434,7 @@ export const sendEmail = async (
       
       <!-- profile graphic and text -->
       <div style="margin-bottom: 20px;">
-        <img src="${ccLink}profileGraphics/image${profileGraphic}.jpeg" alt="Profile Graphic" style="border-radius: 50%; width: 80px; height: 80px; margin-bottom: 10px;">
+        <img src="${ccLink}profileGraphics/image${profileGraphic}" alt="Profile Graphic" style="border-radius: 50%; width: 80px; height: 80px; margin-bottom: 10px;">
         <p style="font-size: 16px; color: #333; margin: 0;">${msgSender} sent you a message!</p>
       </div>
       
