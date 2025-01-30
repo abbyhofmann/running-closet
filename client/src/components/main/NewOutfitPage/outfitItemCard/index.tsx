@@ -1,6 +1,6 @@
 import { Box, Card, Typography } from '@mui/material';
 import { blue, grey } from '@mui/material/colors';
-import { OutfitItem, Workout } from '../../../../types';
+import { OutfitItem } from '../../../../types';
 
 const OutfitItemCard = ({
   outfitItem,

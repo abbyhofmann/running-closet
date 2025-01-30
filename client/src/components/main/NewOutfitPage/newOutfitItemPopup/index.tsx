@@ -1,19 +1,5 @@
-import {
-  Avatar,
-  Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemText,
-  TextField,
-} from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
-import AddIcon from '@mui/icons-material/Add';
-import { useEffect, useState } from 'react';
+import { Button, Dialog, DialogContent, DialogTitle, TextField } from '@mui/material';
+import { useState } from 'react';
 import { OutfitItem } from '../../../../types';
 import useUserContext from '../../../../hooks/useUserContext';
 
@@ -29,10 +15,6 @@ const NewOutfitItemPopup = (props: NewOutfitItemPopupProps) => {
   const [model, setModel] = useState<string>('');
   const [s3url, setS3url] = useState<string>('');
   const { user } = useUserContext();
-
-  useEffect(() => {
-    console.log('popup open var:', open);
-  }, [open, onClose]);
 
   // clear the form after the object is created
   const resetForm = () => {
@@ -58,7 +40,6 @@ const NewOutfitItemPopup = (props: NewOutfitItemPopupProps) => {
 
   // cancel object creation if popup is closed prematurely
   const handleCancel = () => {
-    console.log('Cancel clicked, closing popup...');
     resetForm();
     onClose(null);
   };

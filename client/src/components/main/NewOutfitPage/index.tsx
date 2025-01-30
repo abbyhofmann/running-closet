@@ -1,6 +1,4 @@
 import { Box, List, ListItem, ListItemText, Button, Typography, Stack, Grid2 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
 import WorkoutScroller from './workoutScroller';
 import OutfitItemScroller from './outfitItemScroller';
 import useNewOutfitPage from '../../../hooks/useNewOutfitPage';
@@ -30,8 +28,11 @@ const NewOutfitPage = () => {
     userShoes,
     handleCreateShoe,
     handleShoeSelection,
+    popupOpen,
+    popupType,
+    handlePopupOpen,
+    handlePopupClose,
   } = useNewOutfitPage();
-  const navigate = useNavigate();
 
   return (
     <Grid2 sx={{ marginTop: 3 }}>
@@ -114,10 +115,12 @@ const NewOutfitPage = () => {
           <OutfitItemScroller
             outfitItems={userTops}
             outfitItemType='top'
-            // onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleTopSelection}
             currentSelectedOutfitItems={outfit.tops}
             onNewOutfitItemCreated={handleCreateTop}
+            popupOpen={popupOpen && popupType === 'top'}
+            onPopupOpen={() => handlePopupOpen('top')}
+            onPopupClose={handlePopupClose}
           />
           {/* Bottom Scroller */}
           <OutfitItemScroller
@@ -127,6 +130,9 @@ const NewOutfitPage = () => {
             onSelectOutfitItem={handleBottomSelection}
             currentSelectedOutfitItems={outfit.bottoms}
             onNewOutfitItemCreated={handleCreateBottom}
+            popupOpen={popupOpen && popupType === 'bottom'}
+            onPopupOpen={() => handlePopupOpen('bottom')}
+            onPopupClose={handlePopupClose}
           />
           {/* Shoes Scroller */}
           <OutfitItemScroller
@@ -136,6 +142,9 @@ const NewOutfitPage = () => {
             onSelectOutfitItem={handleShoeSelection}
             currentSelectedOutfitItems={[]}
             onNewOutfitItemCreated={handleCreateShoe}
+            popupOpen={popupOpen && popupType === 'shoes'}
+            onPopupOpen={() => handlePopupOpen('shoes')}
+            onPopupClose={handlePopupClose}
           />
           {/* fix this logic */}
           {/* Outerwears Scroller */}
@@ -146,6 +155,9 @@ const NewOutfitPage = () => {
             onSelectOutfitItem={handleOuterwearSelection}
             currentSelectedOutfitItems={outfit.outerwear}
             onNewOutfitItemCreated={handleCreateOuterwear}
+            popupOpen={popupOpen && popupType === 'outerwear'}
+            onPopupOpen={() => handlePopupOpen('outerwear')}
+            onPopupClose={handlePopupClose}
           />
           {/* Accessories Scroller */}
           <OutfitItemScroller
@@ -155,6 +167,9 @@ const NewOutfitPage = () => {
             onSelectOutfitItem={handleAccessorySelection}
             currentSelectedOutfitItems={outfit.accessories}
             onNewOutfitItemCreated={handleCreateAccessory}
+            popupOpen={popupOpen && popupType === 'accessory'}
+            onPopupOpen={() => handlePopupOpen('accessory')}
+            onPopupClose={handlePopupClose}
           />
           <Button>Create Outfit!</Button>
         </Box>

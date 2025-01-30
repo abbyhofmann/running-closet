@@ -1,7 +1,5 @@
 import { Box, Card, Typography } from '@mui/material';
 import { grey } from '@mui/material/colors';
-import { useNavigate } from 'react-router-dom';
-import useUserContext from '../../../hooks/useUserContext';
 
 /**
  * Represents the props for the ClothingItemCard component.

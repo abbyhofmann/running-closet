@@ -1,6 +1,6 @@
 import { Box, TextField, Button, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { Outfit, ClothingItemFormProps } from '../../../../types';
+import { ClothingItemFormProps } from '../../../../types';
 import useClothingItemForm from '../../../../hooks/useClothingItemForm';
 
 const ClothingItemForm = (props: ClothingItemFormProps) => {

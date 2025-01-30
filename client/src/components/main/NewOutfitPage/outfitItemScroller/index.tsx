@@ -1,52 +1,34 @@
-import { Box, Button } from '@mui/material';
-import { useEffect, useState } from 'react';
-import WorkoutCard from '../workoutCard';
-import { OutfitItem, Workout } from '../../../../types';
+import { Box, Card, Typography } from '@mui/material';
+import { useState } from 'react';
+import { purple } from '@mui/material/colors';
+import { OutfitItem } from '../../../../types';
 import OutfitItemCard from '../outfitItemCard';
 import NewOutfitItemPopup from '../newOutfitItemPopup';
 
 const OutfitItemScroller = ({
   outfitItems,
   outfitItemType,
-  //   onCreateOutfitItem,
   onSelectOutfitItem,
   currentSelectedOutfitItems,
   onNewOutfitItemCreated,
+  popupOpen,
+  onPopupOpen,
+  onPopupClose,
 }: {
   outfitItems: OutfitItem[];
   outfitItemType: string;
-  //   onCreateOutfitItem: () => void;
   onSelectOutfitItem: (outfitItem: OutfitItem) => void;
   currentSelectedOutfitItems: OutfitItem[];
   onNewOutfitItemCreated: (newOutfitItem: OutfitItem | null) => void;
+  popupOpen: boolean;
+  onPopupOpen: () => void;
+  onPopupClose: (newOutfitItem: OutfitItem | null) => void;
 }) => {
-  const [popupOpen, setPopupOpen] = useState(false);
-  const [currentType, setCurrentType] = useState<string>(outfitItemType); // Track current type dynamically
-
-  useEffect(() => {
-    console.log('popup open??:', popupOpen);
-  }, [popupOpen]);
-
-  useEffect(() => {
-    console.log('Parent popupOpen state:', popupOpen);
-  }, [popupOpen]);
+  const [currentType, setCurrentType] = useState<string>(outfitItemType); // track current type
 
   const handleCreateClick = () => {
-    setCurrentType(outfitItemType); // Set the current type for this scroller
-    setPopupOpen(true); // Open the popup
-  };
-
-  const handlePopupClose = (newOutfitItem: OutfitItem | null) => {
-    console.log('popup closeing: ', newOutfitItem);
-    console.log('Before setPopupOpen(false), popupOpen:', popupOpen);
-    setPopupOpen(prev => {
-      console.log('Previous popupOpen:', prev);
-      return false;
-    });
-    console.log('After setPopupOpen(false), popupOpen:', popupOpen);
-    if (newOutfitItem) {
-      onNewOutfitItemCreated(newOutfitItem); // Notify parent about the new item
-    }
+    setCurrentType(outfitItemType); // set the current type for this scroller
+    onPopupOpen();
   };
 
   return (
@@ -77,13 +59,33 @@ const OutfitItemScroller = ({
           cursor: 'pointer',
         }}
         onClick={handleCreateClick}>
-        <Button variant='contained' color='primary'>
-          + Create New{' '}
-          {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)}
-        </Button>
+        <Card
+          sx={{
+            'display': 'flex',
+            'cursor': 'pointer',
+            '&:hover': {
+              boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+              transform: 'scale(1.03)',
+            },
+            'borderRadius': 2,
+            'backgroundColor': purple[100],
+          }}>
+          <Box
+            sx={{
+              padding: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1,
+            }}>
+            <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+              + Create New{' '}
+              {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)}
+            </Typography>
+          </Box>
+        </Card>
         <NewOutfitItemPopup
           open={popupOpen}
-          onClose={handlePopupClose}
+          onClose={() => onPopupClose(null)}
           outfitItemType={currentType}
         />
       </Box>

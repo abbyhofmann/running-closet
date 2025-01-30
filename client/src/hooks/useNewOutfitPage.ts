@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Accessory, Bottom, Outerwear, Outfit, OutfitItem, Shoe, Top, Workout } from '../types';
+import { Accessory, Bottom, Outerwear, OutfitItem, Shoe, Top, Workout } from '../types';
 import useUserContext from './useUserContext';
 import useOutfitContext from './useOutfitContext';
 import { createTop, getTops } from '../services/topService';
@@ -33,6 +32,9 @@ const useNewOutfitPage = () => {
 
   // state variable for re-rendering scrollbars when user creates new outfit item
   const [createdNewOutfitItem, setCreatedNewOutfitItem] = useState<OutfitItem | null>(null);
+
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [popupType, setPopupType] = useState<string | null>(null);
 
   // set the outfit items
   useEffect(() => {
@@ -72,9 +74,7 @@ const useNewOutfitPage = () => {
   };
 
   const handleCreateWorkout = () => {
-    // logic for creating a new workout (e.g., navigate to a workout creation page)
-    // navigate('/createWorkout');
-    console.log('create new workout clicked...');
+    console.log('create new workout clicked...'); // TODO
   };
 
   const handleTopSelection = (top: Top) => {
@@ -186,15 +186,37 @@ const useNewOutfitPage = () => {
     }
   };
 
-  //   const handleClickOpen = () => {
-  //     setOpen(true);
-  //   };
+  const handlePopupOpen = (type: string) => {
+    setPopupType(type);
+    setPopupOpen(true);
+  };
 
-  //   const handleClose = (createdOutfitItem: OutfitItem | null) => {
-  //     setOpen(false);
-  //     setNewOutfitItem(createdOutfitItem);
-  //     // add item-specific function calls for top, bottom, etc in handleCreateTop (instead of handle close)
-  //   };
+  const handlePopupClose = (newOutfitItem: OutfitItem | null) => {
+    setPopupOpen(false);
+    setTimeout(() => setPopupType(null), 0); // delay resetting type to ensure state updates
+
+    if (newOutfitItem) {
+      switch (popupType) {
+        case 'top':
+          handleCreateTop(newOutfitItem);
+          break;
+        case 'bottom':
+          handleCreateBottom(newOutfitItem);
+          break;
+        case 'shoes':
+          handleCreateShoe(newOutfitItem);
+          break;
+        case 'outerwear':
+          handleCreateOuterwear(newOutfitItem);
+          break;
+        case 'accessory':
+          handleCreateAccessory(newOutfitItem);
+          break;
+        default:
+          break;
+      }
+    }
+  };
 
   return {
     outfit,
@@ -217,6 +239,10 @@ const useNewOutfitPage = () => {
     userShoes,
     handleCreateShoe,
     handleShoeSelection,
+    popupOpen,
+    popupType,
+    handlePopupOpen,
+    handlePopupClose,
   };
 };
 
