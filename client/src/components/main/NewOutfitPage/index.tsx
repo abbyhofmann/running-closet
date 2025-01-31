@@ -126,7 +126,6 @@ const NewOutfitPage = () => {
           <OutfitItemScroller
             outfitItems={userBottoms}
             outfitItemType='bottom'
-            // onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleBottomSelection}
             currentSelectedOutfitItems={outfit.bottoms}
             onNewOutfitItemCreated={handleCreateBottom}
@@ -138,9 +137,8 @@ const NewOutfitPage = () => {
           <OutfitItemScroller
             outfitItems={userShoes}
             outfitItemType='shoes'
-            // onCreateOutfitItem={handleClickOpen}
             onSelectOutfitItem={handleShoeSelection}
-            currentSelectedOutfitItems={[]}
+            currentSelectedOutfitItems={outfit.shoe == null ? [] : [outfit.shoe]}
             onNewOutfitItemCreated={handleCreateShoe}
             popupOpen={popupOpen && popupType === 'shoes'}
             onPopupOpen={() => handlePopupOpen('shoes')}

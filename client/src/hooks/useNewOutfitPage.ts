@@ -169,9 +169,10 @@ const useNewOutfitPage = () => {
   };
 
   const handleShoeSelection = (shoe: Shoe) => {
-    // TODO - have shoe selection highlight the selected shoe
-    // setSelectedShoe(shoe);
-    setOutfit({ ...outfit, shoe });
+    setOutfit({
+      ...outfit,
+      shoe: outfit.shoe?._id === shoe._id ? null : shoe,
+    });
   };
 
   const handleCreateShoe = async (newOutfitItem: OutfitItem | null) => {
