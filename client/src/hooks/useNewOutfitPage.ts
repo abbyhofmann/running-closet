@@ -7,6 +7,7 @@ import { createBottom, getBottoms } from '../services/bottomService';
 import { createAccessory, getAccessories } from '../services/accessoryService';
 import { createOuterwear, getOuterwearItems } from '../services/outerwearService';
 import { createShoe, getShoes } from '../services/shoeService';
+import { createWorkout } from '../services/workoutService';
 
 /**
  * Custom hook for managing the new outfit page state.
@@ -77,9 +78,19 @@ const useNewOutfitPage = () => {
     setOutfit({ ...outfit, workout });
   };
 
-  const handleCreateWorkout = (newWorkout: Workout | null) => {
+  const handleCreateWorkout = async (newWorkout: Workout | null) => {
     console.log('create new workout clicked...'); // TODO
-    setCreatedNewWorkout(newWorkout);
+    if (user._id && newWorkout) {
+      const newWorkoutObject = await createWorkout(
+        user._id,
+        newWorkout.runType,
+        newWorkout.dateCompleted,
+        newWorkout.distance,
+        newWorkout.duration,
+        newWorkout.location,
+      );
+      setCreatedNewWorkout(newWorkoutObject);
+    }
   };
 
   const handleTopSelection = (top: Top) => {
@@ -192,11 +203,18 @@ const useNewOutfitPage = () => {
     }
   };
 
+  // function for new outfit item popup
   const handlePopupOpen = (type: string) => {
     setPopupType(type);
     setPopupOpen(true);
   };
 
+  // function for new workout popup
+  const handleWorkoutPopupOpen = () => {
+    setPopupOpen(true);
+  };
+
+  // function for closing new outfit item popup
   const handlePopupClose = (newOutfitItem: OutfitItem | null) => {
     setPopupOpen(false);
     setTimeout(() => setPopupType(null), 0); // delay resetting type to ensure state updates
@@ -224,6 +242,14 @@ const useNewOutfitPage = () => {
     }
   };
 
+  // function for closing workout popup
+  const handleWorkoutPopupClose = (newWorkout: Workout | null) => {
+    setPopupOpen(false);
+    if (newWorkout) {
+      handleCreateWorkout(newWorkout);
+    }
+  };
+
   return {
     outfit,
     workouts,
@@ -248,7 +274,9 @@ const useNewOutfitPage = () => {
     popupOpen,
     popupType,
     handlePopupOpen,
+    handleWorkoutPopupOpen,
     handlePopupClose,
+    handleWorkoutPopupClose,
   };
 };
 
