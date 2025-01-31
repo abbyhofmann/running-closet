@@ -33,6 +33,9 @@ const useNewOutfitPage = () => {
   // state variable for re-rendering scrollbars when user creates new outfit item
   const [createdNewOutfitItem, setCreatedNewOutfitItem] = useState<OutfitItem | null>(null);
 
+  // state variable for re-rendering scrollbars when user creates new workout
+  const [createdNewWorkout, setCreatedNewWorkout] = useState<Workout | null>(null);
+
   const [popupOpen, setPopupOpen] = useState(false);
   const [popupType, setPopupType] = useState<string | null>(null);
 
@@ -54,7 +57,8 @@ const useNewOutfitPage = () => {
     }
     fetchData();
     setCreatedNewOutfitItem(null);
-  }, [createdNewOutfitItem]); // TODO - this may need to be changed to re-render when these change/new outfit is created
+    setCreatedNewWorkout(null);
+  }, [createdNewOutfitItem, createdNewWorkout]); // TODO - this may need to be changed to re-render when these change/new outfit is created
 
   // set the wearer of the outfit
   useEffect(() => {
@@ -73,8 +77,9 @@ const useNewOutfitPage = () => {
     setOutfit({ ...outfit, workout });
   };
 
-  const handleCreateWorkout = () => {
+  const handleCreateWorkout = (newWorkout: Workout | null) => {
     console.log('create new workout clicked...'); // TODO
+    setCreatedNewWorkout(newWorkout);
   };
 
   const handleTopSelection = (top: Top) => {

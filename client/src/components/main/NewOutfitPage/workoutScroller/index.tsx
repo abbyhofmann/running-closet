@@ -8,7 +8,7 @@ const WorkoutScroller = ({
   onSelectWorkout,
 }: {
   workouts: Workout[];
-  onCreateWorkout: () => void;
+  onCreateWorkout: (workout: Workout | null) => void;
   onSelectWorkout: (workout: Workout) => void;
 }) => (
   <Box
