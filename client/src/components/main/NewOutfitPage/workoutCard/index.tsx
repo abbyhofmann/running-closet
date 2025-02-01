@@ -1,13 +1,15 @@
 import { Box, Card, Typography } from '@mui/material';
-import { grey } from '@mui/material/colors';
+import { blue, grey } from '@mui/material/colors';
 import { Workout } from '../../../../types';
 
 const WorkoutCard = ({
   workout,
   onSelectWorkout,
+  selected,
 }: {
   workout: Workout;
   onSelectWorkout: (workout: Workout) => void;
+  selected: boolean;
 }) => (
   <Card
     sx={{
@@ -24,7 +26,7 @@ const WorkoutCard = ({
     }}>
     <Box
       sx={{
-        backgroundColor: grey[400],
+        backgroundColor: selected ? blue[100] : grey[400],
         padding: 2,
         display: 'flex',
         flexDirection: 'column',

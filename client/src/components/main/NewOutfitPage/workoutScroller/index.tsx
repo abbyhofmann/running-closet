@@ -2,17 +2,20 @@ import { Box, Button, Card, Typography } from '@mui/material';
 import { purple } from '@mui/material/colors';
 import WorkoutCard from '../workoutCard';
 import { Workout } from '../../../../types';
+import NewWorkoutPopup from '../newWorkoutPopup';
 
 const WorkoutScroller = ({
   workouts,
-  onCreateWorkout,
   onSelectWorkout,
+  currentSelectedWorkout,
+  popupOpen,
   onPopupOpen,
   onPopupClose,
 }: {
   workouts: Workout[];
-  onCreateWorkout: (workout: Workout | null) => void;
   onSelectWorkout: (workout: Workout) => void;
+  currentSelectedWorkout: Workout | null;
+  popupOpen: boolean;
   onPopupOpen: () => void;
   onPopupClose: (newWorkout: Workout | null) => void;
 }) => {
@@ -34,24 +37,11 @@ const WorkoutScroller = ({
           key={workout._id?.toString()}
           workout={workout}
           onSelectWorkout={onSelectWorkout}
+          selected={!!currentSelectedWorkout && workout._id === currentSelectedWorkout._id}
         />
       ))}
 
       {/* Card to Create New Workout */}
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          cursor: 'pointer',
-        }}
-        onClick={handleCreateClick}>
-        <Button variant='contained' color='primary'>
-          + Create New Workout
-        </Button>
-      </Box>
-      {/* ////////////////////////////////// */}
       <Box
         sx={{
           display: 'flex',
@@ -84,11 +74,7 @@ const WorkoutScroller = ({
             </Typography>
           </Box>
         </Card>
-        <NewWorkoutPopup
-          open={popupOpen}
-          onClose={() => onPopupClose(null)}
-          outfitItemType={currentType}
-        />
+        <NewWorkoutPopup open={popupOpen} onClose={() => onPopupClose(null)} />
       </Box>
     </Box>
   );

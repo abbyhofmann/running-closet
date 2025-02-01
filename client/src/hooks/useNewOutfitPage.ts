@@ -74,8 +74,8 @@ const useNewOutfitPage = () => {
   }, [outfit]);
 
   const handleWorkoutSelection = (workout: Workout) => {
-    setSelectedWorkout(workout);
-    setOutfit({ ...outfit, workout });
+    setSelectedWorkout(selectedWorkout?._id === workout._id ? null : workout);
+    setOutfit({ ...outfit, workout: outfit.workout?._id === workout._id ? null : workout });
   };
 
   const handleCreateWorkout = async (newWorkout: Workout | null) => {
@@ -209,11 +209,6 @@ const useNewOutfitPage = () => {
     setPopupOpen(true);
   };
 
-  // function for new workout popup
-  const handleWorkoutPopupOpen = () => {
-    setPopupOpen(true);
-  };
-
   // function for closing new outfit item popup
   const handlePopupClose = (newOutfitItem: OutfitItem | null) => {
     setPopupOpen(false);
@@ -245,6 +240,8 @@ const useNewOutfitPage = () => {
   // function for closing workout popup
   const handleWorkoutPopupClose = (newWorkout: Workout | null) => {
     setPopupOpen(false);
+    setTimeout(() => setPopupType(null), 0); // delay resetting type to ensure state updates
+
     if (newWorkout) {
       handleCreateWorkout(newWorkout);
     }
@@ -274,7 +271,6 @@ const useNewOutfitPage = () => {
     popupOpen,
     popupType,
     handlePopupOpen,
-    handleWorkoutPopupOpen,
     handlePopupClose,
     handleWorkoutPopupClose,
   };

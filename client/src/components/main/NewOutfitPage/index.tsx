@@ -10,7 +10,6 @@ const NewOutfitPage = () => {
   const {
     outfit,
     workouts,
-    handleCreateWorkout,
     handleWorkoutSelection,
     selectedWorkout,
     userTops,
@@ -31,7 +30,6 @@ const NewOutfitPage = () => {
     popupOpen,
     popupType,
     handlePopupOpen,
-    handleWorkoutPopupOpen,
     handlePopupClose,
     handleWorkoutPopupClose,
   } = useNewOutfitPage();
@@ -108,9 +106,10 @@ const NewOutfitPage = () => {
           {/* Horizontal Workout Scroller */}
           <WorkoutScroller
             workouts={workouts}
-            onCreateWorkout={handleCreateWorkout}
             onSelectWorkout={handleWorkoutSelection}
-            onPopupOpen={() => handleWorkoutPopupOpen}
+            currentSelectedWorkout={selectedWorkout}
+            popupOpen={popupOpen && popupType === 'workout'}
+            onPopupOpen={() => handlePopupOpen('workout')}
             onPopupClose={handleWorkoutPopupClose}
           />
           <Typography>Select Outfit Clothing Items</Typography>

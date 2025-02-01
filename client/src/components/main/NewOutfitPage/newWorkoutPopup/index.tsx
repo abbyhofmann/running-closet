@@ -65,19 +65,16 @@ setRunType('');
           autoFocus
           margin='dense'
           label='distance'
-          type='text'
+          type='number'
           fullWidth
           value={distance}
-          onChange={e => setDistance(e.target.value)}
-        /*
-        onChange={e => {
-              const { value } = e.target;
-              // Allow only integers greater than or equal to 0
-              if (value === '' || /^[0-9]+$/.test(value)) {
-                handleAgeChange(Number(value));
-              }
-            }}
-        */
+          onChange={e => {
+            const { value } = e.target;
+            // Allow only integers greater than or equal to 0
+            if (value === '' || /^[0-9]+$/.test(value)) {
+              setDistance(Number(value));
+            }
+          }}
         />
         <RunTypeChips />
 
