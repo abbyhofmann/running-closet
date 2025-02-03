@@ -89,6 +89,7 @@ const useNewOutfitPage = () => {
         newWorkout.duration,
         newWorkout.location,
       );
+      console.log('newworkoutobject: ', newWorkoutObject);
       setCreatedNewWorkout(newWorkoutObject);
     }
   };
@@ -239,6 +240,7 @@ const useNewOutfitPage = () => {
 
   // function for closing workout popup
   const handleWorkoutPopupClose = (newWorkout: Workout | null) => {
+    console.log('inside handleworkoutpopupclose, workout: ', newWorkout);
     setPopupOpen(false);
     setTimeout(() => setPopupType(null), 0); // delay resetting type to ensure state updates
 

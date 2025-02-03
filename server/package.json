@@ -1,10 +1,14 @@
 {
   "dependencies": {
+    "@mui/x-date-pickers": "^7.25.0",
     "@sendgrid/mail": "^8.1.4",
     "@toolpad/core": "^0.9.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
+    "country-state-city": "^3.2.1",
+    "dayjs": "^1.11.13",
     "express": "^4.19.2",
+    "formik": "^2.4.6",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.1",
