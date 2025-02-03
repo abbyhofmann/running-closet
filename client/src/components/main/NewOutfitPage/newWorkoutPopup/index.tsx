@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Button, Dialog, DialogContent, DialogTitle, TextField } from '@mui/material';
+import { Button, Dialog, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
+import { Box } from '@mui/system';
 import { Workout } from '../../../../types';
 import useUserContext from '../../../../hooks/useUserContext';
 import RunTypeChips from './runTypeChips';
@@ -48,6 +49,10 @@ const NewWorkoutPopup = (props: NewWorkoutPopupProps) => {
     resetForm();
     onClose(null);
   };
+
+  const handleSelectRunType = (selectedRunType: string) => {
+    setRunType(selectedRunType);
+  };
   /*
 
 setRunType('');
@@ -61,7 +66,10 @@ setRunType('');
     <Dialog onClose={handleCancel} open={open}>
       <DialogTitle>Workout Details</DialogTitle>
       <DialogContent>
+        <Typography gutterBottom={true}>Run Type</Typography>
+        <RunTypeChips handleSelectRunType={handleSelectRunType} />
         <TextField
+          variant='filled'
           autoFocus
           margin='dense'
           label='distance'
@@ -76,7 +84,14 @@ setRunType('');
             }
           }}
         />
-        <RunTypeChips />
+        <Box
+          component='form'
+          sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
+          noValidate
+          autoComplete='off'>
+          <TextField id='distance-field' label='Distance' variant='filled' />
+          <TextField id='duration-field' label='Duration' variant='filled' />
+        </Box>
 
         <Button onClick={handleSubmit} variant='contained' color='primary' sx={{ mt: 2 }}>
           Create!

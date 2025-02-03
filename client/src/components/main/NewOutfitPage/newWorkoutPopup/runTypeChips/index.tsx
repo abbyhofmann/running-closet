@@ -1,26 +1,35 @@
-import * as React from 'react';
+import { useState } from 'react';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 
-export default function RunTypeChips() {
-  const handleClick = () => {
-    console.info('You clicked the Chip.');
-  };
+interface RunTypeChipProps {
+  handleSelectRunType: (value: string) => void;
+}
 
-  /*
-  { key: 0, label: 'tempo' },
-    { key: 1, label: 'speed' },
-    { key: 2, label: 'easy' },
-    { key: 3, label: 'long' },
-    { key: 4, label: 'recovery' },
-    { key: 5, label: 'fartlek' },
-    { key: 6, label: 'hill' }, 
-  */
+export default function RunTypeChips(props: RunTypeChipProps) {
+  const { handleSelectRunType } = props;
+
+  const [selectedRunType, setSelectedRunType] = useState<string | null>(null);
+
+  const runTypes = ['tempo', 'speed', 'easy', 'long', 'recovery', 'fartlek', 'hill'];
+
+  const handleChipClick = (type: string) => {
+    const newSelected = selectedRunType === type ? null : type; // Toggle selection
+    setSelectedRunType(newSelected);
+    handleSelectRunType(newSelected || ''); // Pass empty string if deselected
+  };
 
   return (
     <Stack direction='row' spacing={1}>
-      <Chip label='Clickable' onClick={handleClick} />
-      <Chip label='Clickable yeahhh' onClick={handleClick} />
+      {runTypes.map(type => (
+        <Chip
+          key={type}
+          label={type}
+          onClick={() => handleChipClick(type)}
+          color={selectedRunType === type ? 'primary' : 'default'} // Change color if selected
+          variant={selectedRunType === type ? 'filled' : 'outlined'} // Optional: Change variant
+        />
+      ))}
     </Stack>
   );
 }
