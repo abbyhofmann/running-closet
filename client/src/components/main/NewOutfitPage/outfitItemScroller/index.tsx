@@ -87,6 +87,7 @@ const OutfitItemScroller = ({
           open={popupOpen}
           onClose={() => onPopupClose(null)}
           outfitItemType={currentType}
+          onNewOutfitItemCreated={onNewOutfitItemCreated}
         />
       </Box>
     </Box>

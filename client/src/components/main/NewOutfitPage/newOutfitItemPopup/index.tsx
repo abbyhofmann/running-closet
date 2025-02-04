@@ -7,10 +7,11 @@ interface NewOutfitItemPopupProps {
   open: boolean;
   onClose: (value: OutfitItem | null) => void;
   outfitItemType: string;
+  onNewOutfitItemCreated: (value: OutfitItem | null) => void;
 }
 
 const NewOutfitItemPopup = (props: NewOutfitItemPopupProps) => {
-  const { open, onClose, outfitItemType } = props;
+  const { open, onClose, outfitItemType, onNewOutfitItemCreated } = props;
   const [brand, setBrand] = useState<string>('');
   const [model, setModel] = useState<string>('');
   const [s3url, setS3url] = useState<string>('');
@@ -33,6 +34,7 @@ const NewOutfitItemPopup = (props: NewOutfitItemPopupProps) => {
         s3PhotoUrl: s3url,
       };
 
+      onNewOutfitItemCreated(newOutfitItem);
       onClose(newOutfitItem);
       resetForm();
     }

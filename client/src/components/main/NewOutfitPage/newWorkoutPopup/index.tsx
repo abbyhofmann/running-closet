@@ -17,7 +17,7 @@ interface NewWorkoutPopupProps {
 const NewWorkoutPopup = (props: NewWorkoutPopupProps) => {
   const { open, onClose } = props;
   const [runType, setRunType] = useState<string>('');
-  const [dateCompleted, setDateCompleted] = useState<Date>(new Date()); // TODO - idk if this type is correct
+  const [dateCompleted, setDateCompleted] = useState<Date | undefined>(new Date()); // TODO - idk if this type is correct
   const [distance, setDistance] = useState<string>('');
   const [duration, setDuration] = useState<string>('');
   const [location, setLocation] = useState<string>('');
@@ -38,7 +38,18 @@ const NewWorkoutPopup = (props: NewWorkoutPopupProps) => {
 
   const handleSubmit = () => {
     console.log('handle submit clicked');
-    if (runType && dateCompleted && distance && duration && location) {
+    if (
+      runType &&
+      runType !== '' &&
+      dateCompleted &&
+      dateCompleted !== undefined &&
+      distance &&
+      distance !== '' &&
+      duration &&
+      duration !== '' &&
+      location &&
+      location !== ''
+    ) {
       const newWorkout: Workout = {
         runner: user,
         runType,
@@ -119,7 +130,12 @@ setRunType('');
         <Box sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}>
           <Typography gutterBottom={true}>Date Completed</Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker label='Select date' />
+            <DatePicker
+              label='Select date'
+              onChange={newValue => {
+                setDateCompleted(newValue?.toDate());
+              }}
+            />
           </LocalizationProvider>
         </Box>
         <LocationInput setLocation={setLocation} />

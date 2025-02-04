@@ -1,5 +1,6 @@
 import { Box, Button, Card, Typography } from '@mui/material';
 import { purple } from '@mui/material/colors';
+import { useEffect } from 'react';
 import WorkoutCard from '../workoutCard';
 import { Workout } from '../../../../types';
 import NewWorkoutPopup from '../newWorkoutPopup';
@@ -22,6 +23,10 @@ const WorkoutScroller = ({
   const handleCreateClick = () => {
     onPopupOpen();
   };
+
+  useEffect(() => {
+    console.log('onpopupclose called');
+  }, [onPopupClose]);
 
   return (
     <Box

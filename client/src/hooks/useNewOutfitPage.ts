@@ -214,7 +214,7 @@ const useNewOutfitPage = () => {
   const handlePopupClose = (newOutfitItem: OutfitItem | null) => {
     setPopupOpen(false);
     setTimeout(() => setPopupType(null), 0); // delay resetting type to ensure state updates
-
+    console.log('handlepopupclose outfit item: ', newOutfitItem);
     if (newOutfitItem) {
       switch (popupType) {
         case 'top':
