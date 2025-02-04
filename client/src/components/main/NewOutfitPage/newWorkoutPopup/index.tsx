@@ -11,11 +11,12 @@ import LocationInput from './locationInput';
 
 interface NewWorkoutPopupProps {
   open: boolean;
-  onClose: (value: Workout | null) => void;
+  onClose: () => void;
+  onNewWorkoutCreated: (value: Workout) => void;
 }
 
 const NewWorkoutPopup = (props: NewWorkoutPopupProps) => {
-  const { open, onClose } = props;
+  const { open, onClose, onNewWorkoutCreated } = props;
   const [runType, setRunType] = useState<string>('');
   const [dateCompleted, setDateCompleted] = useState<Date | undefined>(new Date()); // TODO - idk if this type is correct
   const [distance, setDistance] = useState<string>('');
@@ -60,8 +61,8 @@ const NewWorkoutPopup = (props: NewWorkoutPopupProps) => {
       };
 
       console.log('new workout: ', newWorkout);
-
-      onClose(newWorkout);
+      onNewWorkoutCreated(newWorkout);
+      onClose();
       resetForm();
     }
   };
@@ -70,7 +71,7 @@ const NewWorkoutPopup = (props: NewWorkoutPopupProps) => {
   const handleCancel = () => {
     console.log('handle cancel clicked');
     resetForm();
-    onClose(null);
+    onClose();
   };
 
   const handleSelectRunType = (selectedRunType: string) => {

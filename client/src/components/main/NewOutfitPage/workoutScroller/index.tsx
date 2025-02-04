@@ -12,13 +12,15 @@ const WorkoutScroller = ({
   popupOpen,
   onPopupOpen,
   onPopupClose,
+  onNewWorkoutCreated,
 }: {
   workouts: Workout[];
   onSelectWorkout: (workout: Workout) => void;
   currentSelectedWorkout: Workout | null;
   popupOpen: boolean;
   onPopupOpen: () => void;
-  onPopupClose: (newWorkout: Workout | null) => void;
+  onPopupClose: () => void;
+  onNewWorkoutCreated: (newWorkout: Workout) => void;
 }) => {
   const handleCreateClick = () => {
     onPopupOpen();
@@ -79,7 +81,7 @@ const WorkoutScroller = ({
             </Typography>
           </Box>
         </Card>
-        <NewWorkoutPopup open={popupOpen} onClose={() => onPopupClose(null)} />
+        <NewWorkoutPopup open={popupOpen} onClose={onPopupClose} onNewWorkoutCreated={onNewWorkoutCreated}/>
       </Box>
     </Box>
   );

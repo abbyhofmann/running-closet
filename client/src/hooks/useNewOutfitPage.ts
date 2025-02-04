@@ -78,7 +78,7 @@ const useNewOutfitPage = () => {
     setOutfit({ ...outfit, workout: outfit.workout?._id === workout._id ? null : workout });
   };
 
-  const handleCreateWorkout = async (newWorkout: Workout | null) => {
+  const handleCreateWorkout = async (newWorkout: Workout) => {
     console.log('create new workout clicked...'); // TODO
     if (user._id && newWorkout) {
       const newWorkoutObject = await createWorkout(
@@ -239,14 +239,10 @@ const useNewOutfitPage = () => {
   };
 
   // function for closing workout popup
-  const handleWorkoutPopupClose = (newWorkout: Workout | null) => {
-    console.log('inside handleworkoutpopupclose, workout: ', newWorkout);
+  const handleWorkoutPopupClose = () => {
+    console.log('inside handleworkoutpopupclose');
     setPopupOpen(false);
     setTimeout(() => setPopupType(null), 0); // delay resetting type to ensure state updates
-
-    if (newWorkout) {
-      handleCreateWorkout(newWorkout);
-    }
   };
 
   return {
