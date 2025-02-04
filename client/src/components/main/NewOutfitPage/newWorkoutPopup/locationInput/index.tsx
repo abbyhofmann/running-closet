@@ -16,7 +16,7 @@ const LocationInput = (props: LocationInputProps) => {
       state: '',
       city: '',
     },
-    onSubmit: values => console.log(JSON.stringify(values)),
+    onSubmit: values => console.log(JSON.stringify(values)), // TODO - needed?
   });
 
   const countries = Country.getAllCountries();

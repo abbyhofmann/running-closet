@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Button, Dialog, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
@@ -24,10 +24,6 @@ const NewWorkoutPopup = (props: NewWorkoutPopupProps) => {
   const [location, setLocation] = useState<string>('');
   const { user } = useUserContext();
 
-  useEffect(() => {
-    console.log('location updated:', location);
-  }, [location]);
-
   // clear the form after the workout is created
   const resetForm = () => {
     setRunType('');
@@ -38,7 +34,6 @@ const NewWorkoutPopup = (props: NewWorkoutPopupProps) => {
   };
 
   const handleSubmit = () => {
-    console.log('handle submit clicked');
     if (
       runType &&
       runType !== '' &&
@@ -60,7 +55,6 @@ const NewWorkoutPopup = (props: NewWorkoutPopupProps) => {
         location,
       };
 
-      console.log('new workout: ', newWorkout);
       onNewWorkoutCreated(newWorkout);
       onClose();
       resetForm();
@@ -69,7 +63,6 @@ const NewWorkoutPopup = (props: NewWorkoutPopupProps) => {
 
   // cancel workout creation if popup is closed prematurely
   const handleCancel = () => {
-    console.log('handle cancel clicked');
     resetForm();
     onClose();
   };
@@ -77,15 +70,7 @@ const NewWorkoutPopup = (props: NewWorkoutPopupProps) => {
   const handleSelectRunType = (selectedRunType: string) => {
     setRunType(selectedRunType);
   };
-  /*
 
-setRunType('');
-    setDateCompleted(new Date());
-    setDistance(0);
-    setDuration(0);
-    setLocation('');
-
-*/
   return (
     <Dialog onClose={handleCancel} open={open}>
       <DialogTitle>Workout Details</DialogTitle>

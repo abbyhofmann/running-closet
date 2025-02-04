@@ -5,7 +5,7 @@ import useUserContext from '../../../../hooks/useUserContext';
 
 interface NewOutfitItemPopupProps {
   open: boolean;
-  onClose: (value: OutfitItem | null) => void;
+  onClose: () => void;
   outfitItemType: string;
   onNewOutfitItemCreated: (value: OutfitItem | null) => void;
 }
@@ -35,7 +35,7 @@ const NewOutfitItemPopup = (props: NewOutfitItemPopupProps) => {
       };
 
       onNewOutfitItemCreated(newOutfitItem);
-      onClose(newOutfitItem);
+      onClose();
       resetForm();
     }
   };
@@ -43,7 +43,7 @@ const NewOutfitItemPopup = (props: NewOutfitItemPopupProps) => {
   // cancel object creation if popup is closed prematurely
   const handleCancel = () => {
     resetForm();
-    onClose(null);
+    onClose();
   };
 
   return (

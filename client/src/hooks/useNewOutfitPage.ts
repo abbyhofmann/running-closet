@@ -22,7 +22,7 @@ const useNewOutfitPage = () => {
   const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
 
   // user's workouts
-  const workouts = user?.workouts || [];
+  const [workouts, setWorkouts] = useState<Workout[]>(user?.workouts || []);
 
   // user's various outfit items
   const [userTops, setUserTops] = useState<Top[]>([]);
@@ -59,7 +59,7 @@ const useNewOutfitPage = () => {
     fetchData();
     setCreatedNewOutfitItem(null);
     setCreatedNewWorkout(null);
-  }, [createdNewOutfitItem, createdNewWorkout]); // TODO - this may need to be changed to re-render when these change/new outfit is created
+  }, [createdNewOutfitItem, workouts]); // TODO - this may need to be changed to re-render when these change/new outfit is created
 
   // set the wearer of the outfit
   useEffect(() => {
@@ -79,7 +79,6 @@ const useNewOutfitPage = () => {
   };
 
   const handleCreateWorkout = async (newWorkout: Workout) => {
-    console.log('create new workout clicked...'); // TODO
     if (user._id && newWorkout) {
       const newWorkoutObject = await createWorkout(
         user._id,
@@ -89,8 +88,8 @@ const useNewOutfitPage = () => {
         newWorkout.duration,
         newWorkout.location,
       );
-      console.log('newworkoutobject: ', newWorkoutObject);
       setCreatedNewWorkout(newWorkoutObject);
+      setWorkouts(prevWorkouts => [newWorkoutObject, ...prevWorkouts]);
     }
   };
 
@@ -211,36 +210,13 @@ const useNewOutfitPage = () => {
   };
 
   // function for closing new outfit item popup
-  const handlePopupClose = (newOutfitItem: OutfitItem | null) => {
+  const handlePopupClose = () => {
     setPopupOpen(false);
     setTimeout(() => setPopupType(null), 0); // delay resetting type to ensure state updates
-    console.log('handlepopupclose outfit item: ', newOutfitItem);
-    if (newOutfitItem) {
-      switch (popupType) {
-        case 'top':
-          handleCreateTop(newOutfitItem);
-          break;
-        case 'bottom':
-          handleCreateBottom(newOutfitItem);
-          break;
-        case 'shoes':
-          handleCreateShoe(newOutfitItem);
-          break;
-        case 'outerwear':
-          handleCreateOuterwear(newOutfitItem);
-          break;
-        case 'accessory':
-          handleCreateAccessory(newOutfitItem);
-          break;
-        default:
-          break;
-      }
-    }
   };
 
   // function for closing workout popup
   const handleWorkoutPopupClose = () => {
-    console.log('inside handleworkoutpopupclose');
     setPopupOpen(false);
     setTimeout(() => setPopupType(null), 0); // delay resetting type to ensure state updates
   };

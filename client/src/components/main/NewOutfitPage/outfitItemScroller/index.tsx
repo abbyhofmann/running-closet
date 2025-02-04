@@ -22,7 +22,7 @@ const OutfitItemScroller = ({
   onNewOutfitItemCreated: (newOutfitItem: OutfitItem | null) => void;
   popupOpen: boolean;
   onPopupOpen: () => void;
-  onPopupClose: (newOutfitItem: OutfitItem | null) => void;
+  onPopupClose: () => void;
 }) => {
   const [currentType, setCurrentType] = useState<string>(outfitItemType); // track current type
 
@@ -85,7 +85,7 @@ const OutfitItemScroller = ({
         </Card>
         <NewOutfitItemPopup
           open={popupOpen}
-          onClose={() => onPopupClose(null)}
+          onClose={() => onPopupClose()}
           outfitItemType={currentType}
           onNewOutfitItemCreated={onNewOutfitItemCreated}
         />

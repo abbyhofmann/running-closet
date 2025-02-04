@@ -24,7 +24,7 @@ const createWorkout = async (
 ): Promise<Workout> => {
   const data = { runnerId, runType, dateCompleted, distance, duration, location };
 
-  const res = await api.post(`${WORKOUT_API_URL}/createTop`, data);
+  const res = await api.post(`${WORKOUT_API_URL}/createWorkout`, data);
   if (res.status !== 200) {
     throw new Error('Error while creating a new workout');
   }
