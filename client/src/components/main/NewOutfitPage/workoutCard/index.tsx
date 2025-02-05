@@ -13,20 +13,25 @@ const WorkoutCard = ({
 }) => (
   <Card
     sx={{
+      'backgroundColor': selected ? blue[100] : grey[400],
+      'width': 200, // Fixed width
+      'height': 200, // Fixed height
       'display': 'flex',
       'cursor': 'pointer',
+      'flexDirection': 'column',
+      // 'justifyContent': 'center',
+      'alignItems': 'center',
+      'borderRadius': 2,
       '&:hover': {
         boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
         transform: 'scale(1.03)',
       },
-      'borderRadius': 2,
     }}
     onClick={() => {
       onSelectWorkout(workout);
     }}>
     <Box
       sx={{
-        backgroundColor: selected ? blue[100] : grey[400],
         padding: 2,
         display: 'flex',
         flexDirection: 'column',

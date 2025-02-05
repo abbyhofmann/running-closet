@@ -1,7 +1,18 @@
 import express, { Response } from 'express';
 import { ObjectId } from 'mongodb';
-import { FakeSOSocket, CreateWorkoutRequest, GetWorkoutRequest } from '../types';
-import { addWorkout, fetchUserById, saveWorkout, fetchWorkoutById } from '../models/application';
+import {
+  FakeSOSocket,
+  CreateWorkoutRequest,
+  GetWorkoutRequest,
+  FindWorkoutsByUserIdRequest,
+} from '../types';
+import {
+  addWorkout,
+  fetchUserById,
+  saveWorkout,
+  fetchWorkoutById,
+  fetchAllWorkoutsByUser,
+} from '../models/application';
 
 const workoutController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -106,9 +117,34 @@ const workoutController = (socket: FakeSOSocket) => {
     }
   };
 
+  const getWorkouts = async (req: FindWorkoutsByUserIdRequest, res: Response): Promise<void> => {
+    const { uid } = req.params;
+
+    if (!ObjectId.isValid(uid)) {
+      res.status(400).send('Invalid ID format');
+      return;
+    }
+
+    try {
+      const user = await fetchUserById(uid);
+
+      if ('error' in user) {
+        throw new Error(user.error as string);
+      }
+      const userWorkouts = await fetchAllWorkoutsByUser(uid);
+      if ('error' in userWorkouts) {
+        throw new Error(userWorkouts.error as string);
+      }
+      res.json(userWorkouts);
+    } catch (err) {
+      res.status(500).send(`Error when fetching all workouts: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/createWorkout', createWorkout);
   router.get('/getWorkout/:wid', getWorkout);
+  router.get('/getWorkouts/:uid', getWorkouts);
 
   return router;
 };

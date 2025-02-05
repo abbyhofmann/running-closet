@@ -46,6 +46,7 @@ import {
   MultipleAccessoryResponse,
   MultipleOuterwearItemResponse,
   MultipleShoeResponse,
+  MultipleWorkoutsResponse,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -2058,5 +2059,15 @@ export const fetchAllShoesByUser = async (uid: string): Promise<MultipleShoeResp
     return slist;
   } catch (error) {
     return { error: 'Error when fetching all user shoes' };
+  }
+};
+
+export const fetchAllWorkoutsByUser = async (uid: string): Promise<MultipleWorkoutsResponse> => {
+  try {
+    const wlist = await WorkoutModel.find({ runner: uid });
+
+    return wlist;
+  } catch (error) {
+    return { error: 'Error when fetching all user workouts' };
   }
 };

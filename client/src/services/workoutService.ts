@@ -45,4 +45,14 @@ const getWorkout = async (wid: string): Promise<Workout> => {
   return res.data;
 };
 
-export { createWorkout, getWorkout };
+const getWorkouts = async (uid: string): Promise<Workout[]> => {
+  const res = await api.get(`${WORKOUT_API_URL}/getWorkouts/${uid}`);
+
+  if (res.status !== 200) {
+    throw new Error('Error while fetching user workouts');
+  }
+
+  return res.data;
+};
+
+export { createWorkout, getWorkout, getWorkouts };

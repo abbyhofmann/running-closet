@@ -710,6 +710,24 @@ export interface GetWorkoutRequest {
 }
 
 /**
+ * Interface for the request parameter when fetching the workouts associated with a user given
+ * their user ID.
+ * - uid - The unique identifier of the user.
+ */
+
+export interface FindWorkoutsByUserIdRequest extends Request {
+  params: {
+    uid: string;
+  };
+}
+
+/**
+ * Type representing the possible responses for fetching numerous workouts.
+ */
+export type MultipleWorkoutsResponse = Workout[] | { error: string };
+
+
+/**
  * Interface representing a Rating document, which contains:
  * - id: The unique identifier for the rating.
  * - outfit: The outfit to which the rating is associated.

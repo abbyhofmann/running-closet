@@ -7,7 +7,7 @@ import { createBottom, getBottoms } from '../services/bottomService';
 import { createAccessory, getAccessories } from '../services/accessoryService';
 import { createOuterwear, getOuterwearItems } from '../services/outerwearService';
 import { createShoe, getShoes } from '../services/shoeService';
-import { createWorkout } from '../services/workoutService';
+import { createWorkout, getWorkouts } from '../services/workoutService';
 
 /**
  * Custom hook for managing the new outfit page state.
@@ -54,12 +54,14 @@ const useNewOutfitPage = () => {
         setUserOuterwears(fetchedOuterwearItems);
         const fetchedShoeItems = await getShoes(user._id);
         setUserShoes(fetchedShoeItems);
+        const fetchedWorkouts = await getWorkouts(user._id);
+        setWorkouts(fetchedWorkouts);
       }
     }
     fetchData();
     setCreatedNewOutfitItem(null);
     setCreatedNewWorkout(null);
-  }, [createdNewOutfitItem, workouts]); // TODO - this may need to be changed to re-render when these change/new outfit is created
+  }, [createdNewOutfitItem, createdNewWorkout]); // TODO - this may need to be changed to re-render when these change/new outfit is created
 
   // set the wearer of the outfit
   useEffect(() => {
@@ -89,7 +91,6 @@ const useNewOutfitPage = () => {
         newWorkout.location,
       );
       setCreatedNewWorkout(newWorkoutObject);
-      setWorkouts(prevWorkouts => [newWorkoutObject, ...prevWorkouts]);
     }
   };
 
