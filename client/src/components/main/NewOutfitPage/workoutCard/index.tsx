@@ -14,11 +14,12 @@ const WorkoutCard = ({
   <Card
     sx={{
       'backgroundColor': selected ? blue[100] : grey[400],
-      'width': 200, // Fixed width
-      'height': 200, // Fixed height
+      'width': 200, // fixed width
+      'height': 200, // fixed height
       'display': 'flex',
       'cursor': 'pointer',
       'flexDirection': 'column',
+      'flex': '0 0 auto', // prevents shrinking of the card when new one is added
       // 'justifyContent': 'center',
       'alignItems': 'center',
       'borderRadius': 2,
@@ -33,9 +34,12 @@ const WorkoutCard = ({
     <Box
       sx={{
         padding: 2,
+        px: 3, // adds equal left and right padding
         display: 'flex',
         flexDirection: 'column',
         gap: 1,
+        width: '100%',
+        margin: '0 auto', // centers content horizontally
       }}>
       <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
         {workout.runType}
@@ -49,7 +53,13 @@ const WorkoutCard = ({
       <Typography variant='body2' sx={{ color: 'rgba(0,0,0,0.6)' }}>
         Duration: {workout.duration} minutes
       </Typography>
-      <Typography variant='body2' sx={{ color: 'rgba(0,0,0,0.6)' }}>
+      <Typography
+        variant='body2'
+        sx={{
+          color: 'rgba(0,0,0,0.6)',
+          wordBreak: 'break-word', // ensures long words wrap
+          overflowWrap: 'break-word', // alternative wrapping
+        }}>
         Location: {workout.location}
       </Typography>
     </Box>

@@ -36,7 +36,7 @@ const NewOutfitPage = () => {
   } = useNewOutfitPage();
 
   return (
-    <Grid2 sx={{ marginTop: 3 }}>
+    <Grid2 sx={{ marginTop: 3, px: 9 }}>
       <Stack direction='column' spacing={{ xs: 1, sm: 2, md: 4 }}>
         {/* Sidebar */}
         <Box>
@@ -92,28 +92,28 @@ const NewOutfitPage = () => {
           sx={{ mt: 2, width: '25ch', bgcolor: '#5171A5' }}>
           Start Creating Outfit...
         </Button> */}
+        {/* Horizontal Workout Scroller */}
+        <WorkoutScroller
+          workouts={workouts}
+          onSelectWorkout={handleWorkoutSelection}
+          currentSelectedWorkout={selectedWorkout}
+          popupOpen={popupOpen && popupType === 'workout'}
+          onPopupOpen={() => handlePopupOpen('workout')}
+          onPopupClose={handleWorkoutPopupClose}
+          onNewWorkoutCreated={handleCreateWorkout}
+        />
         <Box
           id='scrollers'
           className='scrollers'
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center', // Centers horizontally
-            justifyContent: 'center', // Centers vertically
-            gap: 4, // Adds space between scrollers
-            marginTop: 4, // Adjusts vertical positioning
-            minHeight: '50vh', // Ensures the content occupies at least half the viewport height
+            alignItems: 'center', // centers horizontally
+            justifyContent: 'center', // centers vertically
+            gap: 4, // adds space between scrollers
+            marginTop: 4, // adjusts vertical positioning
+            minHeight: '50vh', // ensures the content occupies at least half the viewport height
           }}>
-          {/* Horizontal Workout Scroller */}
-          <WorkoutScroller
-            workouts={workouts}
-            onSelectWorkout={handleWorkoutSelection}
-            currentSelectedWorkout={selectedWorkout}
-            popupOpen={popupOpen && popupType === 'workout'}
-            onPopupOpen={() => handlePopupOpen('workout')}
-            onPopupClose={handleWorkoutPopupClose}
-            onNewWorkoutCreated={handleCreateWorkout}
-          />
           <Typography>Select Outfit Clothing Items</Typography>
           {/* Horizontal OutfitItem Scrollers */}
           {/* Top Scroller */}
