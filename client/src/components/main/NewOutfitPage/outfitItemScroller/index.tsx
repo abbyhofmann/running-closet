@@ -34,11 +34,14 @@ const OutfitItemScroller = ({
   return (
     <Box
       sx={{
-        display: 'flex',
-        overflowX: 'auto',
-        padding: 2,
-        gap: 2,
-        scrollbarWidth: 'thin', // Optional: style scrollbar
+        'display': 'flex',
+        'overflowX': 'auto', // Enables horizontal scrolling
+        'gap': 2, // Spacing between cards
+        'padding': 2, // Padding inside container
+        'scrollbarWidth': 'thin', // hides scrollbar
+        '&::-webkit-scrollbar': { height: 8 },
+        '&::-webkit-scrollbar-thumb': { backgroundColor: 'gray', borderRadius: 4 },
+        'whiteSpace': 'nowrap', // prevents wrapping
       }}>
       {outfitItems.map(outfitItem => (
         <OutfitItemCard

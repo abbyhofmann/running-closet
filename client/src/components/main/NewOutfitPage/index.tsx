@@ -36,7 +36,11 @@ const NewOutfitPage = () => {
   } = useNewOutfitPage();
 
   return (
-    <Grid2 sx={{ marginTop: 3, px: 9 }}>
+    <Grid2
+      sx={{
+        marginTop: 3,
+        px: 9,
+      }}>
       <Stack direction='column' spacing={{ xs: 1, sm: 2, md: 4 }}>
         {/* Sidebar */}
         <Box>
@@ -102,80 +106,69 @@ const NewOutfitPage = () => {
           onPopupClose={handleWorkoutPopupClose}
           onNewWorkoutCreated={handleCreateWorkout}
         />
-        <Box
-          id='scrollers'
-          className='scrollers'
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center', // centers horizontally
-            justifyContent: 'center', // centers vertically
-            gap: 4, // adds space between scrollers
-            marginTop: 4, // adjusts vertical positioning
-            minHeight: '50vh', // ensures the content occupies at least half the viewport height
-          }}>
-          <Typography>Select Outfit Clothing Items</Typography>
-          {/* Horizontal OutfitItem Scrollers */}
-          {/* Top Scroller */}
-          <OutfitItemScroller
-            outfitItems={userTops}
-            outfitItemType='top'
-            onSelectOutfitItem={handleTopSelection}
-            currentSelectedOutfitItems={outfit.tops}
-            onNewOutfitItemCreated={handleCreateTop}
-            popupOpen={popupOpen && popupType === 'top'}
-            onPopupOpen={() => handlePopupOpen('top')}
-            onPopupClose={handlePopupClose}
-          />
-          {/* Bottom Scroller */}
-          <OutfitItemScroller
-            outfitItems={userBottoms}
-            outfitItemType='bottom'
-            onSelectOutfitItem={handleBottomSelection}
-            currentSelectedOutfitItems={outfit.bottoms}
-            onNewOutfitItemCreated={handleCreateBottom}
-            popupOpen={popupOpen && popupType === 'bottom'}
-            onPopupOpen={() => handlePopupOpen('bottom')}
-            onPopupClose={handlePopupClose}
-          />
-          {/* Shoes Scroller */}
-          <OutfitItemScroller
-            outfitItems={userShoes}
-            outfitItemType='shoes'
-            onSelectOutfitItem={handleShoeSelection}
-            currentSelectedOutfitItems={outfit.shoe == null ? [] : [outfit.shoe]}
-            onNewOutfitItemCreated={handleCreateShoe}
-            popupOpen={popupOpen && popupType === 'shoes'}
-            onPopupOpen={() => handlePopupOpen('shoes')}
-            onPopupClose={handlePopupClose}
-          />
-          {/* fix this logic */}
-          {/* Outerwears Scroller */}
-          <OutfitItemScroller
-            outfitItems={userOuterwears}
-            outfitItemType='outerwear'
-            // onCreateOutfitItem={handleClickOpen}
-            onSelectOutfitItem={handleOuterwearSelection}
-            currentSelectedOutfitItems={outfit.outerwear}
-            onNewOutfitItemCreated={handleCreateOuterwear}
-            popupOpen={popupOpen && popupType === 'outerwear'}
-            onPopupOpen={() => handlePopupOpen('outerwear')}
-            onPopupClose={handlePopupClose}
-          />
-          {/* Accessories Scroller */}
-          <OutfitItemScroller
-            outfitItems={userAccessories}
-            outfitItemType='accessory'
-            // onCreateOutfitItem={handleClickOpen}
-            onSelectOutfitItem={handleAccessorySelection}
-            currentSelectedOutfitItems={outfit.accessories}
-            onNewOutfitItemCreated={handleCreateAccessory}
-            popupOpen={popupOpen && popupType === 'accessory'}
-            onPopupOpen={() => handlePopupOpen('accessory')}
-            onPopupClose={handlePopupClose}
-          />
-          <Button>Create Outfit!</Button>
-        </Box>
+        {/* Top Scroller */}
+        <OutfitItemScroller
+          outfitItems={userTops}
+          outfitItemType='top'
+          onSelectOutfitItem={handleTopSelection}
+          currentSelectedOutfitItems={outfit.tops}
+          onNewOutfitItemCreated={handleCreateTop}
+          popupOpen={popupOpen && popupType === 'top'}
+          onPopupOpen={() => handlePopupOpen('top')}
+          onPopupClose={handlePopupClose}
+        />
+        {/* Bottom Scroller */}
+        <OutfitItemScroller
+          outfitItems={userBottoms}
+          outfitItemType='bottom'
+          onSelectOutfitItem={handleBottomSelection}
+          currentSelectedOutfitItems={outfit.bottoms}
+          onNewOutfitItemCreated={handleCreateBottom}
+          popupOpen={popupOpen && popupType === 'bottom'}
+          onPopupOpen={() => handlePopupOpen('bottom')}
+          onPopupClose={handlePopupClose}
+        />
+
+        <Typography>Select Outfit Clothing Items</Typography>
+        {/* Horizontal OutfitItem Scrollers */}
+
+        {/* Shoes Scroller */}
+        <OutfitItemScroller
+          outfitItems={userShoes}
+          outfitItemType='shoes'
+          onSelectOutfitItem={handleShoeSelection}
+          currentSelectedOutfitItems={outfit.shoe == null ? [] : [outfit.shoe]}
+          onNewOutfitItemCreated={handleCreateShoe}
+          popupOpen={popupOpen && popupType === 'shoes'}
+          onPopupOpen={() => handlePopupOpen('shoes')}
+          onPopupClose={handlePopupClose}
+        />
+        {/* fix this logic */}
+        {/* Outerwears Scroller */}
+        <OutfitItemScroller
+          outfitItems={userOuterwears}
+          outfitItemType='outerwear'
+          // onCreateOutfitItem={handleClickOpen}
+          onSelectOutfitItem={handleOuterwearSelection}
+          currentSelectedOutfitItems={outfit.outerwear}
+          onNewOutfitItemCreated={handleCreateOuterwear}
+          popupOpen={popupOpen && popupType === 'outerwear'}
+          onPopupOpen={() => handlePopupOpen('outerwear')}
+          onPopupClose={handlePopupClose}
+        />
+        {/* Accessories Scroller */}
+        <OutfitItemScroller
+          outfitItems={userAccessories}
+          outfitItemType='accessory'
+          // onCreateOutfitItem={handleClickOpen}
+          onSelectOutfitItem={handleAccessorySelection}
+          currentSelectedOutfitItems={outfit.accessories}
+          onNewOutfitItemCreated={handleCreateAccessory}
+          popupOpen={popupOpen && popupType === 'accessory'}
+          onPopupOpen={() => handlePopupOpen('accessory')}
+          onPopupClose={handlePopupClose}
+        />
+        <Button>Create Outfit!</Button>
       </Stack>
     </Grid2>
   );
