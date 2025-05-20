@@ -77,6 +77,14 @@ export default function NavigationMenu() {
           }}>
           Create Outfit
         </MenuItem>
+        <MenuItem
+          key='view-my-outfits'
+          onClick={() => {
+            navigate(`/viewMyOutfits`);
+            handleClose();
+          }}>
+          My Outfits
+        </MenuItem>
       </Menu>
     </div>
   );

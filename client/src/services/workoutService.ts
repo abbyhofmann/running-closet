@@ -8,21 +8,17 @@ const WORKOUT_API_URL = `${process.env.REACT_APP_SERVER_URL}/workout`;
  *
  * @param runnerId
  * @param runType
- * @param dateCompleted
  * @param distance
  * @param duration
- * @param location
  * @throws Error Throws an error if the request fails or the response status is not 200.
  */
 const createWorkout = async (
   runnerId: string,
   runType: string,
-  dateCompleted: Date,
   distance: number,
   duration: number,
-  location: string,
 ): Promise<Workout> => {
-  const data = { runnerId, runType, dateCompleted, distance, duration, location };
+  const data = { runnerId, runType, distance, duration };
 
   const res = await api.post(`${WORKOUT_API_URL}/createWorkout`, data);
   if (res.status !== 200) {

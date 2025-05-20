@@ -45,6 +45,7 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
   const initialOutfit: Outfit = {
     wearer: null,
     workout: null,
+    dateWorn: 
     ratings: [],
     tops: [],
     bottoms: [],
@@ -126,6 +127,7 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
                       path='outfitOverview'
                       element={<OutfitOverviewPage />}
                     /> */}
+                    {/* TODO - updating routing so that upon creating a new outfit, you are redirected to view my outfits page */}
                     <Route path='rating' element={<RatingForm />} />
                     {/* <Route path='accessories' element={<AccessoriesForm />} />
                     <Route path='shoes' element={<ShoesForm />} /> */}

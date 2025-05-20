@@ -29,10 +29,8 @@ const workoutController = (socket: FakeSOSocket) => {
     return (
       !!req.body.runnerId &&
       !!req.body.runType &&
-      !!req.body.dateCompleted &&
       !!req.body.distance &&
-      !!req.body.duration &&
-      !!req.body.location
+      !!req.body.duration 
     );
   }
 
@@ -52,7 +50,7 @@ const workoutController = (socket: FakeSOSocket) => {
       return;
     }
 
-    const { runnerId, runType, dateCompleted, distance, duration, location } = req.body;
+    const { runnerId, runType, distance, duration } = req.body;
 
     try {
       // get the user (runner) object
@@ -66,10 +64,8 @@ const workoutController = (socket: FakeSOSocket) => {
       const newWorkout = {
         runner: user,
         runType,
-        dateCompleted,
         distance,
         duration,
-        location,
       };
 
       const workoutFromDb = await saveWorkout(newWorkout);

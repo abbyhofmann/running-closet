@@ -40,6 +40,9 @@ export interface User {
  * Interface representing an Outfit, which contains:
  * - id: The unique identifier for the outfit.
  * - wearer: The user who wore and logged the outfit.
+ * - dateWorn: The date/time for when an outfit was worn.
+ * - location: The city/state/country location of where the outfit was worn.
+ * - setting: The date, time, and location of when the outfit was worn.
  * - workout: The workout for which this outfit was worn.
  * - ratings: The list of ratings given to the outfit - there can
  * be multiple ratings if the user re-wears an outfit for a different
@@ -53,6 +56,8 @@ export interface User {
 export interface Outfit {
   _id?: string;
   wearer: User | null;
+  dateWorn: Date;
+  location: string;
   workout: Workout | null;
   ratings: Rating[];
   tops: Top[];
@@ -67,19 +72,15 @@ export interface Outfit {
  * - id: The unique identifier for the workout.
  * - runner: The user who logged the workout.
  * - runType: The type of run workout.
- * - dateCompleted: The date on which the workout was completed.
  * - distance: The distance (in miles) ran during the workout.
  * - duration: The time duration of the run workout.
- * - location: The city/state/country location of the workout.
  */
 export interface Workout {
   _id?: string;
   runner: User;
   runType: string;
-  dateCompleted: Date;
   distance: number;
   duration: number;
-  location: string;
 }
 
 /**

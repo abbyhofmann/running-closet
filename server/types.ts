@@ -678,19 +678,15 @@ export interface Workout {
  * Interface for the request body when creating a new workout.
  * - runnerId: The id of the user creating the workout (i.e. the runner).
  * - runType: The type of run workout.
- * - dateCompleted: The date on which the workout was completed.
  * - distance: The distance (in miles) ran during the workout.
  * - duration: The time duration of the run workout.
- * - location: The city/state/country location of the workout.
  */
 export interface CreateWorkoutRequest {
   body: {
     runnerId: string;
     runType: string;
-    dateCompleted: Date;
     distance: number;
     duration: number; 
-    location: String;
   };
 }
 

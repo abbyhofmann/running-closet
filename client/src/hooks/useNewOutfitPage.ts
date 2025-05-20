@@ -86,10 +86,8 @@ const useNewOutfitPage = () => {
       const newWorkoutObject = await createWorkout(
         user._id,
         newWorkout.runType,
-        newWorkout.dateCompleted,
         newWorkout.distance,
         newWorkout.duration,
-        newWorkout.location,
       );
       setCreatedNewWorkout(newWorkoutObject);
     }
