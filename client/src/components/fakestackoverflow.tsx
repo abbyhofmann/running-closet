@@ -54,6 +54,8 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
   };
   const [outfit, setOutfit] = useState<Outfit>(initialOutfit);
 
+  const resetOutfit = () => setOutfit(initialOutfit);
+
   return (
     <LoginContext.Provider value={{ setUser }}>
       <Routes>
@@ -81,7 +83,7 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
             <Route
               path='/createOutfit/*'
               element={
-                <OutfitContext.Provider value={{ outfit, setOutfit }}>
+                <OutfitContext.Provider value={{ outfit, setOutfit, resetOutfit }}>
                   <Routes>
                     <Route path='/' element={<NewOutfitPage />} />
                     <Route

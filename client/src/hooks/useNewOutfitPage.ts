@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Accessory, Bottom, Outerwear, OutfitItem, Shoe, Top, Workout } from '../types';
+import { Accessory, Bottom, Outerwear, Outfit, OutfitItem, Shoe, Top, Workout } from '../types';
 import useUserContext from './useUserContext';
 import useOutfitContext from './useOutfitContext';
 import { createTop, getTops } from '../services/topService';
@@ -8,6 +8,7 @@ import { createAccessory, getAccessories } from '../services/accessoryService';
 import { createOuterwear, getOuterwearItems } from '../services/outerwearService';
 import { createShoe, getShoes } from '../services/shoeService';
 import { createWorkout, getWorkouts } from '../services/workoutService';
+import { createOutfit } from '../services/outfitService';
 
 /**
  * Custom hook for managing the new outfit page state.
@@ -16,7 +17,7 @@ const useNewOutfitPage = () => {
   const { user, socket } = useUserContext();
 
   // outfit
-  const { outfit, setOutfit } = useOutfitContext();
+  const { outfit, setOutfit, resetOutfit } = useOutfitContext();
 
   // selected workout for the new outfit
   const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
@@ -61,14 +62,14 @@ const useNewOutfitPage = () => {
     fetchData();
     setCreatedNewOutfitItem(null);
     setCreatedNewWorkout(null);
-  }, [createdNewOutfitItem, createdNewWorkout]); // TODO - this may need to be changed to re-render when these change/new outfit is created
+  }, [createdNewOutfitItem, createdNewWorkout, user._id]); // TODO - this may need to be changed to re-render when these change/new outfit is created
 
   // set the wearer of the outfit
   useEffect(() => {
     if (user && outfit.wearer === null) {
       setOutfit({ ...outfit, wearer: user });
     }
-  }, [user, outfit.wearer, setOutfit]);
+  }, [user, outfit.wearer, setOutfit, outfit]);
 
   //   DEBUGGG
   useEffect(() => {
@@ -204,6 +205,39 @@ const useNewOutfitPage = () => {
     }
   };
 
+  const handleCreateOutfit = async (newOutfit: Outfit) => {
+    if (!newOutfit.shoe?._id) {
+      throw new Error('Shoe is missing an id.');
+    }
+
+    if (newOutfit.wearer?._id && newOutfit.workout?._id) {
+      const newOutfitCreated = await createOutfit(
+        newOutfit.wearer._id,
+        newOutfit.workout._id,
+        newOutfit.tops.map(t => {
+          if (!t._id) throw new Error('One or more tops are missing an id.');
+          return t._id;
+        }),
+        newOutfit.bottoms.map(b => {
+          if (!b._id) throw new Error('One or more bottoms are missing an id.');
+          return b._id;
+        }),
+        newOutfit.outerwear.map(o => {
+          if (!o._id) throw new Error('One or more outerwear itmes are missing an id.');
+          return o._id;
+        }),
+        newOutfit.accessories.map(a => {
+          if (!a._id) throw new Error('One or more accessories are missing an id.');
+          return a._id;
+        }),
+        newOutfit.shoe._id,
+      );
+    }
+
+    resetOutfit();
+    setSelectedWorkout(null);
+  };
+
   // function for new outfit item popup
   const handlePopupOpen = (type: string) => {
     setPopupType(type);
@@ -248,6 +282,7 @@ const useNewOutfitPage = () => {
     handlePopupOpen,
     handlePopupClose,
     handleWorkoutPopupClose,
+    handleCreateOutfit,
   };
 };
 

@@ -10,6 +10,7 @@ import { Outfit } from '../types';
 export interface OutfitContextType {
   outfit: Outfit;
   setOutfit: (outfit: Outfit) => void;
+  resetOutfit: () => void;
 }
 
 const OutfitContext = createContext<OutfitContextType | null>(null);

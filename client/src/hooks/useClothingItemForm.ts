@@ -89,28 +89,28 @@ const useClothingItemForm = (clothingType: string) => {
           throw new Error('Shoe not defined.');
         }
         // only send the ids when creating the outfit in the db
-        const newOutfit = await createOutfit(
-          outfit.wearer._id,
-          outfit.workout?._id,
-          outfit.tops.map(t => {
-            if (!t._id) throw new Error('One or more tops are missing an id.');
-            return t._id;
-          }),
-          outfit.bottoms.map(b => {
-            if (!b._id) throw new Error('One or more bottoms are missing an id.');
-            return b._id;
-          }),
-          outfit.outerwear.map(o => {
-            if (!o._id) throw new Error('One or more outerwear itmes are missing an id.');
-            return o._id;
-          }),
-          outfit.accessories.map(a => {
-            if (!a._id) throw new Error('One or more accessories are missing an id.');
-            return a._id;
-          }),
-          outfit.shoe._id,
-        ); // TODO - fix this error checking bc it's ugly
-        setOutfit({ ...outfit, _id: newOutfit._id });
+        // const newOutfit = await createOutfit(
+        //   outfit.wearer._id,
+        //   outfit.workout?._id,
+        //   outfit.tops.map(t => {
+        //     if (!t._id) throw new Error('One or more tops are missing an id.');
+        //     return t._id;
+        //   }),
+        //   outfit.bottoms.map(b => {
+        //     if (!b._id) throw new Error('One or more bottoms are missing an id.');
+        //     return b._id;
+        //   }),
+        //   outfit.outerwear.map(o => {
+        //     if (!o._id) throw new Error('One or more outerwear itmes are missing an id.');
+        //     return o._id;
+        //   }),
+        //   outfit.accessories.map(a => {
+        //     if (!a._id) throw new Error('One or more accessories are missing an id.');
+        //     return a._id;
+        //   }),
+        //   outfit.shoe._id,
+        // ); // TODO - fix this error checking bc it's ugly
+        // setOutfit({ ...outfit, _id: newOutfit._id });
       }
       // TODO - error message here for string not equal to one of the above clothing items?
     } catch (err) {

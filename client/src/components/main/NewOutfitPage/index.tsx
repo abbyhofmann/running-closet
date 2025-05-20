@@ -2,6 +2,7 @@ import { Box, List, ListItem, ListItemText, Button, Typography, Stack, Grid2 } f
 import WorkoutScroller from './workoutScroller';
 import OutfitItemScroller from './outfitItemScroller';
 import useNewOutfitPage from '../../../hooks/useNewOutfitPage';
+import useUserContext from '../../../hooks/useUserContext';
 
 /**
  * Renders a page where the user can create a new outfit.
@@ -33,6 +34,7 @@ const NewOutfitPage = () => {
     handlePopupClose,
     handleWorkoutPopupClose,
     handleCreateWorkout,
+    handleCreateOutfit,
   } = useNewOutfitPage();
 
   return (
@@ -87,15 +89,6 @@ const NewOutfitPage = () => {
             <Typography>Location: {selectedWorkout.location}</Typography>
           </Box>
         )}
-        {/* <Button
-          onClick={() => {
-            navigate(`/createOutfit/top`);
-          }}
-          variant='contained'
-          type='submit'
-          sx={{ mt: 2, width: '25ch', bgcolor: '#5171A5' }}>
-          Start Creating Outfit...
-        </Button> */}
         {/* Horizontal Workout Scroller */}
         <WorkoutScroller
           workouts={workouts}
@@ -106,6 +99,7 @@ const NewOutfitPage = () => {
           onPopupClose={handleWorkoutPopupClose}
           onNewWorkoutCreated={handleCreateWorkout}
         />
+        {/* Horizontal OutfitItem Scrollers */}
         {/* Top Scroller */}
         <OutfitItemScroller
           outfitItems={userTops}
@@ -129,9 +123,6 @@ const NewOutfitPage = () => {
           onPopupClose={handlePopupClose}
         />
 
-        <Typography>Select Outfit Clothing Items</Typography>
-        {/* Horizontal OutfitItem Scrollers */}
-
         {/* Shoes Scroller */}
         <OutfitItemScroller
           outfitItems={userShoes}
@@ -143,7 +134,6 @@ const NewOutfitPage = () => {
           onPopupOpen={() => handlePopupOpen('shoes')}
           onPopupClose={handlePopupClose}
         />
-        {/* fix this logic */}
         {/* Outerwears Scroller */}
         <OutfitItemScroller
           outfitItems={userOuterwears}
@@ -168,7 +158,7 @@ const NewOutfitPage = () => {
           onPopupOpen={() => handlePopupOpen('accessory')}
           onPopupClose={handlePopupClose}
         />
-        <Button>Create Outfit!</Button>
+        <Button onClick={() => handleCreateOutfit(outfit)}>Create Outfit!</Button>
       </Stack>
     </Grid2>
   );

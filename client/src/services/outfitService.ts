@@ -6,10 +6,6 @@ const OUTFIT_API_URL = `${process.env.REACT_APP_SERVER_URL}/outfit`;
 /**
  * Creates a new outfit.
  *
- * @param runnerId - The id of the user (runner) creating the outfit.
- * @param brand - The brand name of the outfit.
- * @param model - The model name of the outfit.
- * @param s3PhotoUrl - The URL S3 location of the image of the outfit.
  * @throws Error Throws an error if the request fails or the response status is not 200.
  */
 const createOutfit = async (
