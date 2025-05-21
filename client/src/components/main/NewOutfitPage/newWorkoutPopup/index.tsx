@@ -1,13 +1,9 @@
 import { useState } from 'react';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Button, Dialog, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { LocalizationProvider } from '@mui/x-date-pickers';
 import { Workout } from '../../../../types';
 import useUserContext from '../../../../hooks/useUserContext';
 import RunTypeChips from './runTypeChips';
-import LocationInput from './locationInput';
 
 interface NewWorkoutPopupProps {
   open: boolean;
@@ -18,41 +14,24 @@ interface NewWorkoutPopupProps {
 const NewWorkoutPopup = (props: NewWorkoutPopupProps) => {
   const { open, onClose, onNewWorkoutCreated } = props;
   const [runType, setRunType] = useState<string>('');
-  const [dateCompleted, setDateCompleted] = useState<Date | undefined>(new Date()); // TODO - idk if this type is correct
   const [distance, setDistance] = useState<string>('');
   const [duration, setDuration] = useState<string>('');
-  const [location, setLocation] = useState<string>('');
   const { user } = useUserContext();
 
   // clear the form after the workout is created
   const resetForm = () => {
     setRunType('');
-    setDateCompleted(new Date());
     setDistance('');
     setDuration('');
-    setLocation('');
   };
 
   const handleSubmit = () => {
-    if (
-      runType &&
-      runType !== '' &&
-      dateCompleted &&
-      dateCompleted !== undefined &&
-      distance &&
-      distance !== '' &&
-      duration &&
-      duration !== '' &&
-      location &&
-      location !== ''
-    ) {
+    if (runType && runType !== '' && distance && distance !== '' && duration && duration !== '') {
       const newWorkout: Workout = {
         runner: user,
         runType,
-        dateCompleted,
         distance: Number(distance), // TODO - maybe do this in a different way than casting
         duration: Number(duration),
-        location,
       };
 
       onNewWorkoutCreated(newWorkout);
@@ -113,18 +92,6 @@ const NewWorkoutPopup = (props: NewWorkoutPopupProps) => {
             }}
           />
         </Box>
-        <Box sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}>
-          <Typography gutterBottom={true}>Date Completed</Typography>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label='Select date'
-              onChange={newValue => {
-                setDateCompleted(newValue?.toDate());
-              }}
-            />
-          </LocalizationProvider>
-        </Box>
-        <LocationInput setLocation={setLocation} />
         <Button onClick={handleSubmit} variant='contained' color='primary' sx={{ mt: 2 }}>
           Create!
         </Button>

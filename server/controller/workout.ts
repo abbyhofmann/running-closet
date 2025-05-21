@@ -26,12 +26,7 @@ const workoutController = (socket: FakeSOSocket) => {
    * @returns `true` if the request is valid, otherwise `false`.
    */
   function isCreateWorkoutRequestValid(req: CreateWorkoutRequest): boolean {
-    return (
-      !!req.body.runnerId &&
-      !!req.body.runType &&
-      !!req.body.distance &&
-      !!req.body.duration 
-    );
+    return !!req.body.runnerId && !!req.body.runType && !!req.body.distance && !!req.body.duration;
   }
 
   /**

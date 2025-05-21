@@ -45,22 +45,10 @@ const WorkoutCard = ({
         {workout.runType}
       </Typography>
       <Typography variant='body2' sx={{ color: 'rgba(0,0,0,0.6)' }}>
-        Date: {new Date(workout.dateCompleted).toLocaleDateString()}
-      </Typography>
-      <Typography variant='body2' sx={{ color: 'rgba(0,0,0,0.6)' }}>
         Distance: {workout.distance} miles
       </Typography>
       <Typography variant='body2' sx={{ color: 'rgba(0,0,0,0.6)' }}>
         Duration: {workout.duration} minutes
-      </Typography>
-      <Typography
-        variant='body2'
-        sx={{
-          color: 'rgba(0,0,0,0.6)',
-          wordBreak: 'break-word', // ensures long words wrap
-          overflowWrap: 'break-word', // alternative wrapping
-        }}>
-        Location: {workout.location}
       </Typography>
     </Box>
   </Card>

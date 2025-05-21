@@ -10,6 +10,8 @@ const OUTFIT_API_URL = `${process.env.REACT_APP_SERVER_URL}/outfit`;
  */
 const createOutfit = async (
   creatorId: string,
+  dateWorn: Date,
+  location: string,
   workoutId: string,
   topIds: string[],
   bottomIds: string[],
@@ -17,7 +19,17 @@ const createOutfit = async (
   accessoriesIds: string[],
   shoesId: string,
 ): Promise<Outfit> => {
-  const data = { creatorId, workoutId, topIds, bottomIds, outerwearIds, accessoriesIds, shoesId };
+  const data = {
+    creatorId,
+    dateWorn,
+    location,
+    workoutId,
+    topIds,
+    bottomIds,
+    outerwearIds,
+    accessoriesIds,
+    shoesId,
+  };
 
   const res = await api.post(`${OUTFIT_API_URL}/createOutfit`, data);
   if (res.status !== 200) {

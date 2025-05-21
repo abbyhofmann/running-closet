@@ -4,11 +4,11 @@ import { Country, State, City } from 'country-state-city';
 import { FormControl, MenuItem, Select, Typography } from '@mui/material';
 
 interface LocationInputProps {
-  setLocation: (value: string) => void;
+  onSelectLocation: (location: string) => void;
 }
 
 const LocationInput = (props: LocationInputProps) => {
-  const { setLocation } = props;
+  const { onSelectLocation } = props;
 
   const addressFromik = useFormik({
     initialValues: {
@@ -91,7 +91,7 @@ const LocationInput = (props: LocationInputProps) => {
                 { country: values.country, state: values.state, city: event.target.value },
                 false,
               );
-              setLocation(`${event.target.value}, ${values.state}, ${values.country}`);
+              onSelectLocation(`${event.target.value}, ${values.state}, ${values.country}`);
             }}>
             {updatedCities(values.country, values.state).map(({ name }, index) => (
               <MenuItem key={index} value={name}>

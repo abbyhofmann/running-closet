@@ -605,6 +605,8 @@ export type AllOutfitItemsResponse = AllOutfitItemsObject | { error: string };
  * Interface representing an Outfit document, which contains:
  * - id: The unique identifier for the outfit.
  * - wearer: The user who wore and logged the outfit.
+ * - dateWorn: The date/time for when an outfit was worn.
+ * - location: The city/state/country location of where the outfit was worn.
  * - workout: The workout for which this outfit was worn.
  * - ratings: The list of ratings given to the outfit - there can
  * be multiple ratings if the user re-wears an outfit for a different
@@ -618,6 +620,8 @@ export type AllOutfitItemsResponse = AllOutfitItemsObject | { error: string };
 export interface Outfit {
   _id?: ObjectId;
   wearer: User;
+  dateWorn: Date;
+  location: string;
   workout: Workout;
   ratings: Rating[];
   tops: Top[];
@@ -630,6 +634,8 @@ export interface Outfit {
 /**
  * Interface for the request body when creating a new outfit.
  * - creatorId: The id of the user creating the outfit (i.e. the wearer).
+ * - dateWorn: The date/time for when an outfit was worn.
+ * - location: The city/state/country location of where the outfit was worn.
  * - workoutId: The id of the workout the outfit was worn in.
  * - topIds: The list of ids of the tops worn as part of the outfit.
  * - bottomIds: The list of ids of the bottoms worn as part of the outfit.
@@ -640,6 +646,8 @@ export interface Outfit {
 export interface CreateOutfitRequest {
   body: {
     creatorId: string;
+    dateWorn: string;
+    location: string;
     workoutId: string;
     topIds: string[];
     bottomIds: string[];
@@ -659,19 +667,15 @@ export type OutfitResponse = Outfit | { error: string };
  * - id: The unique identifier for the workout.
  * - runner: The user who logged the workout.
  * - runType: The type of run workout.
- * - dateCompleted: The date on which the workout was completed.
  * - distance: The distance (in miles) ran during the workout.
  * - duration: The time duration of the run workout.
- * - location: The city/state/country location of the workout.
  */
 export interface Workout {
   _id?: ObjectId;
   runner: User;
   runType: String;
-  dateCompleted: Date;
   distance: Number;
   duration: Number;
-  location: String;
 }
 
 /**

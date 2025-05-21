@@ -19,6 +19,10 @@ const useNewOutfitPage = () => {
   // outfit
   const { outfit, setOutfit, resetOutfit } = useOutfitContext();
 
+  // date and location selection for outfit worn
+  const [dateWorn, setDateWorn] = useState<Date | null>(new Date()); // TODO - idk if this type is correct
+  const [location, setLocation] = useState<string>('');
+
   // selected workout for the new outfit
   const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
 
@@ -75,6 +79,16 @@ const useNewOutfitPage = () => {
   useEffect(() => {
     console.log('Outfit state updated:', outfit);
   }, [outfit]);
+
+  const handleLocationSelection = (selectedLocation: string) => {
+    setLocation(location);
+    setOutfit({ ...outfit, location: selectedLocation });
+  };
+
+  const handleDateSelection = (selectedDate: Date) => {
+    setDateWorn(selectedDate);
+    setOutfit({ ...outfit, dateWorn: selectedDate });
+  };
 
   const handleWorkoutSelection = (workout: Workout) => {
     setSelectedWorkout(selectedWorkout?._id === workout._id ? null : workout);
@@ -211,6 +225,8 @@ const useNewOutfitPage = () => {
     if (newOutfit.wearer?._id && newOutfit.workout?._id) {
       const newOutfitCreated = await createOutfit(
         newOutfit.wearer._id,
+        newOutfit.dateWorn,
+        newOutfit.location,
         newOutfit.workout._id,
         newOutfit.tops.map(t => {
           if (!t._id) throw new Error('One or more tops are missing an id.');
@@ -281,6 +297,9 @@ const useNewOutfitPage = () => {
     handlePopupClose,
     handleWorkoutPopupClose,
     handleCreateOutfit,
+    setDateWorn,
+    handleLocationSelection,
+    handleDateSelection,
   };
 };
 

@@ -45,7 +45,8 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
   const initialOutfit: Outfit = {
     wearer: null,
     workout: null,
-    dateWorn: 
+    dateWorn: new Date(),
+    location: '',
     ratings: [],
     tops: [],
     bottoms: [],

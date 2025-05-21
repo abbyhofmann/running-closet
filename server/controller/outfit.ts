@@ -40,8 +40,11 @@ const outfitController = (socket: FakeSOSocket) => {
    * @returns `true` if the request is valid, otherwise `false`.
    */
   function isCreateOutfitRequestValid(req: CreateOutfitRequest): boolean {
+    console.log('req: ', req);
     return (
       !!req.body.creatorId &&
+      !!req.body.dateWorn &&
+      !!req.body.location && // TODO - does this check need to be more specific (like not an empty string?)
       !!req.body.workoutId &&
       !!req.body.topIds &&
       req.body.topIds.length > 0 &&
@@ -69,8 +72,17 @@ const outfitController = (socket: FakeSOSocket) => {
       return;
     }
 
-    const { creatorId, workoutId, topIds, bottomIds, outerwearIds, accessoriesIds, shoesId } =
-      req.body;
+    const {
+      creatorId,
+      dateWorn,
+      location,
+      workoutId,
+      topIds,
+      bottomIds,
+      outerwearIds,
+      accessoriesIds,
+      shoesId,
+    } = req.body;
 
     try {
       // function to fetch and validate the components of the outfit
@@ -112,6 +124,8 @@ const outfitController = (socket: FakeSOSocket) => {
       // create and save the outfit
       const outfit = {
         wearer: user,
+        dateWorn: new Date(dateWorn),
+        location,
         workout,
         ratings: [],
         tops,

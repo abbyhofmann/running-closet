@@ -1,8 +1,10 @@
 import { Box, List, ListItem, ListItemText, Button, Typography, Stack, Grid2 } from '@mui/material';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import WorkoutScroller from './workoutScroller';
 import OutfitItemScroller from './outfitItemScroller';
 import useNewOutfitPage from '../../../hooks/useNewOutfitPage';
-import useUserContext from '../../../hooks/useUserContext';
+import LocationInput from './newWorkoutPopup/locationInput';
 
 /**
  * Renders a page where the user can create a new outfit.
@@ -35,6 +37,9 @@ const NewOutfitPage = () => {
     handleWorkoutPopupClose,
     handleCreateWorkout,
     handleCreateOutfit,
+    setDateWorn,
+    handleLocationSelection,
+    handleDateSelection,
   } = useNewOutfitPage();
 
   return (
@@ -76,17 +81,26 @@ const NewOutfitPage = () => {
             </List>
           </Box>
         </Box>
+        <LocationInput onSelectLocation={handleLocationSelection} />
+        <Box sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}>
+          <Typography gutterBottom={true}>Date Worn</Typography>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label='Select date'
+              onChange={newValue => {
+                setDateWorn(newValue ? newValue.toDate() : null);
+                handleDateSelection(newValue ? newValue.toDate() : new Date()); // TODO - this is bad and needs to be fixed
+              }}
+            />
+          </LocalizationProvider>
+        </Box>
         {/* Display Selected Workout */}
         {selectedWorkout && (
           <Box mt={3}>
             <Typography variant='h6'>Selected Workout:</Typography>
             <Typography>Type: {selectedWorkout.runType}</Typography>
-            <Typography>
-              Date: {new Date(selectedWorkout.dateCompleted).toLocaleDateString()}
-            </Typography>
             <Typography>Distance: {selectedWorkout.distance} miles</Typography>
             <Typography>Duration: {selectedWorkout.duration} minutes</Typography>
-            <Typography>Location: {selectedWorkout.location}</Typography>
           </Box>
         )}
         {/* Horizontal Workout Scroller */}
