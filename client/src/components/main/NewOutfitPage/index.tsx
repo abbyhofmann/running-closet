@@ -81,9 +81,10 @@ const NewOutfitPage = () => {
             </List>
           </Box>
         </Box>
-        <LocationInput onSelectLocation={handleLocationSelection} />
         <Box sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}>
-          <Typography gutterBottom={true}>Date Worn</Typography>
+          <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+            Select Date Worn
+          </Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               label='Select date'
@@ -95,6 +96,7 @@ const NewOutfitPage = () => {
             />
           </LocalizationProvider>
         </Box>
+        <LocationInput onSelectLocation={handleLocationSelection} />
         {/* Display Selected Workout */}
         {selectedWorkout && (
           <Box mt={3}>

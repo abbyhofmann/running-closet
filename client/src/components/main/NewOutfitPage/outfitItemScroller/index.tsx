@@ -32,68 +32,74 @@ const OutfitItemScroller = ({
   };
 
   return (
-    <Box
-      sx={{
-        'display': 'flex',
-        'overflowX': 'auto', // Enables horizontal scrolling
-        'gap': 2, // Spacing between cards
-        'padding': 2, // Padding inside container
-        'scrollbarWidth': 'thin', // hides scrollbar
-        '&::-webkit-scrollbar': { height: 8 },
-        '&::-webkit-scrollbar-thumb': { backgroundColor: 'gray', borderRadius: 4 },
-        'whiteSpace': 'nowrap', // prevents wrapping
-      }}>
-      {outfitItems.map(outfitItem => (
-        <OutfitItemCard
-          key={outfitItem._id?.toString()}
-          outfitItem={outfitItem}
-          onSelectOutfitItem={onSelectOutfitItem}
-          selected={currentSelectedOutfitItems.includes(outfitItem)}
-        />
-      ))}
-
-      {/* Card to Create New OutfitItem */}
+    <div>
+      <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+        {/* make first letter of outfitItemType capitalized */}
+        Select {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)}
+      </Typography>
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          cursor: 'pointer',
-        }}
-        onClick={handleCreateClick}>
-        <Card
+          'display': 'flex',
+          'overflowX': 'auto', // Enables horizontal scrolling
+          'gap': 2, // Spacing between cards
+          'padding': 2, // Padding inside container
+          'scrollbarWidth': 'thin', // hides scrollbar
+          '&::-webkit-scrollbar': { height: 8 },
+          '&::-webkit-scrollbar-thumb': { backgroundColor: 'gray', borderRadius: 4 },
+          'whiteSpace': 'nowrap', // prevents wrapping
+        }}>
+        {outfitItems.map(outfitItem => (
+          <OutfitItemCard
+            key={outfitItem._id?.toString()}
+            outfitItem={outfitItem}
+            onSelectOutfitItem={onSelectOutfitItem}
+            selected={currentSelectedOutfitItems.includes(outfitItem)}
+          />
+        ))}
+
+        {/* Card to Create New OutfitItem */}
+        <Box
           sx={{
-            'display': 'flex',
-            'cursor': 'pointer',
-            '&:hover': {
-              boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-              transform: 'scale(1.03)',
-            },
-            'borderRadius': 2,
-            'backgroundColor': purple[100],
-          }}>
-          <Box
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            cursor: 'pointer',
+          }}
+          onClick={handleCreateClick}>
+          <Card
             sx={{
-              padding: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 1,
+              'display': 'flex',
+              'cursor': 'pointer',
+              '&:hover': {
+                boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                transform: 'scale(1.03)',
+              },
+              'borderRadius': 2,
+              'backgroundColor': purple[100],
             }}>
-            <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
-              + Create New{' '}
-              {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)}
-            </Typography>
-          </Box>
-        </Card>
-        <NewOutfitItemPopup
-          open={popupOpen}
-          onClose={() => onPopupClose()}
-          outfitItemType={currentType}
-          onNewOutfitItemCreated={onNewOutfitItemCreated}
-        />
+            <Box
+              sx={{
+                padding: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1,
+              }}>
+              <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+                + Create New{' '}
+                {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)}
+              </Typography>
+            </Box>
+          </Card>
+          <NewOutfitItemPopup
+            open={popupOpen}
+            onClose={() => onPopupClose()}
+            outfitItemType={currentType}
+            onNewOutfitItemCreated={onNewOutfitItemCreated}
+          />
+        </Box>
       </Box>
-    </Box>
+    </div>
   );
 };
 

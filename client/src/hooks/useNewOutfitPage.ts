@@ -227,7 +227,7 @@ const useNewOutfitPage = () => {
     if (
       newOutfit.wearer?._id &&
       newOutfit.workout?._id &&
-      newOutfit.dateWorn &&
+      newOutfit.dateWorn !== undefined &&
       newOutfit.location
     ) {
       const newOutfitCreated = await createOutfit(
@@ -255,6 +255,7 @@ const useNewOutfitPage = () => {
       );
     }
 
+    // TODO - error handling for when a field is not selected and there's an attempt to create outfit
     resetOutfit();
     setSelectedWorkout(null);
   };

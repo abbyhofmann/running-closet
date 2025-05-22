@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useFormik } from 'formik';
 import { Country, State, City } from 'country-state-city';
 import { FormControl, MenuItem, Select, Typography } from '@mui/material';
+import { Box } from '@mui/system';
 
 interface LocationInputProps {
   onSelectLocation: (location: string) => void;
@@ -21,11 +22,6 @@ const LocationInput = (props: LocationInputProps) => {
 
   const countries = Country.getAllCountries();
 
-  const updatedCountries = countries.map(country => ({
-    label: country.name,
-    value: country.isoCode,
-    ...country,
-  }));
   const updatedStates = (countryIsoCode: string) =>
     State.getStatesOfCountry(countryIsoCode).map(state => ({
       label: state.name,
@@ -39,15 +35,17 @@ const LocationInput = (props: LocationInputProps) => {
       ...city,
     }));
 
-  const { values, handleSubmit, setFieldValue, setValues } = addressFromik;
+  const { values, handleSubmit, setValues } = addressFromik;
 
   // re-render when the categories get updated
   useEffect(() => {}, [values]);
 
   return (
-    <div className='location-inputs'>
+    <Box sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}>
       <form onSubmit={handleSubmit}>
-        <Typography gutterBottom={true}>Location Selection</Typography>
+        <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+          Select Location
+        </Typography>
         <FormControl sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}>
           <Typography>Country</Typography>
           <Select
@@ -101,7 +99,7 @@ const LocationInput = (props: LocationInputProps) => {
           </Select>
         </FormControl>
       </form>
-    </div>
+    </Box>
   );
 };
 
