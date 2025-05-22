@@ -72,10 +72,10 @@ const useNewOutfitPage = () => {
 
   // set the wearer of the outfit
   useEffect(() => {
-    if (user && outfit.wearer === null) {
+    if (user && !outfit.wearer) {
       setOutfit({ ...outfit, wearer: user });
     }
-  }, [user, outfit.wearer, setOutfit, outfit]);
+  }, [outfit, setOutfit, user]);
 
   //   DEBUGGG
   useEffect(() => {
@@ -232,6 +232,10 @@ const useNewOutfitPage = () => {
       !newOutfit.dateWorn ||
       !newOutfit.location
     ) {
+      console.log(!newOutfit.wearer?._id);
+      console.log(!newOutfit.workout?._id);
+      console.log(!newOutfit.dateWorn);
+      console.log(!newOutfit.location);
       throw new Error('Missing required outfit fields.');
     }
 
@@ -289,6 +293,7 @@ const useNewOutfitPage = () => {
   const handleAddRatingClick = async (outfitToCreate: Outfit) => {
     try {
       const outfitId = await handleCreateOutfit(outfitToCreate);
+      console.log('new created outfit id: ', outfitId);
       navigate(`/rate/${outfitId}`);
     } catch (e) {
       console.error('Error creating outfit:', (e as Error).message); // TODO - do something with error that is caught, maybe display popup

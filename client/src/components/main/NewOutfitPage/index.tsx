@@ -55,6 +55,9 @@ const NewOutfitPage = () => {
           <Box sx={{ width: 240 }}>
             <List>
               <ListItem>
+                <ListItemText primary={`wearer: ${outfit.wearer}`} />
+              </ListItem>
+              <ListItem>
                 <ListItemText
                   primary={`Top: ${outfit.tops.length > 0 ? outfit.tops[0].brand : 'Not Selected'}`}
                 />

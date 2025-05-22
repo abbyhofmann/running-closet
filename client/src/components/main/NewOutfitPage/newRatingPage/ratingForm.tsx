@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Box, TextField, Button, Alert } from '@mui/material';
+import { Box, TextField, Button, Alert, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Outfit, ClothingItemFormProps } from '../../../../types';
 import useClothingItemForm from '../../../../hooks/useClothingItemForm';
@@ -11,6 +11,7 @@ const RatingForm = () => {
   const navigate = useNavigate();
 
   const {
+    oid,
     stars,
     temperatureGauge,
     newRatingError,
@@ -26,7 +27,9 @@ const RatingForm = () => {
   };
 
   return (
-    <div></div>
+    <div>
+      <Typography>{oid}</Typography>
+    </div>
     // <div className='container'>
     //   <Box
     //     sx={{

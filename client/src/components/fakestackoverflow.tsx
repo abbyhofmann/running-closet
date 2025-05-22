@@ -132,8 +132,10 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
               }
             />
             <Route
-            path='/addRating/:oid'
-            element={}/>
+              // path='/addRating/:oid'
+              path='/rate/:oid'
+              element={<RatingForm />}
+            />
           </Route>
         }
       </Routes>

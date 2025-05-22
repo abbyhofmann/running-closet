@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import useOutfitContext from './useOutfitContext';
 
@@ -10,6 +10,7 @@ import createRating from '../services/ratingService';
  *
  * */
 const useRatingForm = () => {
+  const { oid } = useParams();
   const [stars, setStars] = useState<number>(-1);
   const [temperatureGauge, setTemperatureGauge] = useState<string>('');
   const [newRatingError, setNewRatingError] = useState<string>('');
@@ -58,6 +59,7 @@ const useRatingForm = () => {
   };
 
   return {
+    oid,
     stars,
     temperatureGauge,
     newRatingError,
