@@ -131,6 +131,9 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
                 </OutfitContext.Provider>
               }
             />
+            <Route
+            path='/addRating/:oid'
+            element={}/>
           </Route>
         }
       </Routes>

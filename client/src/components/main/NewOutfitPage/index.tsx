@@ -40,6 +40,7 @@ const NewOutfitPage = () => {
     setDateWorn,
     handleLocationSelection,
     handleDateSelection,
+    handleAddRatingClick,
   } = useNewOutfitPage();
 
   return (
@@ -175,7 +176,8 @@ const NewOutfitPage = () => {
           onPopupOpen={() => handlePopupOpen('accessory')}
           onPopupClose={handlePopupClose}
         />
-        <Button onClick={() => handleCreateOutfit(outfit)}>Create Outfit!</Button>
+        {/* <Button onClick={() => handleCreateOutfit(outfit)}>Create Outfit!</Button> */}
+        <Button onClick={() => handleAddRatingClick(outfit)}>Rate this Outfit</Button>
       </Stack>
     </Grid2>
   );
