@@ -9,9 +9,9 @@ import useRatingForm from '../../../../hooks/useRatingForm';
 
 const RatingForm = () => {
   const navigate = useNavigate();
+  const { outfit } = useOutfitContext();
 
   const {
-    oid,
     stars,
     temperatureGauge,
     newRatingError,
@@ -28,7 +28,7 @@ const RatingForm = () => {
 
   return (
     <div>
-      <Typography>{oid}</Typography>
+      <span>outfit: {outfit.toString()}</span>
     </div>
     // <div className='container'>
     //   <Box

@@ -43,7 +43,6 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
 
   // Initial state for OutfitContext
   const initialOutfit: Outfit = {
-    ratings: [],
     tops: [],
     bottoms: [],
     outerwear: [],
@@ -83,7 +82,7 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
                 <OutfitContext.Provider value={{ outfit, setOutfit, resetOutfit }}>
                   <Routes>
                     <Route path='/' element={<NewOutfitPage />} />
-                    <Route
+                    {/* <Route
                       path='top'
                       element={
                         <ClothingItemForm clothingItem={'top'} nextClothingItem={'bottom'} />
@@ -118,7 +117,7 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
                           nextClothingItem={'outfitOverview'}
                         />
                       }
-                    />
+                    /> */}
                     {/* <Route
                       path='outfitOverview'
                       element={<OutfitOverviewPage />}
@@ -130,11 +129,6 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
                   </Routes>
                 </OutfitContext.Provider>
               }
-            />
-            <Route
-              // path='/addRating/:oid'
-              path='/rate/:oid'
-              element={<RatingForm />}
             />
           </Route>
         }

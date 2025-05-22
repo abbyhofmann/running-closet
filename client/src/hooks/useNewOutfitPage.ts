@@ -221,56 +221,78 @@ const useNewOutfitPage = () => {
     }
   };
 
-  const handleCreateOutfit = async (newOutfit: Outfit): Promise<string> => {
-    if (!newOutfit.shoe?._id) {
+  const validateOutfit = (outfitToValidate: Outfit): void => {
+    if (!outfitToValidate.shoe?._id) {
       throw new Error('Shoe is missing an id.');
     }
 
     if (
-      !newOutfit.wearer?._id ||
-      !newOutfit.workout?._id ||
-      !newOutfit.dateWorn ||
-      !newOutfit.location
+      !outfitToValidate.wearer?._id ||
+      !outfitToValidate.workout?._id ||
+      !outfitToValidate.dateWorn ||
+      !outfitToValidate.location
     ) {
-      console.log(!newOutfit.wearer?._id);
-      console.log(!newOutfit.workout?._id);
-      console.log(!newOutfit.dateWorn);
-      console.log(!newOutfit.location);
       throw new Error('Missing required outfit fields.');
     }
 
-    const newOutfitCreated = await createOutfit(
-      newOutfit.wearer._id,
-      newOutfit.dateWorn,
-      newOutfit.location,
-      newOutfit.workout._id,
-      newOutfit.tops.map(t => {
-        if (!t._id) throw new Error('One or more tops are missing an id.');
-        return t._id;
-      }),
-      newOutfit.bottoms.map(b => {
-        if (!b._id) throw new Error('One or more bottoms are missing an id.');
-        return b._id;
-      }),
-      newOutfit.outerwear.map(o => {
-        if (!o._id) throw new Error('One or more outerwear items are missing an id.');
-        return o._id;
-      }),
-      newOutfit.accessories.map(a => {
-        if (!a._id) throw new Error('One or more accessories are missing an id.');
-        return a._id;
-      }),
-      newOutfit.shoe._id,
-    );
+    const hasInvalidIds = [
+      ...outfitToValidate.tops,
+      ...outfitToValidate.bottoms,
+      ...outfitToValidate.outerwear,
+      ...outfitToValidate.accessories,
+    ].some(item => !item._id);
 
-    if (!newOutfitCreated || !newOutfitCreated._id) {
-      throw new Error('Failed to create outfit.');
+    if (hasInvalidIds) {
+      throw new Error('One or more outfit items are missing an id.');
     }
-
-    resetOutfit();
-    setSelectedWorkout(null);
-    return newOutfitCreated._id;
   };
+
+  // const handleCreateOutfit = async (newOutfit: Outfit): Promise<string> => {
+  //   if (!newOutfit.shoe?._id) {
+  //     throw new Error('Shoe is missing an id.');
+  //   }
+
+  //   if (
+  //     !newOutfit.wearer?._id ||
+  //     !newOutfit.workout?._id ||
+  //     !newOutfit.dateWorn ||
+  //     !newOutfit.location
+  //   ) {
+  //     throw new Error('Missing required outfit fields.');
+  //   }
+
+  //   const newOutfitCreated = await createOutfit(
+  //     newOutfit.wearer._id,
+  //     newOutfit.dateWorn,
+  //     newOutfit.location,
+  //     newOutfit.workout._id,
+  //     newOutfit.tops.map(t => {
+  //       if (!t._id) throw new Error('One or more tops are missing an id.');
+  //       return t._id;
+  //     }),
+  //     newOutfit.bottoms.map(b => {
+  //       if (!b._id) throw new Error('One or more bottoms are missing an id.');
+  //       return b._id;
+  //     }),
+  //     newOutfit.outerwear.map(o => {
+  //       if (!o._id) throw new Error('One or more outerwear items are missing an id.');
+  //       return o._id;
+  //     }),
+  //     newOutfit.accessories.map(a => {
+  //       if (!a._id) throw new Error('One or more accessories are missing an id.');
+  //       return a._id;
+  //     }),
+  //     newOutfit.shoe._id,
+  //   );
+
+  //   if (!newOutfitCreated || !newOutfitCreated._id) {
+  //     throw new Error('Failed to create outfit.');
+  //   }
+
+  //   resetOutfit();
+  //   setSelectedWorkout(null);
+  //   return newOutfitCreated._id;
+  // };
 
   // function for new outfit item popup
   const handlePopupOpen = (type: string) => {
@@ -290,13 +312,12 @@ const useNewOutfitPage = () => {
     setTimeout(() => setPopupType(null), 0); // delay resetting type to ensure state updates
   };
 
-  const handleAddRatingClick = async (outfitToCreate: Outfit) => {
+  const handleAddRatingClick = (outfitToRate: Outfit) => {
     try {
-      const outfitId = await handleCreateOutfit(outfitToCreate);
-      console.log('new created outfit id: ', outfitId);
-      navigate(`/rate/${outfitId}`);
+      validateOutfit(outfitToRate);
+      navigate('/createOutfit/rating');
     } catch (e) {
-      console.error('Error creating outfit:', (e as Error).message); // TODO - do something with error that is caught, maybe display popup
+      console.error('Error validating outfit:', (e as Error).message);
     }
   };
 
@@ -326,7 +347,7 @@ const useNewOutfitPage = () => {
     handlePopupOpen,
     handlePopupClose,
     handleWorkoutPopupClose,
-    handleCreateOutfit,
+    // handleCreateOutfit,
     setDateWorn,
     handleLocationSelection,
     handleDateSelection,

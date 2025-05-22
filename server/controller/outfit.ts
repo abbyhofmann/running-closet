@@ -25,6 +25,7 @@ import {
   fetchOuterwearById,
   fetchOutfitById,
   extractOutfitItems,
+  fetchRatingById,
 } from '../models/application';
 
 const outfitController = (socket: FakeSOSocket) => {
@@ -40,12 +41,13 @@ const outfitController = (socket: FakeSOSocket) => {
    * @returns `true` if the request is valid, otherwise `false`.
    */
   function isCreateOutfitRequestValid(req: CreateOutfitRequest): boolean {
-    console.log('req: ', req);
+    console.log('req body: ', req.body);
     return (
       !!req.body.creatorId &&
       !!req.body.dateWorn &&
       !!req.body.location && // TODO - does this check need to be more specific (like not an empty string?)
       !!req.body.workoutId &&
+      !!req.body.ratingId &&
       !!req.body.topIds &&
       req.body.topIds.length > 0 &&
       !!req.body.bottomIds &&
@@ -77,6 +79,7 @@ const outfitController = (socket: FakeSOSocket) => {
       dateWorn,
       location,
       workoutId,
+      ratingId,
       topIds,
       bottomIds,
       outerwearIds,
@@ -102,24 +105,29 @@ const outfitController = (socket: FakeSOSocket) => {
       };
 
       // fetch the components of the outfit, as provided in the initial request
-      const [user, workout, tops, bottoms, outerwear, accessories, shoes] = await Promise.all([
-        fetchUserById(creatorId).then(userRes => {
-          if ('error' in userRes) throw new Error(userRes.error);
-          return userRes;
-        }),
-        fetchWorkoutById(workoutId).then(workoutRes => {
-          if ('error' in workoutRes) throw new Error(workoutRes.error);
-          return workoutRes;
-        }),
-        fetchAndValidate(fetchTopById, topIds),
-        fetchAndValidate(fetchBottomById, bottomIds),
-        fetchAndValidate(fetchOuterwearById, outerwearIds),
-        fetchAndValidate(fetchAccessoryById, accessoriesIds),
-        fetchShoeById(shoesId).then(shoeRes => {
-          if ('error' in shoeRes) throw new Error(shoeRes.error);
-          return shoeRes;
-        }),
-      ]);
+      const [user, workout, rating, tops, bottoms, outerwear, accessories, shoes] =
+        await Promise.all([
+          fetchUserById(creatorId).then(userRes => {
+            if ('error' in userRes) throw new Error(userRes.error);
+            return userRes;
+          }),
+          fetchWorkoutById(workoutId).then(workoutRes => {
+            if ('error' in workoutRes) throw new Error(workoutRes.error);
+            return workoutRes;
+          }),
+          fetchRatingById(ratingId).then(ratingRes => {
+            if ('error' in ratingRes) throw new Error(ratingRes.error);
+            return ratingRes;
+          }),
+          fetchAndValidate(fetchTopById, topIds),
+          fetchAndValidate(fetchBottomById, bottomIds),
+          fetchAndValidate(fetchOuterwearById, outerwearIds),
+          fetchAndValidate(fetchAccessoryById, accessoriesIds),
+          fetchShoeById(shoesId).then(shoeRes => {
+            if ('error' in shoeRes) throw new Error(shoeRes.error);
+            return shoeRes;
+          }),
+        ]);
 
       // create and save the outfit
       const outfit = {
@@ -127,7 +135,7 @@ const outfitController = (socket: FakeSOSocket) => {
         dateWorn: new Date(dateWorn),
         location,
         workout,
-        ratings: [],
+        rating,
         tops,
         bottoms,
         outerwear,

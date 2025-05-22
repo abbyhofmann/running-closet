@@ -1668,7 +1668,7 @@ export const addRatingToOutfit = async (
 /**
  * Fetches an workout by its id.
  *
- * @param oid The id of the workout being fetched.
+ * @param wid The id of the workout being fetched.
  * @returns The workout or an error if the workout is not found.
  */
 export const fetchWorkoutById = async (wid: string): Promise<WorkoutResponse> => {
@@ -1682,6 +1682,24 @@ export const fetchWorkoutById = async (wid: string): Promise<WorkoutResponse> =>
     return workout;
   } catch (error) {
     return { error: `Error when fetching workout: ${(error as Error).message}` };
+  }
+};
+
+/**
+ * Fetches a rating by its id.
+ *
+ * @param rid The id of the rating being fetched.
+ * @returns The rating or an error if the rating is not found.
+ */
+export const fetchRatingById = async (rid: string): Promise<RatingResponse> => {
+  try {
+    const rating = await RatingModel.findOne({ _id: rid });
+    if (!rating) {
+      throw new Error(`Failed to fetch rating with id ${rid}`);
+    }
+    return rating;
+  } catch (error) {
+    return { error: `Error when fetching rating: ${(error as Error).message}` };
   }
 };
 

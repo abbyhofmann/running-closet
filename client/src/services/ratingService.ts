@@ -6,18 +6,13 @@ const RATING_API_URL = `${process.env.REACT_APP_SERVER_URL}/rating`;
 /**
  * Creates a new rating.
  *
- * @param outfitId The id of the outfit to which this rating is associated.
  * @param stars The number of stars for the outfit (out of 5).
  * @param temperatureGauge A measure of how the outfit performed given the temperature
  * conditions (too cold, too warm, appropriate).
  * @throws Error Throws an error if the request fails or the response status is not 200.
  */
-const createRating = async (
-  outfitId: string,
-  stars: number,
-  temperatureGauge: string,
-): Promise<Rating> => {
-  const data = { outfitId, stars, temperatureGauge };
+const createRating = async (stars: number, temperatureGauge: string): Promise<Rating> => {
+  const data = { stars, temperatureGauge };
 
   const res = await api.post(`${RATING_API_URL}/createRating`, data);
   if (res.status !== 200) {

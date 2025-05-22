@@ -5,6 +5,8 @@ import { Schema } from 'mongoose';
  * This schema defines the structure for storing outfits in the database.
  * Each outfit includes the following fields:
  * - `wearer`: The user who wore and logged the outfit.
+ * - `dateWorn`: The date/time for when an outfit was worn.
+ * - `location`: The city/state/country location of where the outfit was worn.
  * - `workout`: The workout for which the outfit was worn.
  * - `rating`: The overall rating of the outfit.
  * - `tops`: The tops worn in the outfit.
@@ -16,6 +18,8 @@ import { Schema } from 'mongoose';
 const outfitSchema: Schema = new Schema(
   {
     wearer: { type: Schema.Types.ObjectId, ref: 'Runner' },
+    dateWorn: { type: Date },
+    location: { type: String },
     workout: { type: Schema.Types.ObjectId, ref: 'Workout' },
     rating: { type: Schema.Types.ObjectId, ref: 'Rating' },
     tops: [{ type: Schema.Types.ObjectId, ref: 'Top' }],
