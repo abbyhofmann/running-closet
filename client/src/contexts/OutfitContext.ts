@@ -9,7 +9,7 @@ import { Outfit } from '../types';
  */
 export interface OutfitContextType {
   outfit: Outfit;
-  setOutfit: (outfit: Outfit) => void;
+  setOutfit: React.Dispatch<React.SetStateAction<Outfit>>;
   resetOutfit: () => void;
 }
 

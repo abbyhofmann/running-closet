@@ -88,8 +88,9 @@ const NewOutfitPage = () => {
             <DatePicker
               label='Select date'
               onChange={newValue => {
-                setDateWorn(newValue ? newValue.toDate() : null);
-                handleDateSelection(newValue ? newValue.toDate() : new Date()); // TODO - this is bad and needs to be fixed
+                const newDate = newValue ? newValue.toDate() : null;
+                setDateWorn(newDate);
+                handleDateSelection(newDate);
               }}
             />
           </LocalizationProvider>

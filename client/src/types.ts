@@ -55,16 +55,16 @@ export interface User {
  */
 export interface Outfit {
   _id?: string;
-  wearer: User | null;
-  dateWorn: Date;
-  location: string;
-  workout: Workout | null;
+  wearer?: User;
+  dateWorn?: Date;
+  location?: string;
+  workout?: Workout;
   ratings: Rating[];
   tops: Top[];
   bottoms: Bottom[];
   outerwear: Outerwear[];
   accessories: Accessory[];
-  shoe: Shoe | null;
+  shoe?: Shoe;
 }
 
 /**

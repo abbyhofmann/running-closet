@@ -43,16 +43,11 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
 
   // Initial state for OutfitContext
   const initialOutfit: Outfit = {
-    wearer: null,
-    workout: null,
-    dateWorn: new Date(),
-    location: '',
     ratings: [],
     tops: [],
     bottoms: [],
     outerwear: [],
     accessories: [],
-    shoe: null,
   };
   const [outfit, setOutfit] = useState<Outfit>(initialOutfit);
 

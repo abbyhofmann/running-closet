@@ -20,7 +20,7 @@ const useNewOutfitPage = () => {
   const { outfit, setOutfit, resetOutfit } = useOutfitContext();
 
   // date and location selection for outfit worn
-  const [dateWorn, setDateWorn] = useState<Date | null>(new Date()); // TODO - idk if this type is correct
+  const [dateWorn, setDateWorn] = useState<Date | null>(null); // TODO - idk if this type is correct
   const [location, setLocation] = useState<string>('');
 
   // selected workout for the new outfit
@@ -85,14 +85,16 @@ const useNewOutfitPage = () => {
     setOutfit({ ...outfit, location: selectedLocation });
   };
 
-  const handleDateSelection = (selectedDate: Date) => {
-    setDateWorn(selectedDate);
-    setOutfit({ ...outfit, dateWorn: selectedDate });
+  const handleDateSelection = (selectedDate: Date | null) => {
+    // if selectedDate is null, fallback date is today's date
+    const validDate = selectedDate ?? new Date();
+    setDateWorn(validDate);
+    setOutfit(prev => ({ ...prev, dateWorn: validDate }));
   };
 
   const handleWorkoutSelection = (workout: Workout) => {
     setSelectedWorkout(selectedWorkout?._id === workout._id ? null : workout);
-    setOutfit({ ...outfit, workout: outfit.workout?._id === workout._id ? null : workout });
+    setOutfit({ ...outfit, workout: outfit.workout?._id === workout._id ? undefined : workout });
   };
 
   const handleCreateWorkout = async (newWorkout: Workout) => {
@@ -201,7 +203,7 @@ const useNewOutfitPage = () => {
   const handleShoeSelection = (shoe: Shoe) => {
     setOutfit({
       ...outfit,
-      shoe: outfit.shoe?._id === shoe._id ? null : shoe,
+      shoe: outfit.shoe?._id === shoe._id ? undefined : shoe,
     });
   };
 
@@ -222,7 +224,12 @@ const useNewOutfitPage = () => {
       throw new Error('Shoe is missing an id.');
     }
 
-    if (newOutfit.wearer?._id && newOutfit.workout?._id) {
+    if (
+      newOutfit.wearer?._id &&
+      newOutfit.workout?._id &&
+      newOutfit.dateWorn &&
+      newOutfit.location
+    ) {
       const newOutfitCreated = await createOutfit(
         newOutfit.wearer._id,
         newOutfit.dateWorn,
