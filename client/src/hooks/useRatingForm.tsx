@@ -82,18 +82,15 @@ const useRatingForm = () => {
     try {
       const newRating = await createRating(stars, temperatureGauge);
       console.log('new rating: ', newRating); // TODO - need check for successful creation in db?
-      setOutfit({ ...outfit, rating: newRating });
-      console.log('outfit set: ', outfit, ' outfit rating: ', outfit.rating);
-      const outfitId = await handleCreateOutfit(outfit);
+      const updatedOutfit = { ...outfit, rating: newRating };
+      setOutfit(updatedOutfit);
+      console.log('updatedOutfit set: ', updatedOutfit, ' outfit rating: ', updatedOutfit.rating);
+      const outfitId = await handleCreateOutfit(updatedOutfit);
       console.log('new created outfit id: ', outfitId);
       navigate('/createOutfit/finalOutfit'); // TODO - update route
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      if (errorMessage === 'Request failed with status code 400') {
-        setNewRatingError(`Creating new rating failed. Please try again.`);
-      } else {
-        setNewRatingError(`There was an issue creating new rating. Please try again.`);
-      }
+      setNewRatingError(errorMessage);
       setShowNewRatingError(true);
     }
   };
