@@ -1,7 +1,6 @@
 import { Box, List, ListItem, ListItemText, Button, Typography, Stack, Grid2 } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { useNavigate } from 'react-router-dom';
 import WorkoutScroller from './workoutScroller';
 import OutfitItemScroller from './outfitItemScroller';
 import useNewOutfitPage from '../../../hooks/useNewOutfitPage';
@@ -37,7 +36,6 @@ const NewOutfitPage = () => {
     handlePopupClose,
     handleWorkoutPopupClose,
     handleCreateWorkout,
-    // handleCreateOutfit,
     setDateWorn,
     handleLocationSelection,
     handleDateSelection,

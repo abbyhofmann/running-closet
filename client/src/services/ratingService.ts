@@ -12,7 +12,6 @@ const RATING_API_URL = `${process.env.REACT_APP_SERVER_URL}/rating`;
  * @throws Error Throws an error if the request fails or the response status is not 200.
  */
 const createRating = async (stars: number, temperatureGauge: string): Promise<Rating> => {
-  console.log('inside create rating, stars: ', stars, ', tempgauge: ', temperatureGauge);
   const data = { stars, temperatureGauge };
 
   const res = await api.post(`${RATING_API_URL}/createRating`, data);

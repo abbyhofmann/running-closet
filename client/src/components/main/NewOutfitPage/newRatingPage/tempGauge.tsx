@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { IconButton, Stack, SvgIconPropsColorOverrides, Typography } from '@mui/material';
+import { IconButton, Stack, Typography } from '@mui/material';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 
 interface TempGaugeProps {
@@ -34,11 +33,7 @@ const TempGauge = (props: TempGaugeProps) => {
     <Stack alignItems='center' direction='row' gap={2}>
       {TEMP_TUPLES.map(item => (
         <Stack key={item[0]} alignItems='center' direction='column' gap={2}>
-          <IconButton
-            onClick={() => {
-              console.log('gauge clicked');
-              setTempGauge(item[1]);
-            }}>
+          <IconButton onClick={() => setTempGauge(item[1])}>
             <ThermostatIcon fontSize='large' color={item[0]} />
           </IconButton>
           <Typography>{item[1]}</Typography>

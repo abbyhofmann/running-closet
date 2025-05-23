@@ -1,9 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { Box, TextField, Button, Alert, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { Outfit, ClothingItemFormProps } from '../../../../types';
-import useClothingItemForm from '../../../../hooks/useClothingItemForm';
-import OutfitContext from '../../../../contexts/OutfitContext';
 import useOutfitContext from '../../../../hooks/useOutfitContext';
 import useRatingForm from '../../../../hooks/useRatingForm';
 import RatingStars from './ratingStars';

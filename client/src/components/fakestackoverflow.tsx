@@ -15,7 +15,6 @@ import Register from './register';
 import ProfilePage from './main/profile';
 import NewOutfitPage from './main/newOutfitPage';
 import OutfitContext from '../contexts/OutfitContext';
-import ClothingItemForm from './main/newOutfitPage/newClothingItem/clothingItemForm';
 import RatingForm from './main/newOutfitPage/newRatingPage/ratingForm';
 
 const ProtectedRoute = ({

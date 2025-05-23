@@ -33,8 +33,6 @@ const createOutfit = async (
     shoesId,
   };
 
-  console.log('inside create outfit outfit service');
-
   const res = await api.post(`${OUTFIT_API_URL}/createOutfit`, data);
   if (res.status !== 200) {
     throw new Error('Error while creating a new outfit');

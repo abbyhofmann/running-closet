@@ -41,7 +41,6 @@ const outfitController = (socket: FakeSOSocket) => {
    * @returns `true` if the request is valid, otherwise `false`.
    */
   function isCreateOutfitRequestValid(req: CreateOutfitRequest): boolean {
-    console.log('req body: ', req.body);
     return (
       !!req.body.creatorId &&
       !!req.body.dateWorn &&

@@ -9,17 +9,16 @@ import { createAccessory, getAccessories } from '../services/accessoryService';
 import { createOuterwear, getOuterwearItems } from '../services/outerwearService';
 import { createShoe, getShoes } from '../services/shoeService';
 import { createWorkout, getWorkouts } from '../services/workoutService';
-import { createOutfit } from '../services/outfitService';
 
 /**
  * Custom hook for managing the new outfit page state.
  */
 const useNewOutfitPage = () => {
-  const { user, socket } = useUserContext();
+  const { user } = useUserContext();
   const navigate = useNavigate();
 
   // outfit
-  const { outfit, setOutfit, resetOutfit } = useOutfitContext();
+  const { outfit, setOutfit } = useOutfitContext();
 
   // date and location selection for outfit worn
   const [dateWorn, setDateWorn] = useState<Date | null>(null); // TODO - idk if this type is correct
@@ -347,7 +346,6 @@ const useNewOutfitPage = () => {
     handlePopupOpen,
     handlePopupClose,
     handleWorkoutPopupClose,
-    // handleCreateOutfit,
     setDateWorn,
     handleLocationSelection,
     handleDateSelection,

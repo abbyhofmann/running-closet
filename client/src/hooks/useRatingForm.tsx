@@ -20,7 +20,6 @@ const useRatingForm = () => {
   const navigate = useNavigate();
 
   const handleCreateOutfit = async (newOutfit: Outfit): Promise<string> => {
-    console.log('inside handleCreateOutfit, newOutfit: ', newOutfit);
     if (!newOutfit.rating?._id) {
       throw new Error('Rating is missing an id.');
     }
@@ -81,12 +80,9 @@ const useRatingForm = () => {
     // event.preventDefault();
     try {
       const newRating = await createRating(stars, temperatureGauge);
-      console.log('new rating: ', newRating); // TODO - need check for successful creation in db?
       const updatedOutfit = { ...outfit, rating: newRating };
       setOutfit(updatedOutfit);
-      console.log('updatedOutfit set: ', updatedOutfit, ' outfit rating: ', updatedOutfit.rating);
       const outfitId = await handleCreateOutfit(updatedOutfit);
-      console.log('new created outfit id: ', outfitId);
       navigate('/createOutfit/finalOutfit'); // TODO - update route
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
