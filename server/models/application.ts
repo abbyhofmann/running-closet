@@ -1636,36 +1636,6 @@ export const saveRating = async (rating: Rating): Promise<RatingResponse> => {
 };
 
 /**
- * Adds a rating to an outfit's list of ratings.
- *
- * @param rating The rating being added.
- * @param outfitId The id of the outfit to which the rating is being added.
- * @returns {Promise<OutfitResponse>} - The updated outfit, or an error message if the update failed.
- */
-export const addRatingToOutfit = async (
-  rating: Rating,
-  outfitId: string,
-): Promise<OutfitResponse> => {
-  try {
-    const updatedOutfit = await OutfitModel.findOneAndUpdate(
-      { _id: outfitId },
-      { $addToSet: { ratings: rating } },
-      {
-        new: true,
-      },
-    );
-
-    if (!updatedOutfit) {
-      return { error: 'Outfit not found!' };
-    }
-
-    return updatedOutfit;
-  } catch (err) {
-    return { error: `Error when adding a rating to outfit:  ${(err as Error).message}` };
-  }
-};
-
-/**
  * Fetches an workout by its id.
  *
  * @param wid The id of the workout being fetched.

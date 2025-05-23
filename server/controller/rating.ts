@@ -1,6 +1,6 @@
 import express, { Response } from 'express';
 import { FakeSOSocket, CreateRatingRequest } from '../types';
-import { addRatingToOutfit, fetchOutfitById, saveRating } from '../models/application';
+import { saveRating } from '../models/application';
 
 const ratingController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -13,7 +13,7 @@ const ratingController = (socket: FakeSOSocket) => {
    * @returns `true` if the request is valid, otherwise `false`.
    */
   function isCreateRatingRequestValid(req: CreateRatingRequest): boolean {
-    return !!req.body.outfitId && !!req.body.stars && !!req.body.temperatureGauge;
+    return !!req.body.stars && !!req.body.temperatureGauge;
   }
 
   /**
@@ -32,18 +32,10 @@ const ratingController = (socket: FakeSOSocket) => {
       return;
     }
 
-    const { outfitId, stars, temperatureGauge } = req.body;
+    const { stars, temperatureGauge } = req.body;
 
     try {
-      // get the outfit object
-      const outfit = await fetchOutfitById(outfitId);
-
-      if ('error' in outfit) {
-        throw new Error(outfit.error as string);
-      }
-
       const newRating = {
-        outfit,
         stars,
         temperatureGauge,
       };
@@ -52,13 +44,6 @@ const ratingController = (socket: FakeSOSocket) => {
 
       if ('error' in ratingFromDb) {
         throw new Error(ratingFromDb.error as string);
-      }
-
-      // add the rating to the outfit's list of ratings
-      const outfitWithNewRating = await addRatingToOutfit(ratingFromDb, outfitId);
-
-      if ('error' in outfitWithNewRating) {
-        throw new Error(outfitWithNewRating.error as string);
       }
 
       res.json(ratingFromDb);

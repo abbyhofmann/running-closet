@@ -742,14 +742,12 @@ export interface Rating {
 
 /**
  * Interface for the request body when creating a new rating.
- * - outfitId: The id of the outfit to which this rating is associated.
  * - stars: The number of stars given to the outfit (out of 5).
  * - temperatureGauge: The string representing how well the outfit did given the temperature 
  * conditions (too warm, too cold, appropriate).
  */
 export interface CreateRatingRequest {
   body: {
-    outfitId: string;
     stars: number;
     temperatureGauge: string;
   };

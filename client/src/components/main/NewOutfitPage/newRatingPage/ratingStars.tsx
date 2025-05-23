@@ -31,6 +31,7 @@ const RatingStars = (props: RatingStarsProps) => {
         name='hover-feedback'
         value={stars}
         precision={1}
+        size='large'
         getLabelText={getLabelText}
         onChange={(event, newValue) => {
           setStars(newValue ?? 0);

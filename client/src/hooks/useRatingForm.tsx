@@ -19,16 +19,8 @@ const useRatingForm = () => {
   const { outfit, setOutfit, resetOutfit } = useOutfitContext();
   const navigate = useNavigate();
 
-  /**
-   * Function to handle the temperature gauge input change event.
-   *
-   * @param e - the event object.
-   */
-  const handleTemperatureGaugeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setTemperatureGauge(e.target.value);
-  };
-
   const handleCreateOutfit = async (newOutfit: Outfit): Promise<string> => {
+    console.log('inside handleCreateOutfit, newOutfit: ', newOutfit);
     if (!newOutfit.rating?._id) {
       throw new Error('Rating is missing an id.');
     }
@@ -85,12 +77,13 @@ const useRatingForm = () => {
    *
    * @param event - the form event object.
    */
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = async () => {
+    // event.preventDefault();
     try {
       const newRating = await createRating(stars, temperatureGauge);
       console.log('new rating: ', newRating); // TODO - need check for successful creation in db?
       setOutfit({ ...outfit, rating: newRating });
+      console.log('outfit set: ', outfit, ' outfit rating: ', outfit.rating);
       const outfitId = await handleCreateOutfit(outfit);
       console.log('new created outfit id: ', outfitId);
       navigate('/createOutfit/finalOutfit'); // TODO - update route
@@ -109,10 +102,10 @@ const useRatingForm = () => {
     stars,
     setStars,
     temperatureGauge,
+    setTemperatureGauge,
     newRatingError,
     showNewRatingError,
     setNewRatingError,
-    handleTemperatureGaugeChange,
     handleSubmit,
   };
 };
