@@ -12,21 +12,12 @@ import { Outfit } from '../types';
  *
  * */
 const useRatingForm = () => {
-  const [stars, setStars] = useState<number>(-1);
+  const [stars, setStars] = useState<number>(0);
   const [temperatureGauge, setTemperatureGauge] = useState<string>('');
   const [newRatingError, setNewRatingError] = useState<string>('');
   const [showNewRatingError, setShowNewRatingError] = useState<boolean>(false);
   const { outfit, setOutfit, resetOutfit } = useOutfitContext();
   const navigate = useNavigate();
-
-  /**
-   * Function to handle the stars change event.
-   *
-   * @param e - the event object.
-   */
-  const handleStarsChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setStars(e.target.value.length); // TODO fix
-  };
 
   /**
    * Function to handle the temperature gauge input change event.
@@ -98,6 +89,7 @@ const useRatingForm = () => {
     event.preventDefault();
     try {
       const newRating = await createRating(stars, temperatureGauge);
+      console.log('new rating: ', newRating); // TODO - need check for successful creation in db?
       setOutfit({ ...outfit, rating: newRating });
       const outfitId = await handleCreateOutfit(outfit);
       console.log('new created outfit id: ', outfitId);
@@ -115,11 +107,11 @@ const useRatingForm = () => {
 
   return {
     stars,
+    setStars,
     temperatureGauge,
     newRatingError,
     showNewRatingError,
     setNewRatingError,
-    handleStarsChange,
     handleTemperatureGaugeChange,
     handleSubmit,
   };

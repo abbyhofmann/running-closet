@@ -6,6 +6,7 @@ import useClothingItemForm from '../../../../hooks/useClothingItemForm';
 import OutfitContext from '../../../../contexts/OutfitContext';
 import useOutfitContext from '../../../../hooks/useOutfitContext';
 import useRatingForm from '../../../../hooks/useRatingForm';
+import RatingStars from './ratingStars';
 
 const RatingForm = () => {
   const navigate = useNavigate();
@@ -13,11 +14,11 @@ const RatingForm = () => {
 
   const {
     stars,
+    setStars,
     temperatureGauge,
     newRatingError,
     showNewRatingError,
     setNewRatingError,
-    handleStarsChange,
     handleTemperatureGaugeChange,
     handleSubmit,
   } = useRatingForm();
@@ -29,6 +30,8 @@ const RatingForm = () => {
   return (
     <div>
       <span>outfit: {outfit.toString()}</span>
+      <RatingStars stars={stars} setStars={setStars} />
+      <Button onClick={() => handleSubmit}>Create Outfit!</Button>
     </div>
     // <div className='container'>
     //   <Box
