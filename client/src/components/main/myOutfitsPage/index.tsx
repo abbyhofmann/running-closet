@@ -1,31 +1,50 @@
 import { useEffect, useState } from 'react';
+import { Box } from '@mui/system';
 import { Typography } from '@mui/material';
-import { Outfit } from '../../../types';
-import { getOutfitsByUser } from '../../../services/outfitService';
+import { Outfit, OutfitData } from '../../../types';
+import { getOutfitsByUser, getPartialOutfitsByUser } from '../../../services/outfitService';
 import useUserContext from '../../../hooks/useUserContext';
 
 const MyOutfitsPage = () => {
   const { user } = useUserContext();
-  const [userOutfits, setUserOutfits] = useState<Outfit[]>([]);
+  const [userPartialOutfits, setPartialUserOutfits] = useState<OutfitData[]>([]);
 
   useEffect(() => {
     async function fetchData() {
       if (user && user._id) {
-        const fetchedOutfits = await getOutfitsByUser(user._id);
-        setUserOutfits(fetchedOutfits);
+        const fetchedPartialOutfits = await getPartialOutfitsByUser(user._id);
+        setPartialUserOutfits(fetchedPartialOutfits);
       }
     }
     fetchData();
   }, [user]);
 
   return (
-    <div>
-      {userOutfits.map(outfit => (
-        <Typography key={outfit._id}>
-          {outfit.location} and {outfit.tops[0].model}
+    // <div>
+    //   {userOutfits.map(outfit => (
+    //     <Typography key={outfit._id}>
+    //       {outfit.location} and {outfit.tops[0].model}
+    //     </Typography>
+    //   ))}
+    // </div>
+    <Box sx={{ paddingRight: 3 }}>
+      <Box className='space_between right_padding'>
+        <Typography variant='h5'>
+          <strong>{userPartialOutfits.length} Tags</strong>
         </Typography>
-      ))}
-    </div>
+        <Typography variant='h5'>
+          <strong>All Tags</strong>
+        </Typography>
+      </Box>
+      <Box className='tag_list right_padding'>
+        {userPartialOutfits.map(outfit => (
+          // <TagView key={idx} t={t} clickTag={clickTag} />
+          <Typography key={outfit._id}>
+            {outfit.location} and {outfit.tops[0].model}
+          </Typography>
+        ))}
+      </Box>
+    </Box>
   );
 };
 

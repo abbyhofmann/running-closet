@@ -65,6 +65,21 @@ export interface Outfit {
 }
 
 /**
+ * Interface represents the data for an outfit.
+ *
+ * dateWorn - The date the outfit was worn.
+ * location - The location the outfit was worn.
+ * runType - The type of run for which the outfit was worn.
+ * stars - The number of stars given to the outfit.
+ */
+export interface OutfitData {
+  dateWorn: Date;
+  location: string;
+  runType: string;
+  stars: number;
+}
+
+/**
  * Interface representing a Workout, which contains:
  * - id: The unique identifier for the workout.
  * - runner: The user who logged the workout.

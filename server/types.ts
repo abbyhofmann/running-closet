@@ -951,3 +951,23 @@ export type MultipleShoeResponse = Shoe[] | { error: string };
  * Type representing the possible responses for fetching numerous outfits.
  */
 export type MultipleOutfitResponse = Outfit[] | { error: string };
+
+/**
+ * Interface represents the data for an outfit.
+ *
+ * dateWorn - The date the outfit was worn.
+ * location - The location the outfit was worn.
+ * runType - The type of run for which the outfit was worn.
+ * stars - The number of stars given to the outfit.
+ */
+export interface OutfitData {
+  dateWorn: Date;
+  location: string;
+  runType: string;
+  stars: number;
+}
+
+/**
+ * Type representing the possible responses for fetching numerous partial outfits.
+ */
+export type MultipleOutfitDataResponse = OutfitData[] | { error: string };

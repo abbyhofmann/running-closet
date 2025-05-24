@@ -1,4 +1,4 @@
-import { AllOutfitItemsObject, Outfit } from '../types';
+import { AllOutfitItemsObject, Outfit, OutfitData } from '../types';
 import api from './config';
 
 const OUTFIT_API_URL = `${process.env.REACT_APP_SERVER_URL}/outfit`;
@@ -72,4 +72,20 @@ const getOutfitsByUser = async (uid: string): Promise<Outfit[]> => {
   return res.data;
 };
 
-export { createOutfit, getAllOutfitItems, getOutfitsByUser };
+/**
+ * Gets all of a user's outfits, but only the necessary data to display (OutfitData).
+ *
+ * @param uid The id of the user whose partial outfits are being retrieved.
+ * @throws Error if there is an issue fetching the outfits by user ID.
+ */
+const getPartialOutfitsByUser = async (uid: string): Promise<OutfitData[]> => {
+  const res = await api.get(`${OUTFIT_API_URL}/getPartialOutfitsByUser/${uid}`);
+
+  if (res.status !== 200) {
+    throw new Error('Error while fetching partial user outfits');
+  }
+
+  return res.data;
+};
+
+export { createOutfit, getAllOutfitItems, getOutfitsByUser, getPartialOutfitsByUser };

@@ -48,6 +48,8 @@ import {
   MultipleShoeResponse,
   MultipleWorkoutsResponse,
   MultipleOutfitResponse,
+  MultipleOutfitDataResponse,
+  OutfitData,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -2078,6 +2080,32 @@ export const fetchOutfitsByUser = async (uid: string): Promise<MultipleOutfitRes
   } catch (error) {
     console.log(error, (error as Error).message);
     return { error: 'Error when fetching all user outfits' };
+  }
+};
+
+export const fetchPartialOutfitsByUser = async (
+  uid: string,
+): Promise<OutfitData[] | { error: string }> => {
+  try {
+    const outfits = await OutfitModel.find({ wearer: uid })
+      .select(['dateWorn', 'location', 'workout', 'rating']) // only fetch these fields
+      .populate([
+        { path: 'workout', select: 'runType' },
+        { path: 'rating', select: 'stars' },
+      ])
+      .lean();
+
+    const outfitDataList: OutfitData[] = outfits.map(outfit => ({
+      dateWorn: outfit.dateWorn,
+      location: outfit.location,
+      runType: outfit.workout?.runType.toString() ?? 'no run type',
+      stars: outfit.rating?.stars.valueOf() ?? 0,
+    }));
+
+    return outfitDataList;
+  } catch (error) {
+    console.error(error);
+    return { error: 'Error when fetching partial outfit data' };
   }
 };
 

@@ -27,6 +27,7 @@ import {
   extractOutfitItems,
   fetchRatingById,
   fetchOutfitsByUser,
+  fetchPartialOutfitsByUser,
 } from '../models/application';
 
 const outfitController = (socket: FakeSOSocket) => {
@@ -287,10 +288,35 @@ const outfitController = (socket: FakeSOSocket) => {
     }
   };
 
+  const getPartialOutfitsByUser = async (
+    req: FindOutfitItemsByUserIdRequest,
+    res: Response,
+  ): Promise<void> => {
+    const { uid } = req.params;
+
+    if (!ObjectId.isValid(uid)) {
+      res.status(400).send('Invalid ID format');
+      return;
+    }
+
+    try {
+      const partialOutfits = await fetchPartialOutfitsByUser(uid);
+      if ('error' in partialOutfits) {
+        throw new Error(partialOutfits.error as string);
+      }
+      res.json(partialOutfits);
+    } catch (err) {
+      res
+        .status(500)
+        .send(`Error when fetching all partial outfit items: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/createOutfit', createOutfit);
   router.get('/getAllOutfitItems/:uid', getAllOutfitItems);
   router.get('/getOutfitsByUser/:uid', getOutfitsByUser);
+  router.get('/getPartialOutfitsByUser/:uid', getPartialOutfitsByUser);
 
   return router;
 };
