@@ -42,7 +42,6 @@ export interface User {
  * - wearer: The user who wore and logged the outfit.
  * - dateWorn: The date/time for when an outfit was worn.
  * - location: The city/state/country location of where the outfit was worn.
- * - setting: The date, time, and location of when the outfit was worn.
  * - workout: The workout for which this outfit was worn.
  * - rating: The rating given to the outfit.
  * - tops: The tops worn in the outfit.

@@ -83,7 +83,7 @@ const useRatingForm = () => {
       const updatedOutfit = { ...outfit, rating: newRating };
       setOutfit(updatedOutfit);
       const outfitId = await handleCreateOutfit(updatedOutfit);
-      navigate('/createOutfit/finalOutfit'); // TODO - update route
+      navigate('/createOutfit/myOutfits'); // TODO - update route
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setNewRatingError(errorMessage);

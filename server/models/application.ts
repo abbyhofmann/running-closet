@@ -47,6 +47,7 @@ import {
   MultipleOuterwearItemResponse,
   MultipleShoeResponse,
   MultipleWorkoutsResponse,
+  MultipleOutfitResponse,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -2059,3 +2060,34 @@ export const fetchAllWorkoutsByUser = async (uid: string): Promise<MultipleWorko
     return { error: 'Error when fetching all user workouts' };
   }
 };
+
+export const fetchOutfitsByUser = async (uid: string): Promise<MultipleOutfitResponse> => {
+  try {
+    const olist = await OutfitModel.find({ wearer: uid }).populate([
+      { path: 'wearer', model: 'User' },
+      { path: 'workout', model: 'Workout' },
+      { path: 'rating', model: 'Rating' },
+      { path: 'tops', model: 'Top' },
+      { path: 'bottoms', model: 'Bottom' },
+      { path: 'outerwear', model: 'Outerwear' },
+      { path: 'accessories', model: 'Accessory' },
+      { path: 'shoes', model: 'Shoe' },
+    ]);
+
+    return olist;
+  } catch (error) {
+    console.log(error, (error as Error).message);
+    return { error: 'Error when fetching all user outfits' };
+  }
+};
+
+/*
+workout: { type: Schema.Types.ObjectId, ref: 'Workout' },
+    rating: { type: Schema.Types.ObjectId, ref: 'Rating' },
+    tops: [{ type: Schema.Types.ObjectId, ref: 'Top' }],
+    bottoms: [{ type: Schema.Types.ObjectId, ref: 'Bottom' }],
+    outerwear: [{ type: Schema.Types.ObjectId, ref: 'Outerwear' }],
+    accessories: [{ type: Schema.Types.ObjectId, ref: 'Accessory' }],
+    shoes: { type: Schema.Types.ObjectId, ref: 'Shoe' },
+  
+*/

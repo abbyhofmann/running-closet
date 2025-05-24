@@ -16,6 +16,7 @@ import ProfilePage from './main/profile';
 import NewOutfitPage from './main/newOutfitPage';
 import OutfitContext from '../contexts/OutfitContext';
 import RatingForm from './main/newOutfitPage/newRatingPage/ratingForm';
+import MyOutfitsPage from './main/myOutfitsPage';
 
 const ProtectedRoute = ({
   user,
@@ -123,6 +124,7 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
                     /> */}
                     {/* TODO - updating routing so that upon creating a new outfit, you are redirected to view my outfits page */}
                     <Route path='rating' element={<RatingForm />} />
+                    <Route path='myOutfits' element={<MyOutfitsPage />} />
                     {/* <Route path='accessories' element={<AccessoriesForm />} />
                     <Route path='shoes' element={<ShoesForm />} /> */}
                   </Routes>

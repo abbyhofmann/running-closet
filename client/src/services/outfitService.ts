@@ -56,4 +56,20 @@ const getAllOutfitItems = async (uid: string): Promise<AllOutfitItemsObject> => 
   return res.data;
 };
 
-export { createOutfit, getAllOutfitItems };
+/**
+ * Gets all of a user's outfits.
+ *
+ * @param uid The id of the user whose outfits are being retrieved.
+ * @throws Error if there is an issue fetching the outfits by user ID.
+ */
+const getOutfitsByUser = async (uid: string): Promise<Outfit[]> => {
+  const res = await api.get(`${OUTFIT_API_URL}/getOutfitsByUser/${uid}`);
+
+  if (res.status !== 200) {
+    throw new Error('Error while fetching user outfits');
+  }
+
+  return res.data;
+};
+
+export { createOutfit, getAllOutfitItems, getOutfitsByUser };

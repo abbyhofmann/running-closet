@@ -946,3 +946,8 @@ export type ShoeResponse = Shoe | { error: string };
  * Type representing the possible responses for fetching numerous shoes.
  */
 export type MultipleShoeResponse = Shoe[] | { error: string };
+
+/**
+ * Type representing the possible responses for fetching numerous outfits.
+ */
+export type MultipleOutfitResponse = Outfit[] | { error: string };
