@@ -6,7 +6,6 @@ import useOutfitContext from './useOutfitContext';
 import { createAccessory } from '../services/accessoryService';
 import { createOuterwear } from '../services/outerwearService';
 import { createShoe } from '../services/shoeService';
-import { createOutfit } from '../services/outfitService';
 
 /**
  * Custom hook to handle creating the specified clothing item.

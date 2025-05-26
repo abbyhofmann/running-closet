@@ -1,8 +1,6 @@
-import { ChangeEvent, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useOutfitContext from './useOutfitContext';
-
 import createRating from '../services/ratingService';
 import { createOutfit } from '../services/outfitService';
 import { Outfit } from '../types';

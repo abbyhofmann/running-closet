@@ -39,7 +39,7 @@ const OutfitCard = ({ o, clickOutfit }: OutfitCardProps) => (
     <Typography sx={{ color: '#32292F', marginY: 'auto' }}>{o.location}</Typography>
     <Box sx={{ width: 200, display: 'flex', alignItems: 'center' }}>
       <Rating
-        name='hover-feedback'
+        name='read-only'
         value={o.stars}
         precision={1}
         size='large'

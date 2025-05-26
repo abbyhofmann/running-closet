@@ -14,12 +14,6 @@ const useMyOutfitsPage = () => {
     async function fetchData() {
       if (user && user._id) {
         const fetchedPartialOutfits = await getPartialOutfitsByUser(user._id);
-        console.log(
-          'fetched outfits: ',
-          fetchedPartialOutfits[0],
-          ', full: ',
-          fetchedPartialOutfits,
-        );
         setPartialUserOutfits(fetchedPartialOutfits);
       }
     }
@@ -27,6 +21,7 @@ const useMyOutfitsPage = () => {
   }, [user]);
 
   const handleClickOutfit = (outfitId: string) => {
+    // TODO
     console.log('need to implement navigation to view outfit page');
   };
 

@@ -48,7 +48,6 @@ import {
   MultipleShoeResponse,
   MultipleWorkoutsResponse,
   MultipleOutfitResponse,
-  MultipleOutfitDataResponse,
   OutfitData,
 } from '../types';
 import AnswerModel from './answers';
