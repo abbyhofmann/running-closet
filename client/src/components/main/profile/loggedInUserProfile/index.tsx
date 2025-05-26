@@ -52,7 +52,7 @@ const LoggedInUserProfilePage = () => {
               <TableRow>
                 <TableCell
                   key={'followers'}
-                  sx={{ backgroundColor: '#5171A5', color: '#EDE6E3', borderRadius: '16px' }}>
+                  sx={{ backgroundColor: '#473BF0', color: '#f5f3f5', borderRadius: '16px' }}>
                   <Typography variant='h6' sx={{ paddingX: 'auto' }}>
                     <strong>Followers: {user.followers.length}</strong>
                   </Typography>
@@ -82,7 +82,7 @@ const LoggedInUserProfilePage = () => {
               <TableRow>
                 <TableCell
                   key={'following'}
-                  sx={{ backgroundColor: '#5171A5', color: '#EDE6E3', borderRadius: '16px' }}>
+                  sx={{ backgroundColor: '#473BF0', color: '#f5f3f5', borderRadius: '16px' }}>
                   <Typography variant='h6'>
                     <strong>Following: {user.following.length}</strong>
                   </Typography>

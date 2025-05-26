@@ -19,7 +19,7 @@ const UserNotFoundPage = () => (
       <Avatar
         sx={{
           bgcolor: '#32292F',
-          color: '#EDE6E3',
+          color: '#f5f3f5',
           width: 150,
           height: 150,
           marginTop: 5,
@@ -40,7 +40,7 @@ const UserNotFoundPage = () => (
             <TableRow>
               <TableCell
                 key={'followers'}
-                sx={{ backgroundColor: '#32292F', color: '#EDE6E3', borderRadius: '16px' }}>
+                sx={{ backgroundColor: '#32292F', color: '#f5f3f5', borderRadius: '16px' }}>
                 <Typography variant='h5' sx={{ paddingX: 'auto' }}>
                   Followers: 0
                 </Typography>
@@ -57,7 +57,7 @@ const UserNotFoundPage = () => (
             <TableRow>
               <TableCell
                 key={'following'}
-                sx={{ backgroundColor: '#32292F', color: '#EDE6E3', borderRadius: '16px' }}>
+                sx={{ backgroundColor: '#32292F', color: '#f5f3f5', borderRadius: '16px' }}>
                 <Typography variant='h5'>Following: 0</Typography>
               </TableCell>
             </TableRow>

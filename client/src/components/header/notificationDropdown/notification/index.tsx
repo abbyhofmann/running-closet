@@ -44,7 +44,7 @@ const NotificationComponent = (props: NotificationComponentProps) => {
           <MarkEmailUnreadIcon fontSize='small' />
         </ListItemIcon>
       )}
-      <Typography variant='inherit' noWrap sx={{ width: 100, color: '#5171A5' }}>
+      <Typography variant='inherit' noWrap sx={{ width: 100, color: '#473BF0' }}>
         {notification.message.sender.firstName}
       </Typography>
       <Typography variant='inherit' noWrap sx={{ color: '#32292F' }}>

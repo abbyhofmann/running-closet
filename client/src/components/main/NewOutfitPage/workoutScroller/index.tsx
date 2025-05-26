@@ -1,5 +1,4 @@
 import { Box, Card, Typography } from '@mui/material';
-import { purple } from '@mui/material/colors';
 import WorkoutCard from '../workoutCard';
 import { Workout } from '../../../../types';
 import NewWorkoutPopup from '../newWorkoutPopup';
@@ -69,7 +68,7 @@ const WorkoutScroller = ({
                 transform: 'scale(1.03)',
               },
               'borderRadius': 2,
-              'backgroundColor': purple[100],
+              'backgroundColor': '#CAFE48',
             }}>
             <Box
               sx={{
@@ -79,7 +78,7 @@ const WorkoutScroller = ({
                 gap: 1,
               }}>
               <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
-                + Create New Workout
+                + New Workout
               </Typography>
             </Box>
           </Card>

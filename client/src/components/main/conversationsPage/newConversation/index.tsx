@@ -68,7 +68,7 @@ const NewConversationPage = (props: DashboardNavigationProps) => {
                 fullWidth
                 onClick={sendBlast}
                 disabled={blastMessageContent === ''}
-                sx={{ bgcolor: '#5171A5' }}>
+                sx={{ bgcolor: '#473BF0' }}>
                 <Campaign sx={{ marginRight: 1 }}></Campaign>
               </Button>
             </Box>

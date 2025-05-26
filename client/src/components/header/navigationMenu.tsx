@@ -40,8 +40,8 @@ export default function NavigationMenu() {
           paper: {
             style: {
               width: '20ch',
-              backgroundColor: '#5171A5',
-              color: '#EDE6E3',
+              backgroundColor: '#473BF0',
+              color: '#f5f3f5',
             },
           },
         }}>

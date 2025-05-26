@@ -92,7 +92,11 @@ const NewWorkoutPopup = (props: NewWorkoutPopupProps) => {
             }}
           />
         </Box>
-        <Button onClick={handleSubmit} variant='contained' color='primary' sx={{ mt: 2 }}>
+        <Button
+          onClick={handleSubmit}
+          variant='contained'
+          color='primary'
+          sx={{ mt: 2, bgcolor: '#473BF0', color: '#f5f3f5' }}>
           Create!
         </Button>
         <Button onClick={handleCancel} variant='outlined' color='secondary' sx={{ mt: 2, ml: 1 }}>

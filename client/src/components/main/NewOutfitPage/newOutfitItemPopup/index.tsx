@@ -79,10 +79,13 @@ const NewOutfitItemPopup = (props: NewOutfitItemPopupProps) => {
           value={s3url}
           onChange={e => setS3url(e.target.value)}
         />
-        <Button onClick={handleSubmit} variant='contained' color='primary' sx={{ mt: 2 }}>
+        <Button
+          onClick={handleSubmit}
+          variant='contained'
+          sx={{ mt: 2, bgcolor: '#473BF0', color: '#f5f3f5' }}>
           Create!
         </Button>
-        <Button onClick={handleCancel} variant='outlined' color='secondary' sx={{ mt: 2, ml: 1 }}>
+        <Button onClick={handleCancel} variant='outlined' sx={{ mt: 2, ml: 1 }}>
           Cancel {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)}{' '}
           Creation
         </Button>

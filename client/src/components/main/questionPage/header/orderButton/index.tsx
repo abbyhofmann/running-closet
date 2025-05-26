@@ -25,7 +25,7 @@ interface OrderButtonProps {
 const OrderButton = ({ orderType, setQuestionOrder }: OrderButtonProps) => (
   <Button
     variant='outlined'
-    sx={{ color: '#5171A5', marginY: 'auto', marginX: 1, width: 'fitContent', height: 35 }}
+    sx={{ color: '#473BF0', marginY: 'auto', marginX: 1, width: 'fitContent', height: 35 }}
     onClick={() => {
       setQuestionOrder(orderType);
     }}>

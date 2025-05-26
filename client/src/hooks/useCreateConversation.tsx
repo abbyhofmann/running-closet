@@ -32,7 +32,7 @@ const InputWrapper = styled('div')(
   ({ theme }) => `
   width: 100%;
   border: 1px solid rgb(0, 0, 0);
-  background-color: #EDE6E3; 
+  background-color: #f5f3f5; 
   border-radius: 4px;
   padding: 1px;
   display: flex;
@@ -52,7 +52,7 @@ const InputWrapper = styled('div')(
   }
 
   & input {
-    background-color: #EDE6E3;
+    background-color: #f5f3f5;
     color: #32292F;
     height: 50px;
     box-sizing: border-box;
@@ -133,7 +133,7 @@ const Listbox = styled('ul')(
   padding: 0;
   position: absolute;
   list-style: none;
-  background-color:#EDE6E3;
+  background-color:#f5f3f5;
   overflow: auto;
   max-height: 250px;
   border-radius: 4px;

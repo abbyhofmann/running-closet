@@ -38,7 +38,7 @@ const TagView = ({ t, clickTag }: TagProps) => {
         <strong>{tag.name.toLowerCase()}</strong>
       </Typography>
       <Typography sx={{ color: '#32292F', marginY: 'auto' }}>{tag.description}</Typography>
-      <Typography sx={{ color: '#5171A5', marginY: 'auto' }}>{t.qcnt} questions</Typography>
+      <Typography sx={{ color: '#473BF0', marginY: 'auto' }}>{t.qcnt} questions</Typography>
     </Card>
   );
 };

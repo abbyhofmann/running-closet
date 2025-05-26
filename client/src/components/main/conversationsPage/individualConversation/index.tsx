@@ -105,7 +105,7 @@ export default function IndividualConversation({ cidPath }: IndividualConversati
             />
           </Box>
           <Box flex='0 0 20%'>
-            <Button type='submit' variant='contained' fullWidth sx={{ bgcolor: '#5171A5' }}>
+            <Button type='submit' variant='contained' fullWidth sx={{ bgcolor: '#473BF0' }}>
               Send
             </Button>
           </Box>

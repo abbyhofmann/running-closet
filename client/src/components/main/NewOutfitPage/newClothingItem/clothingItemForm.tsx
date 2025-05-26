@@ -67,7 +67,7 @@ const ClothingItemForm = (props: ClothingItemFormProps) => {
             </Alert>
           </div>
         )}
-        <Button variant='contained' type='submit' sx={{ mt: 2, width: '25ch', bgcolor: '#5171A5' }}>
+        <Button variant='contained' type='submit' sx={{ mt: 2, width: '25ch', bgcolor: '#473BF0' }}>
           Create {clothingItem}
         </Button>
       </form>

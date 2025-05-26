@@ -51,8 +51,8 @@ export default function NotificationDropdown() {
         slotProps={{
           paper: {
             style: {
-              backgroundColor: '#EDE6E3',
-              color: '#EDE6E3',
+              backgroundColor: '#f5f3f5',
+              color: '#f5f3f5',
             },
           },
         }}>

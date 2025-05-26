@@ -39,18 +39,6 @@ const TempGauge = (props: TempGaugeProps) => {
           <Typography>{item[1]}</Typography>
         </Stack>
       ))}
-      {/* <Stack alignItems='center' direction='column' gap={2}>
-        <IconButton>
-          <ThermostatIcon color='primary' />
-        </IconButton>
-        <Typography>Too Cold</Typography>
-      </Stack>
-      <IconButton>
-        <ThermostatIcon />
-      </IconButton>
-      <IconButton>
-        <ThermostatIcon color='error' />
-      </IconButton> */}
     </Stack>
   );
 };

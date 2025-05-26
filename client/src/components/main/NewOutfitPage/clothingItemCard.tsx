@@ -23,7 +23,7 @@ const ClothingItemCard = (props: ClothingItemCardProps) => {
       <Box
         sx={{
           display: 'flex',
-          backgroundColor: grey[400],
+          backgroundColor: grey[300],
           padding: 1,
         }}>
         {/* TODO - add avatar for displaying the photo */}

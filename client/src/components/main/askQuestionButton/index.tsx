@@ -20,7 +20,7 @@ const AskQuestionButton = () => {
   return (
     <Button
       variant='contained'
-      sx={{ bgcolor: '#5171A5', color: '#EDE6E3', height: 50, marginY: 'auto' }}
+      sx={{ bgcolor: '#473BF0', color: '#f5f3f5', height: 50, marginY: 'auto' }}
       onClick={() => {
         handleNewQuestion();
       }}>

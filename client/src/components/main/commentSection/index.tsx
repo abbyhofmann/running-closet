@@ -128,8 +128,8 @@ const CommentSection = ({ comments, handleAddComment }: CommentSectionProps) => 
                   onClick={handleAddCommentClick}
                   fullWidth
                   sx={{
-                    bgcolor: '#5171A5',
-                    color: '#EDE6E3',
+                    bgcolor: '#473BF0',
+                    color: '#f5f3f5',
                     height: '100%',
                     marginX: 2,
                   }}>

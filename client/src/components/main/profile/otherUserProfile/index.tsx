@@ -45,14 +45,14 @@ const OtherUserProfilePage = () => {
         {currentUserFollowingThisUser ? (
           <Button
             variant='contained'
-            sx={{ bgcolor: '#E77963', marginY: 2, marginLeft: 2, color: '#EDE6E3' }}
+            sx={{ bgcolor: '#E77963', marginY: 2, marginLeft: 2, color: '#f5f3f5' }}
             onClick={unfollow}>
             Unfollow
           </Button>
         ) : (
           <Button
             variant='contained'
-            sx={{ bgcolor: '#5171A5', marginY: 2, marginLeft: 2, color: '#EDE6E3' }}
+            sx={{ bgcolor: '#473BF0', marginY: 2, marginLeft: 2, color: '#f5f3f5' }}
             onClick={follow}>
             Follow
           </Button>
@@ -65,7 +65,7 @@ const OtherUserProfilePage = () => {
               <TableRow>
                 <TableCell
                   key={'followers'}
-                  sx={{ backgroundColor: '#5171A5', color: '#EDE6E3', borderRadius: '16px' }}>
+                  sx={{ backgroundColor: '#473BF0', color: '#f5f3f5', borderRadius: '16px' }}>
                   <Typography variant='h6' sx={{ paddingX: 'auto' }}>
                     <strong>Followers: {followedBy.filter(u => !u.deleted).length}</strong>
                   </Typography>
@@ -97,7 +97,7 @@ const OtherUserProfilePage = () => {
               <TableRow>
                 <TableCell
                   key={'following'}
-                  sx={{ backgroundColor: '#5171A5', color: '#EDE6E3', borderRadius: '16px' }}>
+                  sx={{ backgroundColor: '#473BF0', color: '#f5f3f5', borderRadius: '16px' }}>
                   <Typography variant='h6'>
                     <strong>Following: {following.filter(u => !u.deleted).length}</strong>
                   </Typography>

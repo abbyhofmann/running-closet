@@ -48,7 +48,7 @@ const AnswerPage = () => {
       ))}
       <Button
         variant='contained'
-        sx={{ bgcolor: '#5171A5', margin: 2, width: '98%' }}
+        sx={{ bgcolor: '#473BF0', margin: 2, width: '98%' }}
         onClick={() => {
           handleNewAnswer();
         }}>

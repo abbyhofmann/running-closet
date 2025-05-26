@@ -1,6 +1,5 @@
 import { Box, Card, Typography } from '@mui/material';
 import { useState } from 'react';
-import { purple } from '@mui/material/colors';
 import { OutfitItem } from '../../../../types';
 import OutfitItemCard from '../outfitItemCard';
 import NewOutfitItemPopup from '../newOutfitItemPopup';
@@ -35,7 +34,7 @@ const OutfitItemScroller = ({
     <div>
       <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
         {/* make first letter of outfitItemType capitalized */}
-        Select {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)}
+        {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)}
       </Typography>
       <Box
         sx={{
@@ -76,7 +75,7 @@ const OutfitItemScroller = ({
                 transform: 'scale(1.03)',
               },
               'borderRadius': 2,
-              'backgroundColor': purple[100],
+              'backgroundColor': '#CAFE48',
             }}>
             <Box
               sx={{

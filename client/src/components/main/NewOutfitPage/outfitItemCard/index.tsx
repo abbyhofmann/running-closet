@@ -1,5 +1,5 @@
 import { Box, Card, Typography } from '@mui/material';
-import { blue, grey } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 import { OutfitItem } from '../../../../types';
 
 const OutfitItemCard = ({
@@ -15,8 +15,9 @@ const OutfitItemCard = ({
     sx={{
       'display': 'flex',
       'cursor': 'pointer',
-      'width': 150, // fixed width
-      'height': 150, // fixed height
+      'minWidth': 150, // default width
+      'maxWidth': '100%', // allow for expansion of width if needed
+      'height': 140, // fixed height
       'flexDirection': 'column',
       'flex': '0 0 auto',
       '&:hover': {
@@ -24,7 +25,8 @@ const OutfitItemCard = ({
         transform: 'scale(1.03)',
       },
       'borderRadius': 2,
-      'backgroundColor': selected ? blue[100] : grey[400],
+      'backgroundColor': selected ? '#abffff' : grey[300],
+      'overflow': 'hidden',
     }}
     onClick={() => {
       onSelectOutfitItem(outfitItem);

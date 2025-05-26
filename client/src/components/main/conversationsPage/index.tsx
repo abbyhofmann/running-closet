@@ -20,14 +20,14 @@ import { Conversation, User } from '../../../types';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#5171A5',
+      main: '#473BF0',
     },
     secondary: {
       main: '#FF69B4',
     },
     background: {
-      default: '#EDE6E3',
-      paper: '#EDE6E3',
+      default: '#f5f3f5',
+      paper: '#f5f3f5',
     },
   },
   colorSchemes: { light: true, dark: false },
@@ -231,12 +231,12 @@ export default function ConversationsPage() {
       <AppProvider
         navigation={navigation}
         branding={{
-          logo: <ForumIcon className='messagesIcon' sx={{ color: '#5171A5', marginTop: 1 }} />,
+          logo: <ForumIcon className='messagesIcon' sx={{ color: '#473BF0', marginTop: 1 }} />,
           title: 'Messages',
         }}
         router={router}
         theme={theme}>
-        <DashboardLayout sx={{ height: 1, width: 1, bgcolor: '#EDE6E3', color: '#EDE6E3' }}>
+        <DashboardLayout sx={{ height: 1, width: 1, bgcolor: '#f5f3f5', color: '#f5f3f5' }}>
           {router.pathname.includes('new/convo') && (
             <NewConversationPage
               navigate={router.navigate}

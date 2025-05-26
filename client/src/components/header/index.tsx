@@ -19,7 +19,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   return (
-    <Grid container sx={{ bgcolor: '#C8C7EC', height: 75 }}>
+    <Grid container sx={{ bgcolor: '#', height: 75 }}>
       <Grid size={1}>
         <Box
           sx={{

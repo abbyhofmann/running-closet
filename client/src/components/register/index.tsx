@@ -192,7 +192,7 @@ const Register = () => {
             </Alert>
           </div>
         )}
-        <Button variant='contained' type='submit' sx={{ mt: 2, width: '25ch', bgcolor: '#5171A5' }}>
+        <Button variant='contained' type='submit' sx={{ mt: 2, width: '25ch', bgcolor: '#473BF0' }}>
           Register
         </Button>
       </form>
@@ -210,7 +210,7 @@ const Register = () => {
             fontWeight: 'bold',
             textTransform: 'none',
             whiteSpace: 'nowrap',
-            color: '#5171A5',
+            color: '#473BF0',
           }}
           onClick={() => {
             navigate('/');

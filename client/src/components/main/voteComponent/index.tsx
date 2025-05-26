@@ -49,7 +49,7 @@ const VoteComponent = ({ question }: VoteComponentProps) => {
     <Box sx={{ display: 'flex', alignItems: 'center', padding: 2, marginLeft: 2 }}>
       <IconButton
         aria-label='upvote'
-        sx={{ color: voted === 1 ? '#5171A5' : '#' }}
+        sx={{ color: voted === 1 ? '#473BF0' : '#' }}
         onClick={() => handleVote('upvote')}>
         <ThumbUpIcon />
       </IconButton>

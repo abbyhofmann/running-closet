@@ -13,9 +13,9 @@ const WorkoutCard = ({
 }) => (
   <Card
     sx={{
-      'backgroundColor': selected ? blue[100] : grey[400],
+      'backgroundColor': selected ? '#abffff' : grey[300],
       'width': 200, // fixed width
-      'height': 200, // fixed height
+      'height': 140, // fixed height
       'display': 'flex',
       'cursor': 'pointer',
       'flexDirection': 'column',
@@ -38,8 +38,10 @@ const WorkoutCard = ({
         display: 'flex',
         flexDirection: 'column',
         gap: 1,
-        width: '100%',
         margin: '0 auto', // centers content horizontally
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
       }}>
       <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
         {workout.runType}

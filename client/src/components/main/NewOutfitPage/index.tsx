@@ -46,8 +46,11 @@ const NewOutfitPage = () => {
 
   return (
     <Stack spacing={4} sx={{ px: { xs: 2, md: 9 }, mt: 4 }}>
+      <Typography variant='h4' sx={{ color: '#32292F' }}>
+        <strong>Create a New Outfit</strong>
+      </Typography>
       {/* Date Picker */}
-      <Paper elevation={3} sx={{ p: 3 }}>
+      <Paper elevation={3} sx={{ p: 3, bgcolor: '#fafafa' }}>
         <Typography variant='h6' fontWeight='bold' gutterBottom>
           Date Worn
         </Typography>
@@ -89,24 +92,12 @@ const NewOutfitPage = () => {
       </Paper>
 
       {/* Location */}
-      <Paper elevation={3} sx={{ p: 3 }}>
+      <Paper elevation={3} sx={{ p: 3, bgcolor: '#fafafa' }}>
         <LocationInput onSelectLocation={handleLocationSelection} />
       </Paper>
 
-      {/* Selected Workout Summary */}
-      {selectedWorkout && (
-        <Paper elevation={3} sx={{ p: 3 }}>
-          <Typography variant='h6' fontWeight='bold' gutterBottom>
-            Selected Workout
-          </Typography>
-          <Typography>Type: {selectedWorkout.runType}</Typography>
-          <Typography>Distance: {selectedWorkout.distance} miles</Typography>
-          <Typography>Duration: {selectedWorkout.duration} minutes</Typography>
-        </Paper>
-      )}
-
       {/* Workout Picker */}
-      <Paper elevation={3} sx={{ p: 3 }}>
+      <Paper elevation={3} sx={{ p: 3, bgcolor: '#fafafa' }}>
         <WorkoutScroller
           workouts={workouts}
           onSelectWorkout={handleWorkoutSelection}
@@ -156,24 +147,25 @@ const NewOutfitPage = () => {
           onSelect: handleAccessorySelection,
         },
       ].map(({ items, type, selected, onCreate, onSelect }) => (
-        <OutfitItemScroller
-          key={type}
-          outfitItems={items}
-          outfitItemType={type}
-          onSelectOutfitItem={onSelect}
-          currentSelectedOutfitItems={selected}
-          onNewOutfitItemCreated={onCreate}
-          popupOpen={popupOpen && popupType === type}
-          onPopupOpen={() => handlePopupOpen(type)}
-          onPopupClose={handlePopupClose}
-        />
+        <Paper elevation={3} sx={{ p: 3, bgcolor: '#fafafa' }} key={type}>
+          <OutfitItemScroller
+            key={type}
+            outfitItems={items}
+            outfitItemType={type}
+            onSelectOutfitItem={onSelect}
+            currentSelectedOutfitItems={selected}
+            onNewOutfitItemCreated={onCreate}
+            popupOpen={popupOpen && popupType === type}
+            onPopupOpen={() => handlePopupOpen(type)}
+            onPopupClose={handlePopupClose}
+          />
+        </Paper>
       ))}
 
       <Button
         variant='contained'
-        color='primary'
         size='large'
-        sx={{ alignSelf: 'center', mt: 2 }}
+        sx={{ alignSelf: 'center', bgcolor: '#473BF0', color: '#f5f3f5' }}
         onClick={() => handleAddRatingClick(outfit)}>
         Rate this Outfit
       </Button>

@@ -61,7 +61,7 @@ const QuestionView = ({ q }: QuestionProps) => {
         <Typography sx={{ color: '#32292F' }}>{q.views.length} views</Typography>
       </Box>
       <Box className='question_mid' sx={{ marginY: 'auto' }}>
-        <Typography sx={{ color: '#5171A5' }}>{q.title}</Typography>
+        <Typography sx={{ color: '#473BF0' }}>{q.title}</Typography>
         <Box className='question_tags'>
           {q.tags.map((tag, idx) => (
             <Button

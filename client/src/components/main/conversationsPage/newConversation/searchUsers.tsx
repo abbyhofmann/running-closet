@@ -84,7 +84,7 @@ export default function SearchUsers(props: SearchUsersProps) {
               fullWidth
               onClick={createConversation}
               disabled={value.length === 0}
-              sx={{ bgcolor: '#5171A5', marginLeft: 4 }}>
+              sx={{ bgcolor: '#473BF0', marginLeft: 4 }}>
               <Add sx={{ marginRight: 1 }}></Add>
             </Button>
           </Box>

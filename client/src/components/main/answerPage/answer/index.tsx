@@ -44,13 +44,13 @@ const AnswerView = ({ text, ansBy, meta, comments, handleAddComment }: AnswerPro
           <Grid size={{ xs: 12, sm: 3 }}>
             <Box>
               <Typography
-                sx={{ color: '#5171A5', textDecoration: 'underline' }}
+                sx={{ color: '#473BF0', textDecoration: 'underline' }}
                 onClick={() => {
                   navigate(`/profile/${ansBy}`);
                 }}>
                 {ansBy}
               </Typography>
-              <Typography sx={{ color: '#5171A5' }}>{meta}</Typography>
+              <Typography sx={{ color: '#473BF0' }}>{meta}</Typography>
             </Box>
           </Grid>
           <Grid size={{ xs: 12, sm: 9 }}>
