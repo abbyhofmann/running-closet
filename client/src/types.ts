@@ -66,13 +66,14 @@ export interface Outfit {
 
 /**
  * Interface represents the data for an outfit.
- *
- * dateWorn - The date the outfit was worn.
- * location - The location the outfit was worn.
- * runType - The type of run for which the outfit was worn.
- * stars - The number of stars given to the outfit.
+ * - oid: The unique identifier for the outfit.
+ * - dateWorn: The date the outfit was worn.
+ * - location: The location the outfit was worn.
+ * - runType: The type of run for which the outfit was worn.
+ * - stars: The number of stars given to the outfit.
  */
 export interface OutfitData {
+  oid: string;
   dateWorn: Date;
   location: string;
   runType: string;

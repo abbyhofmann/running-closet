@@ -80,7 +80,7 @@ export default function NavigationMenu() {
         <MenuItem
           key='view-my-outfits'
           onClick={() => {
-            navigate(`/viewMyOutfits`);
+            navigate(`/createOutfit/myOutfits`);
             handleClose();
           }}>
           My Outfits

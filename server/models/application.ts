@@ -2088,7 +2088,7 @@ export const fetchPartialOutfitsByUser = async (
 ): Promise<OutfitData[] | { error: string }> => {
   try {
     const outfits = await OutfitModel.find({ wearer: uid })
-      .select(['dateWorn', 'location', 'workout', 'rating']) // only fetch these fields
+      .select(['_id', 'dateWorn', 'location', 'workout', 'rating']) // only fetch these fields
       .populate([
         { path: 'workout', select: 'runType' },
         { path: 'rating', select: 'stars' },
@@ -2096,6 +2096,7 @@ export const fetchPartialOutfitsByUser = async (
       .lean();
 
     const outfitDataList: OutfitData[] = outfits.map(outfit => ({
+      oid: outfit._id.toString(),
       dateWorn: outfit.dateWorn,
       location: outfit.location,
       runType: outfit.workout?.runType.toString() ?? 'no run type',
