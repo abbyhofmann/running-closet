@@ -346,6 +346,7 @@ const useNewOutfitPage = () => {
     handlePopupOpen,
     handlePopupClose,
     handleWorkoutPopupClose,
+    dateWorn,
     setDateWorn,
     handleLocationSelection,
     handleDateSelection,

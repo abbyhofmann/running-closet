@@ -86,7 +86,7 @@ const OutfitItemScroller = ({
                 gap: 1,
               }}>
               <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
-                + Create New{' '}
+                + New{' '}
                 {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)}
               </Typography>
             </Box>

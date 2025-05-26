@@ -28,7 +28,7 @@ const WorkoutScroller = ({
   return (
     <div>
       <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
-        Select Workout
+        Workout
       </Typography>
       <Box
         sx={{

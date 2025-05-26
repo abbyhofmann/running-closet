@@ -41,10 +41,10 @@ const LocationInput = (props: LocationInputProps) => {
   useEffect(() => {}, [values]);
 
   return (
-    <Box sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}>
+    <Box sx={{ '& > :not(style)': { width: '25ch' } }}>
       <form onSubmit={handleSubmit}>
         <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
-          Select Location
+          Location
         </Typography>
         <FormControl sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}>
           <Typography>Country</Typography>

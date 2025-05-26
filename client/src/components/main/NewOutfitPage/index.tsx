@@ -1,6 +1,7 @@
-import { Box, List, ListItem, ListItemText, Button, Typography, Stack, Grid2 } from '@mui/material';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { Button, Typography, Stack, Grid2, Paper } from '@mui/material';
+import { DatePicker, LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 import WorkoutScroller from './workoutScroller';
 import OutfitItemScroller from './outfitItemScroller';
 import useNewOutfitPage from '../../../hooks/useNewOutfitPage';
@@ -36,6 +37,7 @@ const NewOutfitPage = () => {
     handlePopupClose,
     handleWorkoutPopupClose,
     handleCreateWorkout,
+    dateWorn,
     setDateWorn,
     handleLocationSelection,
     handleDateSelection,
@@ -43,73 +45,68 @@ const NewOutfitPage = () => {
   } = useNewOutfitPage();
 
   return (
-    <Grid2
-      sx={{
-        marginTop: 3,
-        px: 9,
-      }}>
-      <Stack direction='column' spacing={{ xs: 1, sm: 2, md: 4 }}>
-        {/* Sidebar */}
-        <Box>
-          <Box sx={{ width: 240 }}>
-            <List>
-              <ListItem>
-                <ListItemText primary={`wearer: ${outfit.wearer}`} />
-              </ListItem>
-              <ListItem>
-                <ListItemText
-                  primary={`Top: ${outfit.tops.length > 0 ? outfit.tops[0].brand : 'Not Selected'}`}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemText
-                  primary={`Bottom: ${outfit.bottoms.length > 0 ? 'Added' : 'Not Selected'}`}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemText
-                  primary={`Outerwear: ${outfit.outerwear.length > 0 ? 'Added' : 'Not Selected'}`}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemText
-                  primary={`Accessory: ${outfit.accessories.length > 0 ? 'Added' : 'Not Selected'}`}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemText
-                  primary={`Shoes: ${outfit.shoe ? outfit.shoe.brand : 'Not Selected'}`}
-                />
-              </ListItem>
-            </List>
-          </Box>
-        </Box>
-        <Box sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}>
-          <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
-            Select Date Worn
-          </Typography>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <Stack spacing={4} sx={{ px: { xs: 2, md: 9 }, mt: 4 }}>
+      {/* Date Picker */}
+      <Paper elevation={3} sx={{ p: 3 }}>
+        <Typography variant='h6' fontWeight='bold' gutterBottom>
+          Date Worn
+        </Typography>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Stack direction='row' spacing={2}>
             <DatePicker
               label='Select date'
+              value={dayjs(dateWorn)}
               onChange={newValue => {
                 const newDate = newValue ? newValue.toDate() : null;
+                if (newDate && dateWorn) {
+                  // preserve time from previous dateWorn
+                  newDate.setHours(dateWorn.getHours(), dateWorn.getMinutes());
+                }
                 setDateWorn(newDate);
                 handleDateSelection(newDate);
               }}
             />
-          </LocalizationProvider>
-        </Box>
+            <TimePicker
+              label='Select time'
+              value={dayjs(dateWorn)} // same here
+              onChange={newValue => {
+                if (!newValue) return;
+                const selected = newValue.toDate();
+                if (dateWorn) {
+                  // preserve the existing date part
+                  const updatedDate = new Date(dateWorn);
+                  updatedDate.setHours(selected.getHours(), selected.getMinutes());
+                  setDateWorn(updatedDate);
+                  handleDateSelection(updatedDate);
+                } else {
+                  setDateWorn(selected);
+                  handleDateSelection(selected);
+                }
+              }}
+            />
+          </Stack>
+        </LocalizationProvider>
+      </Paper>
+
+      {/* Location */}
+      <Paper elevation={3} sx={{ p: 3 }}>
         <LocationInput onSelectLocation={handleLocationSelection} />
-        {/* Display Selected Workout */}
-        {selectedWorkout && (
-          <Box mt={3}>
-            <Typography variant='h6'>Selected Workout:</Typography>
-            <Typography>Type: {selectedWorkout.runType}</Typography>
-            <Typography>Distance: {selectedWorkout.distance} miles</Typography>
-            <Typography>Duration: {selectedWorkout.duration} minutes</Typography>
-          </Box>
-        )}
-        {/* Horizontal Workout Scroller */}
+      </Paper>
+
+      {/* Selected Workout Summary */}
+      {selectedWorkout && (
+        <Paper elevation={3} sx={{ p: 3 }}>
+          <Typography variant='h6' fontWeight='bold' gutterBottom>
+            Selected Workout
+          </Typography>
+          <Typography>Type: {selectedWorkout.runType}</Typography>
+          <Typography>Distance: {selectedWorkout.distance} miles</Typography>
+          <Typography>Duration: {selectedWorkout.duration} minutes</Typography>
+        </Paper>
+      )}
+
+      {/* Workout Picker */}
+      <Paper elevation={3} sx={{ p: 3 }}>
         <WorkoutScroller
           workouts={workouts}
           onSelectWorkout={handleWorkoutSelection}
@@ -119,69 +116,68 @@ const NewOutfitPage = () => {
           onPopupClose={handleWorkoutPopupClose}
           onNewWorkoutCreated={handleCreateWorkout}
         />
-        {/* Horizontal OutfitItem Scrollers */}
-        {/* Top Scroller */}
-        <OutfitItemScroller
-          outfitItems={userTops}
-          outfitItemType='top'
-          onSelectOutfitItem={handleTopSelection}
-          currentSelectedOutfitItems={outfit.tops}
-          onNewOutfitItemCreated={handleCreateTop}
-          popupOpen={popupOpen && popupType === 'top'}
-          onPopupOpen={() => handlePopupOpen('top')}
-          onPopupClose={handlePopupClose}
-        />
-        {/* Bottom Scroller */}
-        <OutfitItemScroller
-          outfitItems={userBottoms}
-          outfitItemType='bottom'
-          onSelectOutfitItem={handleBottomSelection}
-          currentSelectedOutfitItems={outfit.bottoms}
-          onNewOutfitItemCreated={handleCreateBottom}
-          popupOpen={popupOpen && popupType === 'bottom'}
-          onPopupOpen={() => handlePopupOpen('bottom')}
-          onPopupClose={handlePopupClose}
-        />
+      </Paper>
 
-        {/* Shoes Scroller */}
+      {/* Outfit Item Scrollers */}
+      {[
+        {
+          items: userTops,
+          type: 'top',
+          selected: outfit.tops,
+          onCreate: handleCreateTop,
+          onSelect: handleTopSelection,
+        },
+        {
+          items: userBottoms,
+          type: 'bottom',
+          selected: outfit.bottoms,
+          onCreate: handleCreateBottom,
+          onSelect: handleBottomSelection,
+        },
+        {
+          items: userShoes,
+          type: 'shoes',
+          selected: outfit.shoe ? [outfit.shoe] : [],
+          onCreate: handleCreateShoe,
+          onSelect: handleShoeSelection,
+        },
+        {
+          items: userOuterwears,
+          type: 'outerwear',
+          selected: outfit.outerwear,
+          onCreate: handleCreateOuterwear,
+          onSelect: handleOuterwearSelection,
+        },
+        {
+          items: userAccessories,
+          type: 'accessory',
+          selected: outfit.accessories,
+          onCreate: handleCreateAccessory,
+          onSelect: handleAccessorySelection,
+        },
+      ].map(({ items, type, selected, onCreate, onSelect }) => (
         <OutfitItemScroller
-          outfitItems={userShoes}
-          outfitItemType='shoes'
-          onSelectOutfitItem={handleShoeSelection}
-          currentSelectedOutfitItems={outfit.shoe == null ? [] : [outfit.shoe]}
-          onNewOutfitItemCreated={handleCreateShoe}
-          popupOpen={popupOpen && popupType === 'shoes'}
-          onPopupOpen={() => handlePopupOpen('shoes')}
+          key={type}
+          outfitItems={items}
+          outfitItemType={type}
+          onSelectOutfitItem={onSelect}
+          currentSelectedOutfitItems={selected}
+          onNewOutfitItemCreated={onCreate}
+          popupOpen={popupOpen && popupType === type}
+          onPopupOpen={() => handlePopupOpen(type)}
           onPopupClose={handlePopupClose}
         />
-        {/* Outerwears Scroller */}
-        <OutfitItemScroller
-          outfitItems={userOuterwears}
-          outfitItemType='outerwear'
-          // onCreateOutfitItem={handleClickOpen}
-          onSelectOutfitItem={handleOuterwearSelection}
-          currentSelectedOutfitItems={outfit.outerwear}
-          onNewOutfitItemCreated={handleCreateOuterwear}
-          popupOpen={popupOpen && popupType === 'outerwear'}
-          onPopupOpen={() => handlePopupOpen('outerwear')}
-          onPopupClose={handlePopupClose}
-        />
-        {/* Accessories Scroller */}
-        <OutfitItemScroller
-          outfitItems={userAccessories}
-          outfitItemType='accessory'
-          // onCreateOutfitItem={handleClickOpen}
-          onSelectOutfitItem={handleAccessorySelection}
-          currentSelectedOutfitItems={outfit.accessories}
-          onNewOutfitItemCreated={handleCreateAccessory}
-          popupOpen={popupOpen && popupType === 'accessory'}
-          onPopupOpen={() => handlePopupOpen('accessory')}
-          onPopupClose={handlePopupClose}
-        />
-        {/* <Button onClick={() => handleCreateOutfit(outfit)}>Create Outfit!</Button> */}
-        <Button onClick={() => handleAddRatingClick(outfit)}>Rate this Outfit</Button>
-      </Stack>
-    </Grid2>
+      ))}
+
+      <Button
+        variant='contained'
+        color='primary'
+        size='large'
+        sx={{ alignSelf: 'center', mt: 2 }}
+        onClick={() => handleAddRatingClick(outfit)}>
+        Rate this Outfit
+      </Button>
+    </Stack>
   );
 };
 

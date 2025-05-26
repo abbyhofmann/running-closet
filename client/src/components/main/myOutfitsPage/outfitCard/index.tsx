@@ -16,6 +16,20 @@ interface OutfitCardProps {
   clickOutfit: (outfitId: string) => void;
 }
 
+// formats date string into format of "May 25, 2025 at 7:30 am"
+const formatDateTime = (date: string | Date) =>
+  new Date(date)
+    .toLocaleString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    })
+    .replace('AM', 'am')
+    .replace('PM', 'pm');
+
 /**
  * Outfit component that displays partial information about a specific outfit.
  * The component displays the outfit's date, workout type, location, and rating.
@@ -26,18 +40,21 @@ interface OutfitCardProps {
  * @param clickOutfit - Function to handle outfit clicks.
  */
 const OutfitCard = ({ o, clickOutfit }: OutfitCardProps) => (
-  <Card
-    sx={{ bgcolor: grey[300] }}
-    className='outfitNode'
-    onClick={() => {
-      clickOutfit(o.oid);
-    }}>
-    <Typography sx={{ color: '#E77963', marginY: 'auto' }}>
-      <strong>{o.dateWorn.toString()}</strong>
-      <strong>{o.runType}</strong>
-    </Typography>
-    <Typography sx={{ color: '#32292F', marginY: 'auto' }}>{o.location}</Typography>
-    <Box sx={{ width: 200, display: 'flex', alignItems: 'center' }}>
+  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <Card
+      sx={{ bgcolor: grey[300] }}
+      className='outfitNode'
+      onClick={() => {
+        clickOutfit(o.oid);
+      }}>
+      <Typography sx={{ color: '#E77963', marginY: 'auto' }}>
+        <strong>{formatDateTime(o.dateWorn)}</strong>
+      </Typography>
+      <Typography sx={{ color: '#E77963', marginY: 'auto' }}>
+        <strong>{o.runType} workout</strong>
+      </Typography>
+      <Typography sx={{ color: '#32292F', marginY: 'auto' }}>{o.location}</Typography>
+
       <Rating
         name='read-only'
         value={o.stars}
@@ -45,8 +62,8 @@ const OutfitCard = ({ o, clickOutfit }: OutfitCardProps) => (
         size='large'
         emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize='inherit' />}
       />
-    </Box>
-  </Card>
+    </Card>
+  </Box>
 );
 
 export default OutfitCard;
