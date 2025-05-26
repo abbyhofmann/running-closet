@@ -29,16 +29,50 @@ const TEMP_TUPLES: [
 
 const TempGauge = (props: TempGaugeProps) => {
   const { tempGauge, setTempGauge } = props;
+
   return (
-    <Stack alignItems='center' direction='row' gap={2}>
-      {TEMP_TUPLES.map(item => (
-        <Stack key={item[0]} alignItems='center' direction='column' gap={2}>
-          <IconButton onClick={() => setTempGauge(item[1])}>
-            <ThermostatIcon fontSize='large' color={item[0]} />
-          </IconButton>
-          <Typography>{item[1]}</Typography>
-        </Stack>
-      ))}
+    <Stack alignItems='center' direction='column'>
+      <Typography sx={{ m: 1, fontSize: '1.7rem', color: '#32292F' }}>
+        <strong> Temperature Suitability </strong>
+      </Typography>
+      <Typography sx={{ mt: 1, mb: 2, fontSize: '1.1rem', color: '#32292F', fontStyle: 'italic' }}>
+        {`How did you feel while wearing the outfit?`}
+      </Typography>
+      <Stack alignItems='center' direction='row' gap={8}>
+        {TEMP_TUPLES.map(([color, label]) => (
+          <Stack
+            key={color}
+            alignItems='center'
+            direction='column'
+            justifyContent='flex-start'
+            sx={{ minHeight: '150px' }}>
+            <IconButton
+              onClick={() => setTempGauge(label)}
+              sx={{
+                // border: tempGauge === label ? '2px solid #000' : '2px solid transparent',
+                // backgroundColor: tempGauge === label ? 'rgba(0, 0, 0, 0.05)' : 'transparent',
+                transform: tempGauge === label ? 'scale(1.5)' : 'scale(1)',
+              }}>
+              <ThermostatIcon
+                style={{ width: '70px', height: '70px' }}
+                fontSize='large'
+                color={color}
+              />
+            </IconButton>
+            <Typography
+              sx={{
+                mt: 3,
+                fontSize: '1.25rem',
+                textAlign: 'center',
+                maxWidth: '125px',
+                whiteSpace: 'normal',
+                wordWrap: 'break-word',
+              }}>
+              {label}
+            </Typography>
+          </Stack>
+        ))}
+      </Stack>
     </Stack>
   );
 };
