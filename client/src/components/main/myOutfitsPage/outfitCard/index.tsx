@@ -40,7 +40,7 @@ const formatDateTime = (date: string | Date) =>
  * @param clickOutfit - Function to handle outfit clicks.
  */
 const OutfitCard = ({ o, clickOutfit }: OutfitCardProps) => (
-  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+  <Box sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
     <Card
       sx={{ bgcolor: grey[300] }}
       className='outfitNode'

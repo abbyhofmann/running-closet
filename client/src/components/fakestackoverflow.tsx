@@ -17,6 +17,7 @@ import NewOutfitPage from './main/newOutfitPage';
 import OutfitContext from '../contexts/OutfitContext';
 import RatingForm from './main/newOutfitPage/newRatingPage/ratingForm';
 import MyOutfitsPage from './main/myOutfitsPage';
+import ViewOutfitPage from './main/viewOutfitPage';
 
 const ProtectedRoute = ({
   user,
@@ -76,6 +77,7 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
               <Route path=':cid' element={<ConversationsPage />} />
             </Route>
             {/* Outfit Routes */}
+            <Route path='/outfit/:oid' element={<ViewOutfitPage />} />
             <Route
               path='/createOutfit/*'
               element={

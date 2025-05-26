@@ -586,6 +586,17 @@ export interface FindOutfitItemsByUserIdRequest extends Request {
   };
 }
 
+/**
+ * Interface for the request parameter when fetching an outfit by its id.
+ * - oid - The unique identifier of the outfit.
+ */
+
+export interface FindOutfitByIdRequest extends Request {
+  params: {
+    oid: string;
+  };
+}
+
 // used when getting all the outfit items a user has created for the create outfit page (when selecting existing itmes)
 export interface AllOutfitItemsObject {
   tops: Top[];

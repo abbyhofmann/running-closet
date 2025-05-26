@@ -2108,14 +2108,3 @@ export const fetchPartialOutfitsByUser = async (
     return { error: 'Error when fetching partial outfit data' };
   }
 };
-
-/*
-workout: { type: Schema.Types.ObjectId, ref: 'Workout' },
-    rating: { type: Schema.Types.ObjectId, ref: 'Rating' },
-    tops: [{ type: Schema.Types.ObjectId, ref: 'Top' }],
-    bottoms: [{ type: Schema.Types.ObjectId, ref: 'Bottom' }],
-    outerwear: [{ type: Schema.Types.ObjectId, ref: 'Outerwear' }],
-    accessories: [{ type: Schema.Types.ObjectId, ref: 'Accessory' }],
-    shoes: { type: Schema.Types.ObjectId, ref: 'Shoe' },
-  
-*/

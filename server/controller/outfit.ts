@@ -6,6 +6,7 @@ import {
   GetUserRequest,
   Outfit,
   FindOutfitItemsByUserIdRequest,
+  FindOutfitByIdRequest,
 } from '../types';
 import {
   fetchUserByUsername,
@@ -312,11 +313,31 @@ const outfitController = (socket: FakeSOSocket) => {
     }
   };
 
+  const getOutfitById = async (req: FindOutfitByIdRequest, res: Response): Promise<void> => {
+    const { oid } = req.params;
+
+    if (!ObjectId.isValid(oid)) {
+      res.status(400).send('Invalid ID format');
+      return;
+    }
+
+    try {
+      const outfit = await fetchOutfitById(oid);
+      if ('error' in outfit) {
+        throw new Error(outfit.error as string);
+      }
+      res.json(outfit);
+    } catch (err) {
+      res.status(500).send(`Error when fetching outfit: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/createOutfit', createOutfit);
   router.get('/getAllOutfitItems/:uid', getAllOutfitItems);
   router.get('/getOutfitsByUser/:uid', getOutfitsByUser);
   router.get('/getPartialOutfitsByUser/:uid', getPartialOutfitsByUser);
+  router.get('/getOutfitById/:oid', getOutfitById);
 
   return router;
 };

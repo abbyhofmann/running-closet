@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { OutfitData } from '../types';
 import useUserContext from './useUserContext';
 import { getPartialOutfitsByUser } from '../services/outfitService';
@@ -8,6 +9,7 @@ import { getPartialOutfitsByUser } from '../services/outfitService';
  */
 const useMyOutfitsPage = () => {
   const { user } = useUserContext();
+  const navigate = useNavigate();
   const [userPartialOutfits, setPartialUserOutfits] = useState<OutfitData[]>([]);
 
   useEffect(() => {
@@ -23,6 +25,7 @@ const useMyOutfitsPage = () => {
   const handleClickOutfit = (outfitId: string) => {
     // TODO
     console.log('need to implement navigation to view outfit page');
+    navigate(`/outfit/${outfitId}`);
   };
 
   return {
