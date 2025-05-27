@@ -1,0 +1,6 @@
+.outfit_items_columns {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 80px 20px;
+  }
+  

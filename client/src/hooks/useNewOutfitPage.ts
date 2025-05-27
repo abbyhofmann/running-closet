@@ -204,7 +204,7 @@ const useNewOutfitPage = () => {
   const handleShoeSelection = (shoe: Shoe) => {
     setOutfit({
       ...outfit,
-      shoe: outfit.shoe?._id === shoe._id ? undefined : shoe,
+      shoes: outfit.shoes?._id === shoe._id ? undefined : shoe,
     });
   };
 
@@ -221,7 +221,7 @@ const useNewOutfitPage = () => {
   };
 
   const validateOutfit = (outfitToValidate: Outfit): void => {
-    if (!outfitToValidate.shoe?._id) {
+    if (!outfitToValidate.shoes?._id) {
       throw new Error('Shoe is missing an id.');
     }
 

@@ -48,7 +48,7 @@ export interface User {
  * - bottoms: The bottoms worn in the outfit.
  * - outerwear: The outerwear worn in the outfit.
  * - accessories: The accessories worn in the outfit.
- * - shoe: The shoes worn in the outfit.
+ * - shoes: The shoes worn in the outfit.
  */
 export interface Outfit {
   _id?: string;
@@ -61,7 +61,7 @@ export interface Outfit {
   bottoms: Bottom[];
   outerwear: Outerwear[];
   accessories: Accessory[];
-  shoe?: Shoe;
+  shoes?: Shoe;
 }
 
 /**

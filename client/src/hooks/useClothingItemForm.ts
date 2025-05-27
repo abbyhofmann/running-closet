@@ -76,7 +76,7 @@ const useClothingItemForm = (clothingType: string) => {
         const newShoe = await createShoe(user._id!, brand, model, 'newTopUrl.com');
         setOutfit({
           ...outfit,
-          shoe: newShoe,
+          shoes: newShoe,
         });
         if (!outfit.wearer || !outfit.wearer._id) {
           throw new Error('Wearer not defined.');
@@ -84,7 +84,7 @@ const useClothingItemForm = (clothingType: string) => {
         if (!outfit.workout || !outfit.workout._id) {
           throw new Error('Workout not defined.');
         }
-        if (!outfit.shoe?._id) {
+        if (!outfit.shoes?._id) {
           throw new Error('Shoe not defined.');
         }
         // only send the ids when creating the outfit in the db

@@ -22,7 +22,7 @@ const useRatingForm = () => {
       throw new Error('Rating is missing an id.');
     }
 
-    if (!newOutfit.shoe?._id) {
+    if (!newOutfit.shoes?._id) {
       throw new Error('Shoe is missing an id.');
     }
 
@@ -57,7 +57,7 @@ const useRatingForm = () => {
         if (!a._id) throw new Error('One or more accessories are missing an id.');
         return a._id;
       }),
-      newOutfit.shoe._id,
+      newOutfit.shoes._id,
     );
 
     if (!newOutfitCreated || !newOutfitCreated._id) {

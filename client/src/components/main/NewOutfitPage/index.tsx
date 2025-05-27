@@ -128,7 +128,7 @@ const NewOutfitPage = () => {
         {
           items: userShoes,
           type: 'shoes',
-          selected: outfit.shoe ? [outfit.shoe] : [],
+          selected: outfit.shoes ? [outfit.shoes] : [],
           onCreate: handleCreateShoe,
           onSelect: handleShoeSelection,
         },
