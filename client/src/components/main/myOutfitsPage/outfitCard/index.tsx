@@ -4,6 +4,7 @@ import { grey } from '@mui/material/colors';
 import { Box } from '@mui/system';
 import StarIcon from '@mui/icons-material/Star';
 import { OutfitData } from '../../../../types';
+import useOutfitCard from '../../../../hooks/useOutfitCard';
 
 /**
  * Props for the outfit card component.
@@ -16,20 +17,6 @@ interface OutfitCardProps {
   clickOutfit: (outfitId: string) => void;
 }
 
-// formats date string into format of "May 25, 2025 at 7:30 am"
-const formatDateTime = (date: string | Date) =>
-  new Date(date)
-    .toLocaleString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    })
-    .replace('AM', 'am')
-    .replace('PM', 'pm');
-
 /**
  * Outfit component that displays partial information about a specific outfit.
  * The component displays the outfit's date, workout type, location, and rating.
@@ -39,32 +26,36 @@ const formatDateTime = (date: string | Date) =>
  * @param o - The outfit object.
  * @param clickOutfit - Function to handle outfit clicks.
  */
-const OutfitCard = ({ o, clickOutfit }: OutfitCardProps) => (
-  <Box sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-    <Card
-      sx={{ bgcolor: grey[300] }}
-      className='outfitNode'
-      onClick={() => {
-        clickOutfit(o.oid);
-      }}>
-      <Typography sx={{ color: '#302B27', marginY: 'auto' }}>
-        <strong>{formatDateTime(o.dateWorn)}</strong>
-      </Typography>
-      <Typography sx={{ color: '#473BF0', marginY: 'auto' }}>
-        <strong>{o.runType} workout</strong>
-      </Typography>
-      <Typography sx={{ color: '#32292F', marginY: 'auto' }}>{o.location}</Typography>
+const OutfitCard = ({ o, clickOutfit }: OutfitCardProps) => {
+  const { formatDateTime } = useOutfitCard();
 
-      <Rating
-        name='read-only'
-        readOnly
-        value={o.stars}
-        precision={1}
-        size='large'
-        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize='inherit' />}
-      />
-    </Card>
-  </Box>
-);
+  return (
+    <Box sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+      <Card
+        sx={{ bgcolor: grey[300] }}
+        className='outfitNode'
+        onClick={() => {
+          clickOutfit(o.oid);
+        }}>
+        <Typography sx={{ color: '#302B27', marginY: 'auto' }}>
+          <strong>{formatDateTime(o.dateWorn)}</strong>
+        </Typography>
+        <Typography sx={{ color: '#473BF0', marginY: 'auto' }}>
+          <strong>{o.runType} workout</strong>
+        </Typography>
+        <Typography sx={{ color: '#32292F', marginY: 'auto' }}>{o.location}</Typography>
+
+        <Rating
+          name='read-only'
+          readOnly
+          value={o.stars}
+          precision={1}
+          size='large'
+          emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize='inherit' />}
+        />
+      </Card>
+    </Box>
+  );
+};
 
 export default OutfitCard;

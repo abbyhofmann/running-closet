@@ -5,6 +5,7 @@ import { Box, Stack } from '@mui/system';
 import { Outfit, Shoe, User, Workout, Rating } from '../../../types';
 import { getOutfitById } from '../../../services/outfitService';
 import './index.css';
+import OutfitItemCard from '../newOutfitPage/outfitItemCard';
 
 const ViewOutfitPage = () => {
   const { oid } = useParams();
@@ -23,27 +24,30 @@ const ViewOutfitPage = () => {
     fetchData();
   }, [oid]);
 
-  const isShoe = (
-    shoe: string | Shoe | User | Date | Workout | Rating | undefined,
-  ): shoe is Shoe => {
-    console.log('shoe: ', shoe);
-    return (shoe as Shoe).brand !== undefined && (shoe as Shoe).model !== undefined;
-  };
+  const isShoe = (shoe: string | Shoe | User | Date | Workout | Rating | undefined): shoe is Shoe =>
+    (shoe as Shoe).brand !== undefined && (shoe as Shoe).model !== undefined;
 
   const renderOutfitItems = (name: string, outfitToRender: Outfit | null) => {
     const key = name.toLowerCase();
     const items = outfitToRender?.[key as keyof Outfit];
-    console.log('items: ', items, ', name: ', name, ', outfitToRender: ', outfitToRender);
 
     if (Array.isArray(items)) {
       return items.length > 0 ? (
-        items.map(item => <Typography key={item._id}>{item.model}</Typography>)
+        items.map(item => (
+          <div key={item._id} style={{ marginBottom: 10 }}>
+            <OutfitItemCard outfitItem={item} onSelectOutfitItem={() => {}} selected={false} />
+          </div>
+        ))
       ) : (
         <Typography color='text.secondary'>No {name}</Typography>
       );
     }
     if (isShoe(items)) {
-      return <Typography>{items.model}</Typography>;
+      return (
+        <div key={items._id} style={{ marginBottom: 10 }}>
+          <OutfitItemCard outfitItem={items} onSelectOutfitItem={() => {}} selected={false} />
+        </div>
+      );
     }
     return <Typography color='text.secondary'>No Shoes</Typography>;
   };
@@ -57,11 +61,6 @@ const ViewOutfitPage = () => {
       <Typography>View Outfit Page! outfit id: {oid}</Typography>
       <Typography>{outfit?.dateWorn?.toString()}</Typography>
       <Typography>{outfit?.location?.toString()}</Typography>
-      <Typography>{outfit?.tops.length.toString()}</Typography>
-      <Typography>{outfit?.bottoms.length.toString()}</Typography>
-      <Typography>{outfit?.shoes?.toString()}</Typography>
-      <Typography>{outfit?.outerwear.length.toString()}</Typography>
-      <Typography>{outfit?.accessories.length.toString()}</Typography>
       <Typography>{outfit?.rating?.stars.toString()}</Typography>
       <Typography>{outfit?.rating?.temperatureGauge.toString()}</Typography>
 
@@ -76,15 +75,21 @@ const ViewOutfitPage = () => {
             </Typography>
           </Box>
           <Box className='outfit_items_columns right_padding'>
-            {outfitItemNames.map(name => {
-              console.log('outfitttt: ', outfit);
-              return (
-                <div key={name}>
-                  <Typography variant='h6'>{name}</Typography>
-                  {renderOutfitItems(name, outfit)}
-                </div>
-              );
-            })}
+            {outfitItemNames.map(name => (
+              <Box
+                key={name}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  textAlign: 'center', // center text within children
+                  gap: 1, // optional spacing between title and items
+                }}>
+                <Typography variant='h5'>
+                  <strong>{name}</strong>
+                </Typography>
+                {renderOutfitItems(name, outfit)}
+              </Box>
+            ))}
           </Box>
         </Box>
       </Stack>
