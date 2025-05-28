@@ -9,6 +9,8 @@ import {
   FindOutfitByIdRequest,
   ForwardGeocodeRequest,
   GenerateStaticMapImageRequest,
+  GetHistoricalWeatherDataRequest,
+  HourlyWeather,
 } from '../types';
 import {
   fetchUserByUsername,
@@ -33,6 +35,7 @@ import {
   fetchPartialOutfitsByUser,
   fetchCoordinates,
   fetchStaticMapImage,
+  fetchHistoricalWeatherData,
 } from '../models/application';
 
 const outfitController = (socket: FakeSOSocket) => {
@@ -81,6 +84,18 @@ const outfitController = (socket: FakeSOSocket) => {
    */
   const isGenerateStaticMapImageRequestValid = (req: GenerateStaticMapImageRequest): boolean =>
     !!req.body.coordinates && !!req.body.coordinates.lat && !!req.body.coordinates.lng;
+
+  /**
+   * Checks if the provided GetHistoricalWeatherDataRequest contains the necessary fields.
+   *
+   * @param req GetHistoricalWeatherDataRequest object containing the coordinates and dateTimeInfo.
+   * @returns `true` if the request is valid, otherwise `false`.
+   */
+  const isGetHistoricalWeatherDataRequestValid = (req: GetHistoricalWeatherDataRequest): boolean =>
+    !!req.body.coordinates &&
+    !!req.body.coordinates.lat &&
+    !!req.body.coordinates.lng &&
+    !!req.body.dateTimeInfo;
 
   /**
    * Adds a new outfit to the database. The outfit request is validated and the outfit is then saved.
@@ -395,6 +410,32 @@ const outfitController = (socket: FakeSOSocket) => {
     }
   };
 
+  const getHistoricalWeatherData = async (
+    req: GetHistoricalWeatherDataRequest,
+    res: Response,
+  ): Promise<void> => {
+    if (!isGetHistoricalWeatherDataRequestValid(req)) {
+      res.status(400).send('Invalid get historical weather data request body');
+      return;
+    }
+
+    const { coordinates, dateTimeInfo } = req.body;
+    const { lat, lng } = coordinates;
+
+    console.log('params: ', lat, ', ', lng, ', DTI str: ', dateTimeInfo.toString());
+    try {
+      const weatherData = await fetchHistoricalWeatherData(lat, lng, dateTimeInfo.toString());
+      const hourStr = new Date(dateTimeInfo).toTimeString().slice(0, 5); // 'HH:MM'
+      const hourData = weatherData.hours.find((h: HourlyWeather) => h.datetime.startsWith(hourStr));
+      console.log('hourData: ', hourData);
+      res.json(hourData);
+    } catch (err) {
+      res
+        .status(500)
+        .send(`Error when fetching historical weather data: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/createOutfit', createOutfit);
   router.get('/getAllOutfitItems/:uid', getAllOutfitItems);
@@ -403,6 +444,7 @@ const outfitController = (socket: FakeSOSocket) => {
   router.get('/getOutfitById/:oid', getOutfitById);
   router.post('/forwardGeocodeLocation', forwardGeocodeLocation);
   router.post('/generateStaticMapImage', generateStaticMapImage);
+  router.post('/getHistoricalWeatherData', getHistoricalWeatherData);
 
   return router;
 };

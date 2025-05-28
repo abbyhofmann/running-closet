@@ -1,4 +1,10 @@
-import { AllOutfitItemsObject, LocationCoordinates, Outfit, OutfitData } from '../types';
+import {
+  AllOutfitItemsObject,
+  HourlyWeather,
+  LocationCoordinates,
+  Outfit,
+  OutfitData,
+} from '../types';
 import api from './config';
 
 const OUTFIT_API_URL = `${process.env.REACT_APP_SERVER_URL}/outfit`;
@@ -132,6 +138,20 @@ const generateStaticMapImage = async (coordinates: LocationCoordinates): Promise
   return res.data;
 };
 
+const getHistoricalWeatherData = async (
+  coordinates: LocationCoordinates,
+  dateTimeInfo: Date,
+): Promise<HourlyWeather> => {
+  const data = { coordinates, dateTimeInfo };
+  const res = await api.post(`${OUTFIT_API_URL}/getHistoricalWeatherData`, data);
+
+  if (res.status !== 200) {
+    throw new Error('Error while getting historical weather data');
+  }
+
+  return res.data;
+};
+
 export {
   createOutfit,
   getAllOutfitItems,
@@ -140,4 +160,5 @@ export {
   getOutfitById,
   forwardGeocodeLocation,
   generateStaticMapImage,
+  getHistoricalWeatherData,
 };

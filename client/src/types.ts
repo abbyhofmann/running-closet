@@ -435,3 +435,39 @@ export interface LocationCoordinates {
   lat: number;
   lng: number;
 }
+
+/**
+ * Interface for data representing one specific hour of weather.
+ */
+export interface HourlyWeather {
+  datetime: string;
+  temp: number;
+  feelslike: number;
+  humidity: number;
+  dew: number;
+  windspeed: number;
+  windgust: number;
+  winddir: number;
+  pressure: number;
+  visibility: number;
+  cloudcover: number;
+  uvindex: number;
+  conditions: string;
+  icon: string;
+}
+
+/**
+ * Interface for data representing an entire day's weather.
+ */
+export interface WeatherDay {
+  datetime: string;
+  tempmax: number;
+  tempmin: number;
+  temp: number;
+  conditions: string;
+  description: string;
+  icon: string;
+  sunrise: string;
+  sunset: string;
+  hours: HourlyWeather[];
+}

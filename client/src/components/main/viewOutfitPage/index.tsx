@@ -1,11 +1,21 @@
-import { Typography } from '@mui/material';
+import { Rating, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Stack } from '@mui/system';
-import { Outfit, Shoe, User, Workout, Rating, LocationCoordinates } from '../../../types';
+import StarIcon from '@mui/icons-material/Star';
+import {
+  Outfit,
+  Shoe,
+  User,
+  Workout,
+  LocationCoordinates,
+  Rating as RatingType,
+  HourlyWeather,
+} from '../../../types';
 import {
   forwardGeocodeLocation,
   generateStaticMapImage,
+  getHistoricalWeatherData,
   getOutfitById,
 } from '../../../services/outfitService';
 import './index.css';
@@ -19,6 +29,7 @@ const ViewOutfitPage = () => {
   const [outfit, setOutfit] = useState<Outfit | null>(null);
   const [locationCoordinates, setLocationCoordinates] = useState<LocationCoordinates | null>(null);
   const [mapImageUrl, setMapImageUrl] = useState<string>('');
+  const [weather, setWeather] = useState<HourlyWeather | null>(null);
   const { formatDateTime } = useOutfitCard();
 
   useEffect(() => {
@@ -52,8 +63,23 @@ const ViewOutfitPage = () => {
     fetchMapImageUrl();
   }, [locationCoordinates]);
 
-  const isShoe = (shoe: string | Shoe | User | Date | Workout | Rating | undefined): shoe is Shoe =>
-    (shoe as Shoe).brand !== undefined && (shoe as Shoe).model !== undefined;
+  useEffect(() => {
+    async function fetchWeatherData() {
+      if (outfit?.dateWorn && locationCoordinates) {
+        const fetchedWeather = await getHistoricalWeatherData(
+          locationCoordinates,
+          outfit?.dateWorn,
+        );
+        console.log('fetcheddd weather: ', fetchWeatherData);
+        setWeather(fetchedWeather);
+      }
+    }
+    fetchWeatherData();
+  }, [locationCoordinates, outfit]);
+
+  const isShoe = (
+    shoe: string | Shoe | User | Date | Workout | RatingType | undefined,
+  ): shoe is Shoe => (shoe as Shoe).brand !== undefined && (shoe as Shoe).model !== undefined;
 
   const renderOutfitItems = (name: string, outfitToRender: Outfit | null) => {
     const key = name.toLowerCase();
@@ -91,25 +117,28 @@ const ViewOutfitPage = () => {
       <Typography>{outfit?.location?.toString()}</Typography>
       <Typography>{outfit?.rating?.stars.toString()}</Typography>
       <Typography>{outfit?.rating?.temperatureGauge.toString()}</Typography>
+      {weather && (
+        <Box>
+          <Typography variant='h6'>Weather on Run</Typography>
+          <Typography>Temperature: {weather.temp}°F</Typography>
+          <Typography>Conditions: {weather.conditions}</Typography>
+          <Typography>Humidity: {weather.humidity}%</Typography>
+        </Box>
+      )}
 
       <Stack>
+        <Typography fontStyle='italic' variant='h4'>
+          <strong>{formatDateTime(outfit?.dateWorn ? outfit?.dateWorn : new Date())}</strong>
+        </Typography>
+        <Typography variant='h5'>
+          <strong>{outfit?.location?.toString()}</strong>
+        </Typography>
         <Box sx={{ paddingRight: 3 }}>
-          <Box className='space_between right_padding'>
-            <Typography variant='h5'>
-              <strong>Outfits</strong>
-            </Typography>
-            <Typography variant='h6'>
-              {formatDateTime(outfit?.dateWorn ? outfit?.dateWorn : new Date())}
-            </Typography>
-          </Box>
-          <Typography variant='h5'>
-            <strong>Run Details</strong>
-          </Typography>
+          {/* <Box className='space_between right_padding'></Box>  */}
           <Stack alignItems='center' direction='row'>
             <Stack alignItems='center' direction='column'>
-              <Typography>
-                <strong>Run Type: </strong>
-                {outfit.workout?.runType}
+              <Typography variant='h5' color='#473BF0'>
+                <strong>{outfit.workout?.runType} </strong>run
               </Typography>
               <Typography>
                 <strong>Distance: </strong>
@@ -119,17 +148,22 @@ const ViewOutfitPage = () => {
                 <strong>Duration: </strong>
                 {outfit.workout?.duration} minutes
               </Typography>
-              <Typography>
-                <strong>location coordinates: </strong>
-                {locationCoordinates ? locationCoordinates.toString() : 'loc coords null'}
-              </Typography>
-              <Typography variant='h6'>Map of Outfit Location</Typography>
-              <img
-                src={mapImageUrl}
-                alt='Map showing where the outfit was worn'
-                style={{ borderRadius: 8, width: '100%', maxWidth: 500 }}
-              />
             </Stack>
+            <img
+              src={mapImageUrl}
+              alt='Map showing where the outfit was worn'
+              style={{ borderRadius: 8, width: '100%', maxWidth: 500 }}
+            />
+          </Stack>
+          <Stack alignItems='center' direction='row'>
+            <Rating
+              name='read-only'
+              readOnly
+              value={outfit.rating?.stars}
+              precision={1}
+              size='large'
+              emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize='inherit' />}
+            />
           </Stack>
           <Typography variant='h5'>
             <strong>Outfit Details</strong>

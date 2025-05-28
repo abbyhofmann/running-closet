@@ -50,6 +50,7 @@ import {
   MultipleOutfitResponse,
   OutfitData,
   ForwardGeocodePayload,
+  WeatherDay,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -2149,4 +2150,22 @@ export const fetchStaticMapImage = async (lat: number, lng: number): Promise<str
   )})/${lng},${lat},12/500x300?access_token=${apiToken}`;
 
   return staticMapUrl;
+};
+
+export const fetchHistoricalWeatherData = async (
+  lat: number,
+  lng: number,
+  dateTimeInfo: string,
+): Promise<WeatherDay> => {
+  const apiKey = process.env.VISUAL_CROSSING_API_KEY;
+
+  const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${lat},${lng}/${dateTimeInfo}?key=${apiKey}&include=hours&unitGroup=us`;
+
+  const res = await fetch(url);
+
+  console.log('fetch hist res: ', res);
+
+  const data = await res.json();
+
+  return data.days[0];
 };

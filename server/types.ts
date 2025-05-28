@@ -1025,3 +1025,52 @@ export interface LocationCoordinates {
   lat: number;
   lng: number;
 }
+
+/**
+ * Interface for the request parameter when getting the historical weather data of a location, date, time.
+ * - coordianates - The lat, lng coordinates for which the map image is being generated.
+ * - dateTimeInfo - The date and time of the day for which the weather info reflects.
+ */
+
+export interface GetHistoricalWeatherDataRequest extends Request {
+  body: {
+    coordinates: LocationCoordinates;
+    dateTimeInfo: Date;
+  };
+}
+
+/**
+ * Interface for data representing one specific hour of weather.
+ */
+export interface HourlyWeather {
+  datetime: string;
+  temp: number;
+  feelslike: number;
+  humidity: number;
+  dew: number;
+  windspeed: number;
+  windgust: number;
+  winddir: number;
+  pressure: number;
+  visibility: number;
+  cloudcover: number;
+  uvindex: number;
+  conditions: string;
+  icon: string;
+};
+
+/**
+ * Interface for data representing an entire day's weather.
+ */
+export interface WeatherDay {
+  datetime: string;
+  tempmax: number;
+  tempmin: number;
+  temp: number;
+  conditions: string;
+  description: string;
+  icon: string;
+  sunrise: string;
+  sunset: string;
+  hours: HourlyWeather[];
+};
