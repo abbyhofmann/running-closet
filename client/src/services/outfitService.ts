@@ -1,4 +1,4 @@
-import { AllOutfitItemsObject, Outfit, OutfitData } from '../types';
+import { AllOutfitItemsObject, LocationCoordinates, Outfit, OutfitData } from '../types';
 import api from './config';
 
 const OUTFIT_API_URL = `${process.env.REACT_APP_SERVER_URL}/outfit`;
@@ -104,10 +104,40 @@ const getOutfitById = async (oid: string): Promise<Outfit> => {
   return res.data;
 };
 
+/**
+ * Forward geocodes (i.e. converts) a string location into its latitude-longitude geographic coordinates.
+ *
+ * @param location The location being forward geocoded.
+ * @throws Error if there is an issue forward geocoding the location.
+ */
+const forwardGeocodeLocation = async (location: string): Promise<LocationCoordinates> => {
+  const data = { location };
+  const res = await api.post(`${OUTFIT_API_URL}/forwardGeocodeLocation`, data);
+
+  if (res.status !== 200) {
+    throw new Error('Error while geocoding location');
+  }
+
+  return res.data;
+};
+
+const generateStaticMapImage = async (coordinates: LocationCoordinates): Promise<string> => {
+  const data = { coordinates };
+  const res = await api.post(`${OUTFIT_API_URL}/generateStaticMapImage`, data);
+
+  if (res.status !== 200) {
+    throw new Error('Error while generating static map image');
+  }
+
+  return res.data;
+};
+
 export {
   createOutfit,
   getAllOutfitItems,
   getOutfitsByUser,
   getPartialOutfitsByUser,
   getOutfitById,
+  forwardGeocodeLocation,
+  generateStaticMapImage,
 };

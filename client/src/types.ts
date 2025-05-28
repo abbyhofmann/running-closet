@@ -425,3 +425,13 @@ export interface ClothingItemFormProps {
   clothingItem: string;
   nextClothingItem: string;
 }
+
+/**
+ * Interface for representing a LocationCoordinate object.
+ * - lat: latituginal coordinate of location
+ * - lng: longitudinal coordinate of location
+ */
+export interface LocationCoordinates {
+  lat: number;
+  lng: number;
+}

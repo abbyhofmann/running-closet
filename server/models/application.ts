@@ -49,6 +49,7 @@ import {
   MultipleWorkoutsResponse,
   MultipleOutfitResponse,
   OutfitData,
+  ForwardGeocodePayload,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -1611,6 +1612,7 @@ export const fetchOutfitById = async (oid: string): Promise<OutfitResponse> => {
       { path: 'outerwear', model: OuterwearModel },
       { path: 'accessories', model: AccessoryModel },
       { path: 'shoes', model: ShoeModel },
+      { path: 'workout', model: WorkoutModel },
     ]);
     if (!outfit) {
       throw new Error(`Failed to fetch outfit with id ${oid}`);
@@ -2107,4 +2109,44 @@ export const fetchPartialOutfitsByUser = async (
     console.error(error);
     return { error: 'Error when fetching partial outfit data' };
   }
+};
+
+/**
+ * Fetches the latitude longitude coordinates of a city, state, country string location.
+ *
+ * @param location The location of the place for which the coordinates are being fetched.
+ * @returns The latitude, longitude coordinates of the location.
+ */
+export const fetchCoordinates = async (location: string): Promise<ForwardGeocodePayload> => {
+  // TODO - may need some error handling here for when limit is reached
+  const apiKey = process.env.OPENCAGEDATA_API_KEY;
+  const response = await fetch(
+    `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(location)}&key=${apiKey}`,
+  );
+  const data = await response.json();
+  return data.results[0]?.geometry;
+};
+
+/**
+ * Fetches the static image url for the provided lat, lng coordinates of a geographic location,
+ * using the MapBox Static Image API.
+ *
+ * @param lat The latitudinal number coordinate.
+ * @param lng The longitudinal number coordinate.
+ * @returns URL of a map location image.
+ */
+export const fetchStaticMapImage = async (lat: number, lng: number): Promise<string> => {
+  // TODO - use private api key (currently using public)
+  const apiToken = process.env.MAPBOX_API_TOKEN;
+
+  const geoJson = JSON.stringify({
+    type: 'Point',
+    coordinates: [lng, lat],
+  });
+
+  const staticMapUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/geojson(${encodeURIComponent(
+    geoJson,
+  )})/${lng},${lat},12/500x300?access_token=${apiToken}`;
+
+  return staticMapUrl;
 };

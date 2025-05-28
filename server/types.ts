@@ -983,3 +983,45 @@ export interface OutfitData {
  * Type representing the possible responses for fetching numerous partial outfits.
  */
 export type MultipleOutfitDataResponse = OutfitData[] | { error: string };
+
+/**
+ * Interface for the request parameter when fetching the coordinates of a city, state, country location.
+ * - location - The location for which the coordinates are being fetched.
+ */
+
+export interface ForwardGeocodeRequest extends Request {
+  body: {
+    location: string;
+  };
+}
+
+/**
+ * Interface for the request parameter when generating a static map image of lat, lng coordinates.
+ * - coordianates - The lat, lng coordinates for which the map image is being generated.
+ */
+
+export interface GenerateStaticMapImageRequest extends Request {
+  body: {
+    coordinates: LocationCoordinates;
+  };
+}
+
+/**
+ * Interface representing the payload when a location is forward geocoded.
+ * - lat: The latitudinal coordinate of the location being geocoded.
+ * - lng: The longitudinal coordinate of the location being geocoded.
+ */
+export interface ForwardGeocodePayload {
+  lat: string;
+  lng: string;
+}
+
+/**
+ * Interface for representing a LocationCoordinate object.
+ * - lat: latituginal coordinate of location
+ * - lng: longitudinal coordinate of location
+ */
+export interface LocationCoordinates {
+  lat: number;
+  lng: number;
+}

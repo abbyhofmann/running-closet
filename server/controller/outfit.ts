@@ -7,6 +7,8 @@ import {
   Outfit,
   FindOutfitItemsByUserIdRequest,
   FindOutfitByIdRequest,
+  ForwardGeocodeRequest,
+  GenerateStaticMapImageRequest,
 } from '../types';
 import {
   fetchUserByUsername,
@@ -29,6 +31,8 @@ import {
   fetchRatingById,
   fetchOutfitsByUser,
   fetchPartialOutfitsByUser,
+  fetchCoordinates,
+  fetchStaticMapImage,
 } from '../models/application';
 
 const outfitController = (socket: FakeSOSocket) => {
@@ -59,6 +63,24 @@ const outfitController = (socket: FakeSOSocket) => {
       !!req.body.shoesId
     );
   }
+
+  /**
+   * Checks if the provided ForwardGeocodeRequest contains the necessary fields.
+   *
+   * @param req ForwardGeocodeRequest object containing the location.
+   * @returns `true` if the request is valid, otherwise `false`.
+   */
+  const isForwardGeocodeRequestValid = (req: ForwardGeocodeRequest): boolean =>
+    !!req.body.location && req.body.location !== '';
+
+  /**
+   * Checks if the provided GenerateStaticMapImageRequest contains the necessary fields.
+   *
+   * @param req GenerateStaticMapImageRequest object containing the coordinates.
+   * @returns `true` if the request is valid, otherwise `false`.
+   */
+  const isGenerateStaticMapImageRequestValid = (req: GenerateStaticMapImageRequest): boolean =>
+    !!req.body.coordinates && !!req.body.coordinates.lat && !!req.body.coordinates.lng;
 
   /**
    * Adds a new outfit to the database. The outfit request is validated and the outfit is then saved.
@@ -332,12 +354,55 @@ const outfitController = (socket: FakeSOSocket) => {
     }
   };
 
+  const forwardGeocodeLocation = async (
+    req: ForwardGeocodeRequest,
+    res: Response,
+  ): Promise<void> => {
+    if (!isForwardGeocodeRequestValid(req)) {
+      res.status(400).send('Invalid forward geocode location request body');
+      return;
+    }
+
+    const { location } = req.body;
+
+    try {
+      const coordinates = await fetchCoordinates(location);
+      // TODO - need response check?
+      res.json(coordinates);
+    } catch (err) {
+      res.status(500).send(`Error when fetching coordinates: ${(err as Error).message}`);
+    }
+  };
+
+  const generateStaticMapImage = async (
+    req: GenerateStaticMapImageRequest,
+    res: Response,
+  ): Promise<void> => {
+    if (!isGenerateStaticMapImageRequestValid(req)) {
+      res.status(400).send('Invalid generate static map image request body');
+      return;
+    }
+
+    const { coordinates } = req.body;
+    const { lat, lng } = coordinates;
+
+    try {
+      const mapUrl = await fetchStaticMapImage(lat, lng);
+      // TODO - need response check?
+      res.json(mapUrl);
+    } catch (err) {
+      res.status(500).send(`Error when fetching static map image: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/createOutfit', createOutfit);
   router.get('/getAllOutfitItems/:uid', getAllOutfitItems);
   router.get('/getOutfitsByUser/:uid', getOutfitsByUser);
   router.get('/getPartialOutfitsByUser/:uid', getPartialOutfitsByUser);
   router.get('/getOutfitById/:oid', getOutfitById);
+  router.post('/forwardGeocodeLocation', forwardGeocodeLocation);
+  router.post('/generateStaticMapImage', generateStaticMapImage);
 
   return router;
 };

@@ -23,8 +23,6 @@ const useMyOutfitsPage = () => {
   }, [user]);
 
   const handleClickOutfit = (outfitId: string) => {
-    // TODO
-    console.log('need to implement navigation to view outfit page');
     navigate(`/outfit/${outfitId}`);
   };
 

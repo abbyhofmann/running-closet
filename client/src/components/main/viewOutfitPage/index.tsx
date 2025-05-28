@@ -2,27 +2,55 @@ import { Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Stack } from '@mui/system';
-import { Outfit, Shoe, User, Workout, Rating } from '../../../types';
-import { getOutfitById } from '../../../services/outfitService';
+import { Outfit, Shoe, User, Workout, Rating, LocationCoordinates } from '../../../types';
+import {
+  forwardGeocodeLocation,
+  generateStaticMapImage,
+  getOutfitById,
+} from '../../../services/outfitService';
 import './index.css';
 import OutfitItemCard from '../newOutfitPage/outfitItemCard';
+import useOutfitCard from '../../../hooks/useOutfitCard';
 
 const ViewOutfitPage = () => {
   const { oid } = useParams();
 
   const outfitItemNames = ['Tops', 'Bottoms', 'Shoes', 'Outerwear', 'Accessories'];
   const [outfit, setOutfit] = useState<Outfit | null>(null);
+  const [locationCoordinates, setLocationCoordinates] = useState<LocationCoordinates | null>(null);
+  const [mapImageUrl, setMapImageUrl] = useState<string>('');
+  const { formatDateTime } = useOutfitCard();
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchOutfitData() {
       if (oid) {
         const fetchedOutfit = await getOutfitById(oid);
-        console.log('fetched outfit: ', fetchedOutfit);
         setOutfit(fetchedOutfit);
       }
     }
-    fetchData();
+    fetchOutfitData();
   }, [oid]);
+
+  useEffect(() => {
+    async function fetchCoordinateData() {
+      if (outfit && outfit.location) {
+        const fetchedCoordinates = await forwardGeocodeLocation(outfit.location);
+        setLocationCoordinates(fetchedCoordinates);
+      }
+    }
+    fetchCoordinateData();
+  }, [outfit]);
+
+  useEffect(() => {
+    async function fetchMapImageUrl() {
+      if (locationCoordinates) {
+        const fetchedMapImageUrl = await generateStaticMapImage(locationCoordinates);
+        setMapImageUrl(fetchedMapImageUrl);
+      }
+    }
+
+    fetchMapImageUrl();
+  }, [locationCoordinates]);
 
   const isShoe = (shoe: string | Shoe | User | Date | Workout | Rating | undefined): shoe is Shoe =>
     (shoe as Shoe).brand !== undefined && (shoe as Shoe).model !== undefined;
@@ -70,10 +98,42 @@ const ViewOutfitPage = () => {
             <Typography variant='h5'>
               <strong>Outfits</strong>
             </Typography>
-            <Typography variant='h5'>
-              <strong>My Outfits</strong>
+            <Typography variant='h6'>
+              {formatDateTime(outfit?.dateWorn ? outfit?.dateWorn : new Date())}
             </Typography>
           </Box>
+          <Typography variant='h5'>
+            <strong>Run Details</strong>
+          </Typography>
+          <Stack alignItems='center' direction='row'>
+            <Stack alignItems='center' direction='column'>
+              <Typography>
+                <strong>Run Type: </strong>
+                {outfit.workout?.runType}
+              </Typography>
+              <Typography>
+                <strong>Distance: </strong>
+                {outfit.workout?.distance} miles
+              </Typography>
+              <Typography>
+                <strong>Duration: </strong>
+                {outfit.workout?.duration} minutes
+              </Typography>
+              <Typography>
+                <strong>location coordinates: </strong>
+                {locationCoordinates ? locationCoordinates.toString() : 'loc coords null'}
+              </Typography>
+              <Typography variant='h6'>Map of Outfit Location</Typography>
+              <img
+                src={mapImageUrl}
+                alt='Map showing where the outfit was worn'
+                style={{ borderRadius: 8, width: '100%', maxWidth: 500 }}
+              />
+            </Stack>
+          </Stack>
+          <Typography variant='h5'>
+            <strong>Outfit Details</strong>
+          </Typography>
           <Box className='outfit_items_columns right_padding'>
             {outfitItemNames.map(name => (
               <Box
