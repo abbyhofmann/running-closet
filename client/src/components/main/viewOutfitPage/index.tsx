@@ -148,7 +148,7 @@ const ViewOutfitPage = () => {
         </Box>
       )} */}
 
-      <Stack>
+      <Stack alignItems='center' direction='column'>
         <Typography fontStyle='italic' variant='h4'>
           <strong>{formatDateTime(outfit?.dateWorn ? outfit?.dateWorn : new Date())}</strong>
         </Typography>
@@ -176,20 +176,55 @@ const ViewOutfitPage = () => {
               alt='Map showing where the outfit was worn'
               style={{ borderRadius: 8, width: '100%', maxWidth: 500 }}
             />
-          </Stack>
-          {outfit.rating && (
-            <Stack alignItems='center' direction='row'>
-              <Rating
-                name='read-only'
-                readOnly
-                value={outfit.rating.stars}
-                precision={1}
-                size='large'
-                emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize='inherit' />}
-              />
-              {renderTempGauge(outfit.rating.temperatureGauge)}
+            <Stack alignItems='center' direction='column'>
+              <Typography variant='h6' color='#473BF0'>
+                <strong>Weather on Run</strong>
+              </Typography>
+              <Stack alignItems='center' direction='row'>
+                <Box>
+                  <Typography>
+                    <strong>Temperature:</strong> {78}°F
+                  </Typography>
+                  <Typography>
+                    <strong>Conditions:</strong> Sunny
+                  </Typography>
+                  <Typography>
+                    <strong>Humidity:</strong> {50}%
+                  </Typography>
+                </Box>
+                <img src={`/weatherIcons/clear-day.svg`} />
+              </Stack>
             </Stack>
-          )}
+          </Stack>
+          <Stack alignItems='center' direction='row'>
+            <Typography variant='h5'>
+              <strong>Outfit Rating</strong>
+            </Typography>
+            {outfit.rating && (
+              <Stack alignItems='center' direction='row'>
+                <Stack alignItems='center' direction='column'>
+                  <Typography variant='h5'>
+                    <strong>Performance</strong>
+                  </Typography>
+                  <Rating
+                    name='read-only'
+                    readOnly
+                    value={outfit.rating.stars}
+                    precision={1}
+                    size='large'
+                    emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize='inherit' />}
+                  />
+                </Stack>
+                <Stack alignItems='center' direction='column'>
+                  <Typography variant='h5'>
+                    <strong>Temperature Suitability</strong>
+                  </Typography>
+                  {renderTempGauge(outfit.rating.temperatureGauge)}
+                  <Typography variant='h6'>{outfit.rating.temperatureGauge}</Typography>
+                </Stack>
+              </Stack>
+            )}
+          </Stack>
           <Typography variant='h5'>
             <strong>Outfit Details</strong>
           </Typography>
