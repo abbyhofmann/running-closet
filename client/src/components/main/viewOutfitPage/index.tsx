@@ -133,11 +133,6 @@ const ViewOutfitPage = () => {
 
   return (
     <div>
-      <Typography>View Outfit Page! outfit id: {oid}</Typography>
-      <Typography>{outfit?.dateWorn?.toString()}</Typography>
-      <Typography>{outfit?.location?.toString()}</Typography>
-      <Typography>{outfit?.rating?.stars.toString()}</Typography>
-      <Typography>{outfit?.rating?.temperatureGauge.toString()}</Typography>
       {/* {weather && (
         <Box>
           <Typography variant='h6'>Weather on Run</Typography>
@@ -147,88 +142,89 @@ const ViewOutfitPage = () => {
           <img src={`/weatherIcons/${weather.icon}.svg`} />
         </Box>
       )} */}
-
-      <Stack alignItems='center' direction='column'>
-        <Typography fontStyle='italic' variant='h4'>
-          <strong>{formatDateTime(outfit?.dateWorn ? outfit?.dateWorn : new Date())}</strong>
-        </Typography>
-        <Typography variant='h5'>
-          <strong>{outfit?.location?.toString()}</strong>
-        </Typography>
-        <Box sx={{ paddingRight: 3 }}>
-          {/* <Box className='space_between right_padding'></Box>  */}
-          <Stack alignItems='center' direction='row'>
-            <Stack alignItems='center' direction='column'>
-              <Typography variant='h5' color='#473BF0'>
-                <strong>{outfit.workout?.runType} </strong>run
-              </Typography>
-              <Typography>
-                <strong>Distance: </strong>
-                {outfit.workout?.distance} miles
-              </Typography>
-              <Typography>
-                <strong>Duration: </strong>
-                {outfit.workout?.duration} minutes
-              </Typography>
-            </Stack>
-            <img
-              src={mapImageUrl}
-              alt='Map showing where the outfit was worn'
-              style={{ borderRadius: 8, width: '100%', maxWidth: 500 }}
-            />
-            <Stack alignItems='center' direction='column'>
-              <Typography variant='h6' color='#473BF0'>
-                <strong>Weather on Run</strong>
-              </Typography>
-              <Stack alignItems='center' direction='row'>
-                <Box>
-                  <Typography>
-                    <strong>Temperature:</strong> {78}°F
-                  </Typography>
-                  <Typography>
-                    <strong>Conditions:</strong> Sunny
-                  </Typography>
-                  <Typography>
-                    <strong>Humidity:</strong> {50}%
-                  </Typography>
-                </Box>
-                <img src={`/weatherIcons/clear-day.svg`} />
-              </Stack>
-            </Stack>
-          </Stack>
-          <Stack alignItems='center' direction='row'>
-            <Typography variant='h5'>
-              <strong>Outfit Rating</strong>
-            </Typography>
-            {outfit.rating && (
-              <Stack alignItems='center' direction='row'>
-                <Stack alignItems='center' direction='column'>
-                  <Typography variant='h5'>
-                    <strong>Performance</strong>
-                  </Typography>
-                  <Rating
-                    name='read-only'
-                    readOnly
-                    value={outfit.rating.stars}
-                    precision={1}
-                    size='large'
-                    emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize='inherit' />}
-                  />
-                </Stack>
-                <Stack alignItems='center' direction='column'>
-                  <Typography variant='h5'>
-                    <strong>Temperature Suitability</strong>
-                  </Typography>
-                  {renderTempGauge(outfit.rating.temperatureGauge)}
-                  <Typography variant='h6'>{outfit.rating.temperatureGauge}</Typography>
-                </Stack>
-              </Stack>
-            )}
-          </Stack>
-          <Typography variant='h5'>
-            <strong>Outfit Details</strong>
+      <Stack>
+        <Stack alignItems='center' direction='column'>
+          <Typography fontStyle='italic' variant='h4'>
+            <strong>{formatDateTime(outfit?.dateWorn ? outfit?.dateWorn : new Date())}</strong>
           </Typography>
-          <Box className='outfit_items_columns right_padding'>
+          <Typography variant='h5'>
+            <strong>{outfit?.location?.toString()}</strong>
+          </Typography>
+          <Box sx={{ paddingRight: 3 }}>
+            {/* <Box className='space_between right_padding'></Box>  */}
+            <Stack alignItems='center' direction='row'>
+              <Stack alignItems='center' direction='column'>
+                <Typography variant='h5' color='#473BF0'>
+                  <strong>{outfit.workout?.runType} </strong>run
+                </Typography>
+                <Typography>
+                  <strong>Distance: </strong>
+                  {outfit.workout?.distance} miles
+                </Typography>
+                <Typography>
+                  <strong>Duration: </strong>
+                  {outfit.workout?.duration} minutes
+                </Typography>
+              </Stack>
+              <img
+                src={mapImageUrl}
+                alt='Map showing where the outfit was worn'
+                style={{ borderRadius: 8, width: '100%', maxWidth: 500 }}
+              />
+              <Stack alignItems='center' direction='column'>
+                <Typography variant='h6' color='#473BF0'>
+                  <strong>Weather on Run</strong>
+                </Typography>
+                <Stack alignItems='center' direction='row'>
+                  <Box>
+                    <Typography>
+                      <strong>Temperature:</strong> {78}°F
+                    </Typography>
+                    <Typography>
+                      <strong>Conditions:</strong> Sunny
+                    </Typography>
+                    <Typography>
+                      <strong>Humidity:</strong> {50}%
+                    </Typography>
+                  </Box>
+                  <img src={`/weatherIcons/clear-day.svg`} />
+                </Stack>
+              </Stack>
+            </Stack>
+            <Stack alignItems='center' direction='row'>
+              <Typography variant='h5'>
+                <strong>Outfit Rating</strong>
+              </Typography>
+              {outfit.rating && (
+                <Stack alignItems='center' direction='row'>
+                  <Stack alignItems='center' direction='column'>
+                    <Typography variant='h5'>
+                      <strong>Performance</strong>
+                    </Typography>
+                    <Rating
+                      name='read-only'
+                      readOnly
+                      value={outfit.rating.stars}
+                      precision={1}
+                      size='large'
+                      emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize='inherit' />}
+                    />
+                  </Stack>
+                  <Stack alignItems='center' direction='column'>
+                    <Typography variant='h5'>
+                      <strong>Temperature Suitability</strong>
+                    </Typography>
+                    {renderTempGauge(outfit.rating.temperatureGauge)}
+                    <Typography variant='h6'>{outfit.rating.temperatureGauge}</Typography>
+                  </Stack>
+                </Stack>
+              )}
+            </Stack>
+            <Typography variant='h5'>
+              <strong>Outfit Details</strong>
+            </Typography>
+
+            {/* <Box className='outfit_items_columns right_padding'>
             {outfitItemNames.map(name => (
               <Box
                 key={name}
@@ -244,7 +240,25 @@ const ViewOutfitPage = () => {
                 {renderOutfitItems(name, outfit)}
               </Box>
             ))}
+          </Box> */}
           </Box>
+        </Stack>
+        <Box className='outfit_items_columns right_padding'>
+          {outfitItemNames.map(name => (
+            <Box
+              key={name}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                textAlign: 'center', // center text within children
+                gap: 1, // optional spacing between title and items
+              }}>
+              <Typography variant='h5'>
+                <strong>{name}</strong>
+              </Typography>
+              {renderOutfitItems(name, outfit)}
+            </Box>
+          ))}
         </Box>
       </Stack>
     </div>
