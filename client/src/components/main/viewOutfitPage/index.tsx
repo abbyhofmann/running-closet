@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Stack } from '@mui/system';
 import StarIcon from '@mui/icons-material/Star';
+import ThermostatIcon from '@mui/icons-material/Thermostat';
 import {
   Outfit,
   Shoe,
@@ -63,19 +64,19 @@ const ViewOutfitPage = () => {
     fetchMapImageUrl();
   }, [locationCoordinates]);
 
-  useEffect(() => {
-    async function fetchWeatherData() {
-      if (outfit?.dateWorn && locationCoordinates) {
-        const fetchedWeather = await getHistoricalWeatherData(
-          locationCoordinates,
-          outfit?.dateWorn,
-        );
-        console.log('fetcheddd weather: ', fetchWeatherData);
-        setWeather(fetchedWeather);
-      }
-    }
-    fetchWeatherData();
-  }, [locationCoordinates, outfit]);
+  //   useEffect(() => {
+  //     async function fetchWeatherData() {
+  //       if (outfit?.dateWorn && locationCoordinates) {
+  //         const fetchedWeather = await getHistoricalWeatherData(
+  //           locationCoordinates,
+  //           outfit?.dateWorn,
+  //         );
+  //         console.log('fetcheddd weather: ', fetchedWeather);
+  //         setWeather(fetchedWeather);
+  //       }
+  //     }
+  //     fetchWeatherData();
+  //   }, [locationCoordinates, outfit]);
 
   const isShoe = (
     shoe: string | Shoe | User | Date | Workout | RatingType | undefined,
@@ -106,6 +107,26 @@ const ViewOutfitPage = () => {
     return <Typography color='text.secondary'>No Shoes</Typography>;
   };
 
+  const renderTempGauge = (ratingTempGuage: string) => {
+    if (ratingTempGuage === 'Too Cold') {
+      return (
+        <ThermostatIcon
+          style={{ width: '70px', height: '70px' }}
+          fontSize='large'
+          color='primary'
+        />
+      );
+    }
+    if (ratingTempGuage === 'Too Warm') {
+      return (
+        <ThermostatIcon style={{ width: '70px', height: '70px' }} fontSize='large' color='error' />
+      );
+    }
+    return (
+      <ThermostatIcon style={{ width: '70px', height: '70px' }} fontSize='large' color='action' />
+    );
+  };
+
   if (!outfit) {
     return <Typography>Loading outfit...</Typography>;
   }
@@ -117,14 +138,15 @@ const ViewOutfitPage = () => {
       <Typography>{outfit?.location?.toString()}</Typography>
       <Typography>{outfit?.rating?.stars.toString()}</Typography>
       <Typography>{outfit?.rating?.temperatureGauge.toString()}</Typography>
-      {weather && (
+      {/* {weather && (
         <Box>
           <Typography variant='h6'>Weather on Run</Typography>
           <Typography>Temperature: {weather.temp}°F</Typography>
           <Typography>Conditions: {weather.conditions}</Typography>
           <Typography>Humidity: {weather.humidity}%</Typography>
+          <img src={`/weatherIcons/${weather.icon}.svg`} />
         </Box>
-      )}
+      )} */}
 
       <Stack>
         <Typography fontStyle='italic' variant='h4'>
@@ -155,16 +177,19 @@ const ViewOutfitPage = () => {
               style={{ borderRadius: 8, width: '100%', maxWidth: 500 }}
             />
           </Stack>
-          <Stack alignItems='center' direction='row'>
-            <Rating
-              name='read-only'
-              readOnly
-              value={outfit.rating?.stars}
-              precision={1}
-              size='large'
-              emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize='inherit' />}
-            />
-          </Stack>
+          {outfit.rating && (
+            <Stack alignItems='center' direction='row'>
+              <Rating
+                name='read-only'
+                readOnly
+                value={outfit.rating.stars}
+                precision={1}
+                size='large'
+                emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize='inherit' />}
+              />
+              {renderTempGauge(outfit.rating.temperatureGauge)}
+            </Stack>
+          )}
           <Typography variant='h5'>
             <strong>Outfit Details</strong>
           </Typography>

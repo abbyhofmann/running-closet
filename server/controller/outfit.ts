@@ -422,14 +422,14 @@ const outfitController = (socket: FakeSOSocket) => {
     const { coordinates, dateTimeInfo } = req.body;
     const { lat, lng } = coordinates;
 
-    console.log('params: ', lat, ', ', lng, ', DTI str: ', dateTimeInfo.toString());
     try {
       const weatherData = await fetchHistoricalWeatherData(lat, lng, dateTimeInfo.toString());
       const hourStr = new Date(dateTimeInfo).toTimeString().slice(0, 5); // 'HH:MM'
       const hourData = weatherData.hours.find((h: HourlyWeather) => h.datetime.startsWith(hourStr));
-      console.log('hourData: ', hourData);
+      console.log(hourData);
       res.json(hourData);
     } catch (err) {
+      // console.log('err: ', err);
       res
         .status(500)
         .send(`Error when fetching historical weather data: ${(err as Error).message}`);
