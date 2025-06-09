@@ -64,20 +64,6 @@ const ViewOutfitPage = () => {
     fetchMapImageUrl();
   }, [locationCoordinates]);
 
-  //   useEffect(() => {
-  //     async function fetchWeatherData() {
-  //       if (outfit?.dateWorn && locationCoordinates) {
-  //         const fetchedWeather = await getHistoricalWeatherData(
-  //           locationCoordinates,
-  //           outfit?.dateWorn,
-  //         );
-  //         console.log('fetcheddd weather: ', fetchedWeather);
-  //         setWeather(fetchedWeather);
-  //       }
-  //     }
-  //     fetchWeatherData();
-  //   }, [locationCoordinates, outfit]);
-
   const isShoe = (
     shoe: string | Shoe | User | Date | Workout | RatingType | undefined,
   ): shoe is Shoe => (shoe as Shoe).brand !== undefined && (shoe as Shoe).model !== undefined;
@@ -133,45 +119,68 @@ const ViewOutfitPage = () => {
 
   return (
     <div>
-      {/* {weather && (
-        <Box>
-          <Typography variant='h6'>Weather on Run</Typography>
-          <Typography>Temperature: {weather.temp}°F</Typography>
-          <Typography>Conditions: {weather.conditions}</Typography>
-          <Typography>Humidity: {weather.humidity}%</Typography>
-          <img src={`/weatherIcons/${weather.icon}.svg`} />
-        </Box>
-      )} */}
       <Stack>
         <Stack alignItems='center' direction='column'>
-          <Typography fontStyle='italic' variant='h4'>
-            <strong>{formatDateTime(outfit?.dateWorn ? outfit?.dateWorn : new Date())}</strong>
-          </Typography>
-          <Typography variant='h5'>
-            <strong>{outfit?.location?.toString()}</strong>
-          </Typography>
-          <Box sx={{ paddingRight: 3 }}>
-            {/* <Box className='space_between right_padding'></Box>  */}
-            <Stack alignItems='center' direction='row'>
-              <Stack alignItems='center' direction='column'>
-                <Typography variant='h5' color='#473BF0'>
-                  <strong>{outfit.workout?.runType} </strong>run
-                </Typography>
-                <Typography>
-                  <strong>Distance: </strong>
-                  {outfit.workout?.distance} miles
-                </Typography>
-                <Typography>
-                  <strong>Duration: </strong>
-                  {outfit.workout?.duration} minutes
-                </Typography>
+          {/* general info (date/time and location) */}
+          <Stack alignItems='center' direction='column' sx={{ mb: '30px' }}>
+            <Typography fontStyle='italic' variant='h3'>
+              <strong>{formatDateTime(outfit?.dateWorn ? outfit?.dateWorn : new Date())}</strong>
+            </Typography>
+            <Typography variant='h4'>
+              <strong>{outfit?.location?.toString()}</strong>
+            </Typography>
+          </Stack>
+          <Box>
+            <Stack alignItems='center' direction='row' sx={{ mb: '30px', gap: 2 }}>
+              {/* run type and weather info container */}
+              <Stack direction='column' sx={{ gap: 2 }}>
+                {/* run type */}
+                <Box>
+                  <Typography variant='h5' color='#473BF0'>
+                    <strong>{outfit.workout?.runType} </strong>run
+                  </Typography>
+                  <Typography>
+                    <strong>Distance: </strong>
+                    {outfit.workout?.distance} miles
+                  </Typography>
+                  <Typography>
+                    <strong>Duration: </strong>
+                    {outfit.workout?.duration} minutes
+                  </Typography>
+                </Box>
+                {/* weather info */}
+                <Stack direction='column' justifyContent='flex-start'>
+                  <Typography variant='h6' color='#473BF0'>
+                    <strong>Weather Details</strong>
+                  </Typography>
+                  <Stack
+                    alignItems='center'
+                    // justifyContent='flex-start'
+                    direction='row'
+                    sx={{ gap: 1 }}>
+                    <Box>
+                      <Typography>
+                        <strong>Temperature:</strong> {78}°F
+                      </Typography>
+                      <Typography>
+                        <strong>Conditions:</strong> Sunny
+                      </Typography>
+                      <Typography>
+                        <strong>Humidity:</strong> {50}%
+                      </Typography>
+                    </Box>
+                    <img src={`/weatherIcons/clear-day.svg`} />
+                  </Stack>
+                </Stack>
               </Stack>
+              {/* map of location */}
               <img
                 src={mapImageUrl}
                 alt='Map showing where the outfit was worn'
                 style={{ borderRadius: 8, width: '100%', maxWidth: 500 }}
               />
-              <Stack alignItems='center' direction='column'>
+              {/* TODO - remove hardcoding of the weather details & update api query to be more efficient and not hit the limit */}
+              {/* <Stack alignItems='center' direction='column'>
                 <Typography variant='h6' color='#473BF0'>
                   <strong>Weather on Run</strong>
                 </Typography>
@@ -189,14 +198,17 @@ const ViewOutfitPage = () => {
                   </Box>
                   <img src={`/weatherIcons/clear-day.svg`} />
                 </Stack>
-              </Stack>
+              </Stack> */}
             </Stack>
-            <Stack alignItems='center' direction='row'>
-              <Typography variant='h5'>
+
+            {/* outfit rating */}
+            <Stack alignItems='center' direction='column' sx={{ mb: '30px', gap: 2 }}>
+              <Typography variant='h4'>
                 <strong>Outfit Rating</strong>
               </Typography>
               {outfit.rating && (
-                <Stack alignItems='center' direction='row'>
+                <Stack alignItems='flex-start' direction='row' sx={{ gap: 3 }}>
+                  {/* stars */}
                   <Stack alignItems='center' direction='column'>
                     <Typography variant='h5'>
                       <strong>Performance</strong>
@@ -207,9 +219,18 @@ const ViewOutfitPage = () => {
                       value={outfit.rating.stars}
                       precision={1}
                       size='large'
-                      emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize='inherit' />}
+                      icon={
+                        <StarIcon style={{ width: '50px', height: '50px' }} fontSize='inherit' />
+                      }
+                      emptyIcon={
+                        <StarIcon
+                          style={{ width: '50px', height: '50px', opacity: 0.55 }}
+                          fontSize='inherit'
+                        />
+                      }
                     />
                   </Stack>
+                  {/* temperature gauge */}
                   <Stack alignItems='center' direction='column'>
                     <Typography variant='h5'>
                       <strong>Temperature Suitability</strong>
@@ -220,29 +241,15 @@ const ViewOutfitPage = () => {
                 </Stack>
               )}
             </Stack>
-            <Typography variant='h5'>
-              <strong>Outfit Details</strong>
-            </Typography>
-
-            {/* <Box className='outfit_items_columns right_padding'>
-            {outfitItemNames.map(name => (
-              <Box
-                key={name}
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  textAlign: 'center', // center text within children
-                  gap: 1, // optional spacing between title and items
-                }}>
-                <Typography variant='h5'>
-                  <strong>{name}</strong>
-                </Typography>
-                {renderOutfitItems(name, outfit)}
-              </Box>
-            ))}
-          </Box> */}
+            <Stack alignItems='center' direction='column' sx={{ mt: '20px' }}>
+              <Typography variant='h4'>
+                <strong>Outfit Details</strong>
+              </Typography>
+            </Stack>
           </Box>
         </Stack>
+
+        {/* outfit item table */}
         <Box className='outfit_items_columns right_padding'>
           {outfitItemNames.map(name => (
             <Box

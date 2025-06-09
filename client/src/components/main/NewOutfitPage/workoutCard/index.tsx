@@ -1,5 +1,5 @@
 import { Box, Card, Typography } from '@mui/material';
-import { blue, grey } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 import { Workout } from '../../../../types';
 
 const WorkoutCard = ({
