@@ -4,6 +4,9 @@ import { useParams } from 'react-router-dom';
 import { Box, Stack } from '@mui/system';
 import StarIcon from '@mui/icons-material/Star';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
+import { FaTshirt } from 'react-icons/fa';
+import { GiUnderwearShorts, GiRunningShoe, GiMonclerJacket, GiBilledCap } from 'react-icons/gi';
+import { IconType } from 'react-icons';
 import {
   Outfit,
   Shoe,
@@ -26,7 +29,13 @@ import useOutfitCard from '../../../hooks/useOutfitCard';
 const ViewOutfitPage = () => {
   const { oid } = useParams();
 
-  const outfitItemNames = ['Tops', 'Bottoms', 'Shoes', 'Outerwear', 'Accessories'];
+  const outfitItemNamesAndIcons: [string, IconType][] = [
+    ['Tops', FaTshirt],
+    ['Bottoms', GiUnderwearShorts],
+    ['Shoes', GiRunningShoe],
+    ['Outerwear', GiMonclerJacket],
+    ['Accessories', GiBilledCap],
+  ];
   const [outfit, setOutfit] = useState<Outfit | null>(null);
   const [locationCoordinates, setLocationCoordinates] = useState<LocationCoordinates | null>(null);
   const [mapImageUrl, setMapImageUrl] = useState<string>('');
@@ -251,7 +260,7 @@ const ViewOutfitPage = () => {
 
         {/* outfit item table */}
         <Box className='outfit_items_columns right_padding'>
-          {outfitItemNames.map(name => (
+          {outfitItemNamesAndIcons.map(([name, Icon]) => (
             <Box
               key={name}
               sx={{
@@ -260,9 +269,12 @@ const ViewOutfitPage = () => {
                 textAlign: 'center', // center text within children
                 gap: 1, // optional spacing between title and items
               }}>
-              <Typography variant='h5'>
-                <strong>{name}</strong>
-              </Typography>
+              <Box>
+                <Typography variant='h5'>
+                  <strong>{name}</strong>
+                </Typography>
+                <Icon color='#473BF0' size={'40px'} />
+              </Box>
               {renderOutfitItems(name, outfit)}
             </Box>
           ))}
