@@ -246,53 +246,6 @@ const useNewOutfitPage = () => {
     }
   };
 
-  // const handleCreateOutfit = async (newOutfit: Outfit): Promise<string> => {
-  //   if (!newOutfit.shoe?._id) {
-  //     throw new Error('Shoe is missing an id.');
-  //   }
-
-  //   if (
-  //     !newOutfit.wearer?._id ||
-  //     !newOutfit.workout?._id ||
-  //     !newOutfit.dateWorn ||
-  //     !newOutfit.location
-  //   ) {
-  //     throw new Error('Missing required outfit fields.');
-  //   }
-
-  //   const newOutfitCreated = await createOutfit(
-  //     newOutfit.wearer._id,
-  //     newOutfit.dateWorn,
-  //     newOutfit.location,
-  //     newOutfit.workout._id,
-  //     newOutfit.tops.map(t => {
-  //       if (!t._id) throw new Error('One or more tops are missing an id.');
-  //       return t._id;
-  //     }),
-  //     newOutfit.bottoms.map(b => {
-  //       if (!b._id) throw new Error('One or more bottoms are missing an id.');
-  //       return b._id;
-  //     }),
-  //     newOutfit.outerwear.map(o => {
-  //       if (!o._id) throw new Error('One or more outerwear items are missing an id.');
-  //       return o._id;
-  //     }),
-  //     newOutfit.accessories.map(a => {
-  //       if (!a._id) throw new Error('One or more accessories are missing an id.');
-  //       return a._id;
-  //     }),
-  //     newOutfit.shoe._id,
-  //   );
-
-  //   if (!newOutfitCreated || !newOutfitCreated._id) {
-  //     throw new Error('Failed to create outfit.');
-  //   }
-
-  //   resetOutfit();
-  //   setSelectedWorkout(null);
-  //   return newOutfitCreated._id;
-  // };
-
   // function for new outfit item popup
   const handlePopupOpen = (type: string) => {
     setPopupType(type);

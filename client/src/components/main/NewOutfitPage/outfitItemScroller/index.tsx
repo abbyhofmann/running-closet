@@ -1,5 +1,9 @@
 import { Box, Card, Typography } from '@mui/material';
 import { useState } from 'react';
+import { IconType } from 'react-icons';
+import { FaTshirt } from 'react-icons/fa';
+import { GiBilledCap, GiMonclerJacket, GiRunningShoe, GiUnderwearShorts } from 'react-icons/gi';
+import { Stack } from '@mui/system';
 import { OutfitItem } from '../../../../types';
 import OutfitItemCard from '../outfitItemCard';
 import NewOutfitItemPopup from '../newOutfitItemPopup';
@@ -30,12 +34,27 @@ const OutfitItemScroller = ({
     onPopupOpen();
   };
 
+  // map of clothing item strings to react icons - same as that in useViewOutfitPage hook, but keys are slightly different
+  const outfitItemNamesAndIcons: Map<string, IconType> = new Map([
+    ['top', FaTshirt],
+    ['bottom', GiUnderwearShorts],
+    ['shoes', GiRunningShoe],
+    ['outerwear', GiMonclerJacket],
+    ['accessory', GiBilledCap],
+  ]);
+
+  // icon to be displayed next to the clothing item name
+  const Icon = outfitItemNamesAndIcons.get(outfitItemType);
+
   return (
     <div>
-      <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
-        {/* make first letter of outfitItemType capitalized */}
-        {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)}
-      </Typography>
+      <Stack direction='row' sx={{ gap: 1 }} alignItems='center'>
+        <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+          {/* make first letter of outfitItemType capitalized */}
+          {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)}
+        </Typography>
+        {Icon && <Icon color='#473BF0' size={'20px'} />}
+      </Stack>
       <Box
         sx={{
           'display': 'flex',

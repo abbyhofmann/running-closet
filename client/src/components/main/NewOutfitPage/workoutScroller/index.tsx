@@ -1,4 +1,6 @@
 import { Box, Card, Typography } from '@mui/material';
+import { Stack } from '@mui/system';
+import { FaRunning } from 'react-icons/fa';
 import WorkoutCard from '../workoutCard';
 import { Workout } from '../../../../types';
 import NewWorkoutPopup from '../newWorkoutPopup';
@@ -26,9 +28,12 @@ const WorkoutScroller = ({
 
   return (
     <div>
-      <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
-        Workout
-      </Typography>
+      <Stack direction='row' sx={{ gap: 1 }} alignItems='center'>
+        <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+          Workout
+        </Typography>
+        <FaRunning color='#473BF0' size={'20px'} />
+      </Stack>
       <Box
         sx={{
           'display': 'flex',

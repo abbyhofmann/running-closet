@@ -2,6 +2,7 @@ import { Button, Typography, Stack, Paper } from '@mui/material';
 import { DatePicker, LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import { MdDateRange } from 'react-icons/md';
 import WorkoutScroller from './workoutScroller';
 import OutfitItemScroller from './outfitItemScroller';
 import useNewOutfitPage from '../../../hooks/useNewOutfitPage';
@@ -51,9 +52,12 @@ const NewOutfitPage = () => {
       </Typography>
       {/* Date Picker */}
       <Paper elevation={3} sx={{ p: 3, bgcolor: '#fafafa' }}>
-        <Typography variant='h6' fontWeight='bold' gutterBottom>
-          Date Worn
-        </Typography>
+        <Stack direction='row' sx={{ gap: 1, mb: 1 }} alignItems='center'>
+          <Typography variant='h6' fontWeight='bold'>
+            Date Worn
+          </Typography>
+          <MdDateRange color='#473BF0' size={'20px'} />
+        </Stack>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Stack direction='row' spacing={2}>
             <DatePicker

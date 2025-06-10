@@ -3,6 +3,7 @@ import { useFormik } from 'formik';
 import { Country, State, City } from 'country-state-city';
 import { FormControl, MenuItem, Select, Typography } from '@mui/material';
 import { Box, Stack } from '@mui/system';
+import { FaMapLocationDot } from 'react-icons/fa6';
 
 interface LocationInputProps {
   onSelectLocation: (location: string) => void;
@@ -43,9 +44,12 @@ const LocationInput = (props: LocationInputProps) => {
   return (
     <Box>
       <form onSubmit={handleSubmit}>
-        <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
-          Location
-        </Typography>
+        <Stack direction='row' sx={{ gap: 1 }} alignItems='center'>
+          <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+            Location
+          </Typography>
+          <FaMapLocationDot color='#473BF0' size={'20px'} />
+        </Stack>
 
         <Stack direction='row' spacing={2} sx={{ flex: 1 }}>
           {/* country selection */}

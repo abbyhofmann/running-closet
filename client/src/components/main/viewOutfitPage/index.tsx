@@ -1,81 +1,15 @@
 import { Rating, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { Box, Stack } from '@mui/system';
 import StarIcon from '@mui/icons-material/Star';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
-import { FaTshirt } from 'react-icons/fa';
-import { GiUnderwearShorts, GiRunningShoe, GiMonclerJacket, GiBilledCap } from 'react-icons/gi';
-import { IconType } from 'react-icons';
-import {
-  Outfit,
-  Shoe,
-  User,
-  Workout,
-  LocationCoordinates,
-  Rating as RatingType,
-  HourlyWeather,
-} from '../../../types';
-import {
-  forwardGeocodeLocation,
-  generateStaticMapImage,
-  getHistoricalWeatherData,
-  getOutfitById,
-} from '../../../services/outfitService';
+import { Outfit } from '../../../types';
 import './index.css';
 import OutfitItemCard from '../newOutfitPage/outfitItemCard';
-import useOutfitCard from '../../../hooks/useOutfitCard';
+import useViewOutfitPage from '../../../hooks/useViewOutfitPage';
 
 const ViewOutfitPage = () => {
-  const { oid } = useParams();
-
-  const outfitItemNamesAndIcons: [string, IconType][] = [
-    ['Tops', FaTshirt],
-    ['Bottoms', GiUnderwearShorts],
-    ['Shoes', GiRunningShoe],
-    ['Outerwear', GiMonclerJacket],
-    ['Accessories', GiBilledCap],
-  ];
-  const [outfit, setOutfit] = useState<Outfit | null>(null);
-  const [locationCoordinates, setLocationCoordinates] = useState<LocationCoordinates | null>(null);
-  const [mapImageUrl, setMapImageUrl] = useState<string>('');
-  const [weather, setWeather] = useState<HourlyWeather | null>(null);
-  const { formatDateTime } = useOutfitCard();
-
-  useEffect(() => {
-    async function fetchOutfitData() {
-      if (oid) {
-        const fetchedOutfit = await getOutfitById(oid);
-        setOutfit(fetchedOutfit);
-      }
-    }
-    fetchOutfitData();
-  }, [oid]);
-
-  useEffect(() => {
-    async function fetchCoordinateData() {
-      if (outfit && outfit.location) {
-        const fetchedCoordinates = await forwardGeocodeLocation(outfit.location);
-        setLocationCoordinates(fetchedCoordinates);
-      }
-    }
-    fetchCoordinateData();
-  }, [outfit]);
-
-  useEffect(() => {
-    async function fetchMapImageUrl() {
-      if (locationCoordinates) {
-        const fetchedMapImageUrl = await generateStaticMapImage(locationCoordinates);
-        setMapImageUrl(fetchedMapImageUrl);
-      }
-    }
-
-    fetchMapImageUrl();
-  }, [locationCoordinates]);
-
-  const isShoe = (
-    shoe: string | Shoe | User | Date | Workout | RatingType | undefined,
-  ): shoe is Shoe => (shoe as Shoe).brand !== undefined && (shoe as Shoe).model !== undefined;
+  const { outfit, isShoe, formatDateTime, mapImageUrl, outfitItemNamesAndIcons } =
+    useViewOutfitPage();
 
   const renderOutfitItems = (name: string, outfitToRender: Outfit | null) => {
     const key = name.toLowerCase();
@@ -260,7 +194,8 @@ const ViewOutfitPage = () => {
 
         {/* outfit item table */}
         <Box className='outfit_items_columns right_padding'>
-          {outfitItemNamesAndIcons.map(([name, Icon]) => (
+          {/* map must be converted to array to call map on it */}
+          {Array.from(outfitItemNamesAndIcons.entries()).map(([name, Icon]) => (
             <Box
               key={name}
               sx={{
