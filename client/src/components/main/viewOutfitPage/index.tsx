@@ -62,7 +62,7 @@ const ViewOutfitPage = () => {
 
   return (
     <div>
-      <Stack>
+      <Stack sx={{ color: '#32292F' }}>
         <Stack alignItems='center' direction='column'>
           {/* general info (date/time and location) */}
           <Stack alignItems='center' direction='column' sx={{ mb: '30px' }}>

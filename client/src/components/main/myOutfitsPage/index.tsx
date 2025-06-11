@@ -11,14 +11,15 @@ const MyOutfitsPage = () => {
   return (
     <Stack>
       <Box sx={{ paddingRight: 3 }}>
-        <Box className='space_between right_padding'>
-          <Typography variant='h5'>
-            <strong>{userPartialOutfits.length} Outfits</strong>
-          </Typography>
-          <Typography variant='h5'>
+        {/* general info (date/time and location) */}
+        <Stack alignItems='center' direction='column' sx={{ m: '20px', color: '#32292F' }}>
+          <Typography variant='h3'>
             <strong>My Outfits</strong>
           </Typography>
-        </Box>
+          <Typography variant='h4'>
+            <strong>{userPartialOutfits.length} Outfits</strong>
+          </Typography>
+        </Stack>
         <Box className='tag_list right_padding'>
           {userPartialOutfits.map(outfit => (
             <OutfitCard key={outfit.oid} o={outfit} clickOutfit={handleClickOutfit} />

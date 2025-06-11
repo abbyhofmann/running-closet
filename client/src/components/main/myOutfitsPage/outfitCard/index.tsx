@@ -37,10 +37,10 @@ const OutfitCard = ({ o, clickOutfit }: OutfitCardProps) => {
         onClick={() => {
           clickOutfit(o.oid);
         }}>
-        <Typography sx={{ color: '#302B27', marginY: 'auto' }}>
+        <Typography variant='h6' sx={{ color: '#302B27', marginY: 'auto' }}>
           <strong>{formatDateTime(o.dateWorn)}</strong>
         </Typography>
-        <Typography sx={{ color: '#473BF0', marginY: 'auto' }}>
+        <Typography fontSize={19} sx={{ color: '#473BF0', marginY: 'auto' }}>
           <strong>{o.runType} workout</strong>
         </Typography>
         <Typography sx={{ color: '#32292F', marginY: 'auto' }}>{o.location}</Typography>
