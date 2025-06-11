@@ -73,61 +73,26 @@ const ViewOutfitPage = () => {
               <strong>{outfit?.location?.toString()}</strong>
             </Typography>
           </Stack>
-          <Box>
-            <Stack alignItems='center' direction='row' sx={{ mb: '30px', gap: 2 }}>
-              {/* run type and weather info container */}
-              <Stack direction='column' sx={{ gap: 2 }}>
-                {/* run type */}
-                <Box>
-                  <Typography variant='h5' color='#473BF0'>
-                    <strong>{outfit.workout?.runType} </strong>run
-                  </Typography>
-                  <Typography>
-                    <strong>Distance: </strong>
-                    {outfit.workout?.distance} miles
-                  </Typography>
-                  <Typography>
-                    <strong>Duration: </strong>
-                    {outfit.workout?.duration} minutes
-                  </Typography>
-                </Box>
-                {/* weather info */}
-                <Stack direction='column' justifyContent='flex-start'>
-                  <Typography variant='h6' color='#473BF0'>
-                    <strong>Weather Details</strong>
-                  </Typography>
-                  <Stack
-                    alignItems='center'
-                    // justifyContent='flex-start'
-                    direction='row'
-                    sx={{ gap: 1 }}>
-                    <Box>
-                      <Typography>
-                        <strong>Temperature:</strong> {78}°F
-                      </Typography>
-                      <Typography>
-                        <strong>Conditions:</strong> Sunny
-                      </Typography>
-                      <Typography>
-                        <strong>Humidity:</strong> {50}%
-                      </Typography>
-                    </Box>
-                    <img src={`/weatherIcons/clear-day.svg`} />
-                  </Stack>
-                </Stack>
-              </Stack>
-              {/* map of location */}
-              <img
-                src={mapImageUrl}
-                alt='Map showing where the outfit was worn'
-                style={{ borderRadius: 8, width: '100%', maxWidth: 500 }}
-              />
-              {/* TODO - remove hardcoding of the weather details & update api query to be more efficient and not hit the limit */}
-              {/* <Stack alignItems='center' direction='column'>
-                <Typography variant='h6' color='#473BF0'>
-                  <strong>Weather on Run</strong>
+          <Stack alignItems='center' direction='row' sx={{ mb: '30px', gap: 5 }}>
+            {/* run type and weather info container */}
+            <Stack direction='column' sx={{ gap: 2 }}>
+              {/* run type */}
+              <Box>
+                <Typography variant='h5'>
+                  <strong>{outfit.workout?.runType} </strong>run
                 </Typography>
-                <Stack alignItems='center' direction='row'>
+                <Typography>
+                  <strong>Distance: </strong>
+                  {outfit.workout?.distance} miles
+                </Typography>
+                <Typography>
+                  <strong>Duration: </strong>
+                  {outfit.workout?.duration} minutes
+                </Typography>
+              </Box>
+              {/* weather info */}
+              <Stack direction='column' justifyContent='flex-start'>
+                <Stack alignItems='center' direction='row' sx={{ gap: 1 }}>
                   <Box>
                     <Typography>
                       <strong>Temperature:</strong> {78}°F
@@ -141,16 +106,18 @@ const ViewOutfitPage = () => {
                   </Box>
                   <img src={`/weatherIcons/clear-day.svg`} />
                 </Stack>
-              </Stack> */}
+              </Stack>
             </Stack>
-
+            {/* map of location */}
+            <img
+              src={mapImageUrl}
+              alt='Map showing where the outfit was worn'
+              style={{ borderRadius: 8, width: '100%', maxWidth: 500 }}
+            />
             {/* outfit rating */}
             <Stack alignItems='center' direction='column' sx={{ mb: '30px', gap: 2 }}>
-              <Typography variant='h4'>
-                <strong>Outfit Rating</strong>
-              </Typography>
               {outfit.rating && (
-                <Stack alignItems='flex-start' direction='row' sx={{ gap: 3 }}>
+                <Stack alignItems='flex-start' direction='column' sx={{ gap: 3 }}>
                   {/* stars */}
                   <Stack alignItems='center' direction='column'>
                     <Typography variant='h5'>
@@ -184,12 +151,27 @@ const ViewOutfitPage = () => {
                 </Stack>
               )}
             </Stack>
-            <Stack alignItems='center' direction='column' sx={{ mt: '20px' }}>
-              <Typography variant='h4'>
-                <strong>Outfit Details</strong>
-              </Typography>
-            </Stack>
-          </Box>
+            {/* TODO - remove hardcoding of the weather details & update api query to be more efficient and not hit the limit */}
+            {/* <Stack alignItems='center' direction='column'>
+                <Typography variant='h6' color='#473BF0'>
+                  <strong>Weather on Run</strong>
+                </Typography>
+                <Stack alignItems='center' direction='row'>
+                  <Box>
+                    <Typography>
+                      <strong>Temperature:</strong> {78}°F
+                    </Typography>
+                    <Typography>
+                      <strong>Conditions:</strong> Sunny
+                    </Typography>
+                    <Typography>
+                      <strong>Humidity:</strong> {50}%
+                    </Typography>
+                  </Box>
+                  <img src={`/weatherIcons/clear-day.svg`} />
+                </Stack>
+              </Stack> */}
+          </Stack>
         </Stack>
 
         {/* outfit item table */}
