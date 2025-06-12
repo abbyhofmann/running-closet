@@ -77,7 +77,12 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
               <Route path=':cid' element={<ConversationsPage />} />
             </Route>
             {/* Outfit Routes */}
+            {/* view logged-in user's outfits */}
+            <Route path='myOutfits' element={<MyOutfitsPage />} />
+            {/* view one outfit */}
             <Route path='/outfit/:oid' element={<ViewOutfitPage />} />
+            {/* view all outfits */}
+            {/* <Route path='/allOutfits' element={<ViewAllOutfitsPage />} /> */}
             <Route
               path='/createOutfit/*'
               element={
@@ -126,7 +131,6 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
                     /> */}
                     {/* TODO - updating routing so that upon creating a new outfit, you are redirected to view my outfits page */}
                     <Route path='rating' element={<RatingForm />} />
-                    <Route path='myOutfits' element={<MyOutfitsPage />} />
                     {/* <Route path='accessories' element={<AccessoriesForm />} />
                     <Route path='shoes' element={<ShoesForm />} /> */}
                   </Routes>

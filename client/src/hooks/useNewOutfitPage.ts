@@ -46,6 +46,10 @@ const useNewOutfitPage = () => {
   const [popupOpen, setPopupOpen] = useState(false);
   const [popupType, setPopupType] = useState<string | null>(null);
 
+  // error popup for creating an outfit
+  const [createOutfitErrorPopupOpen, setCreateOutfitErrorPopupOpen] = useState(false);
+  const [createOutfitErrorMessage, setCreateOutfitErrorMessage] = useState('');
+
   // set the outfit items
   useEffect(() => {
     async function fetchData() {
@@ -221,17 +225,32 @@ const useNewOutfitPage = () => {
   };
 
   const validateOutfit = (outfitToValidate: Outfit): void => {
-    if (!outfitToValidate.shoes?._id) {
-      throw new Error('Shoe is missing an id.');
+    if (!outfitToValidate.dateWorn) {
+      throw new Error('missing date selection');
     }
 
-    if (
-      !outfitToValidate.wearer?._id ||
-      !outfitToValidate.workout?._id ||
-      !outfitToValidate.dateWorn ||
-      !outfitToValidate.location
-    ) {
-      throw new Error('Missing required outfit fields.');
+    if (!outfitToValidate.location) {
+      throw new Error('missing location selection');
+    }
+
+    if (!outfitToValidate.workout) {
+      throw new Error('missing workout selection');
+    }
+
+    if (outfitToValidate.tops.length === 0) {
+      throw new Error('missing top selection');
+    }
+
+    if (outfitToValidate.bottoms.length === 0) {
+      throw new Error('missing bottom selection');
+    }
+
+    if (!outfitToValidate.shoes?._id) {
+      throw new Error('missing shoe selection');
+    }
+
+    if (!outfitToValidate.wearer?._id) {
+      throw new Error('logged in user error');
     }
 
     const hasInvalidIds = [
@@ -264,12 +283,20 @@ const useNewOutfitPage = () => {
     setTimeout(() => setPopupType(null), 0); // delay resetting type to ensure state updates
   };
 
+  // function for closing create outfit error popup
+  const handleCreateOutfitErrorPopupClose = () => {
+    setCreateOutfitErrorPopupOpen(false);
+    setCreateOutfitErrorMessage('');
+  };
+
   const handleAddRatingClick = (outfitToRate: Outfit) => {
     try {
       validateOutfit(outfitToRate);
       navigate('/createOutfit/rating');
     } catch (e) {
       console.error('Error validating outfit:', (e as Error).message);
+      setCreateOutfitErrorPopupOpen(true);
+      setCreateOutfitErrorMessage((e as Error).message);
     }
   };
 
@@ -304,6 +331,9 @@ const useNewOutfitPage = () => {
     handleLocationSelection,
     handleDateSelection,
     handleAddRatingClick,
+    createOutfitErrorPopupOpen,
+    handleCreateOutfitErrorPopupClose,
+    createOutfitErrorMessage,
   };
 };
 

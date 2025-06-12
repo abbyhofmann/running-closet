@@ -80,10 +80,18 @@ export default function NavigationMenu() {
         <MenuItem
           key='view-my-outfits'
           onClick={() => {
-            navigate(`/createOutfit/myOutfits`);
+            navigate(`/myOutfits`);
             handleClose();
           }}>
           My Outfits
+        </MenuItem>
+        <MenuItem
+          key='all-outfits'
+          onClick={() => {
+            navigate(`/allOutfits`);
+            handleClose();
+          }}>
+          All Outfits
         </MenuItem>
       </Menu>
     </div>
