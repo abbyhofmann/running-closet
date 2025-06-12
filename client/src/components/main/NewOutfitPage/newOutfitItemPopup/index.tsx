@@ -85,7 +85,10 @@ const NewOutfitItemPopup = (props: NewOutfitItemPopupProps) => {
           sx={{ mt: 2, bgcolor: '#473BF0', color: '#f5f3f5' }}>
           Create!
         </Button>
-        <Button onClick={handleCancel} variant='outlined' sx={{ mt: 2, ml: 1 }}>
+        <Button
+          onClick={handleCancel}
+          variant='outlined'
+          sx={{ mt: 2, ml: 1, color: '#473BF0', bgcolor: '#f5f3f5' }}>
           Cancel {String(outfitItemType).charAt(0).toUpperCase() + String(outfitItemType).slice(1)}{' '}
           Creation
         </Button>

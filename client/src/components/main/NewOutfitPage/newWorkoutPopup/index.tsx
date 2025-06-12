@@ -99,7 +99,10 @@ const NewWorkoutPopup = (props: NewWorkoutPopupProps) => {
           sx={{ mt: 2, bgcolor: '#473BF0', color: '#f5f3f5' }}>
           Create!
         </Button>
-        <Button onClick={handleCancel} variant='outlined' color='secondary' sx={{ mt: 2, ml: 1 }}>
+        <Button
+          onClick={handleCancel}
+          variant='outlined'
+          sx={{ mt: 2, ml: 1, bgcolor: '#f5f3f5', color: '#473BF0' }}>
           Cancel Workout Creation
         </Button>
       </DialogContent>
