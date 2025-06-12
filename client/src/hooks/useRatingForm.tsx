@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import useOutfitContext from './useOutfitContext';
 import createRating from '../services/ratingService';
 import { createOutfit } from '../services/outfitService';
-import { Outfit } from '../types';
+import { Outfit, Rating } from '../types';
 
 /**
  * Custom hook to handle login input and submission.
@@ -13,7 +13,7 @@ const useRatingForm = () => {
   const [stars, setStars] = useState<number>(0);
   const [temperatureGauge, setTemperatureGauge] = useState<string>('');
   const [newRatingError, setNewRatingError] = useState<string>('');
-  const [showNewRatingError, setShowNewRatingError] = useState<boolean>(false);
+  const [showNewRatingErrorPopup, setShowNewRatingErrorPopup] = useState<boolean>(false);
   const { outfit, setOutfit, resetOutfit } = useOutfitContext();
   const navigate = useNavigate();
 
@@ -69,6 +69,17 @@ const useRatingForm = () => {
     return newOutfitCreated._id;
   };
 
+  // validate rating to ensure fields are selected
+  const validateRating = (selectedStars: number, selectedTempGuage: string): void => {
+    if (!selectedStars || selectedStars < 0 || selectedStars > 5) {
+      throw new Error('missing stars selection');
+    }
+
+    if (!selectedTempGuage || selectedTempGuage === '') {
+      throw new Error('missing temperature guage selection');
+    }
+  };
+
   /**
    * Function to handle the form submission event.
    *
@@ -77,6 +88,7 @@ const useRatingForm = () => {
   const handleSubmit = async () => {
     // event.preventDefault();
     try {
+      validateRating(stars, temperatureGauge);
       const newRating = await createRating(stars, temperatureGauge);
       const updatedOutfit = { ...outfit, rating: newRating };
       setOutfit(updatedOutfit);
@@ -85,8 +97,13 @@ const useRatingForm = () => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setNewRatingError(errorMessage);
-      setShowNewRatingError(true);
+      setShowNewRatingErrorPopup(true);
     }
+  };
+
+  const handleNewRatingErrorPopupClose = () => {
+    setShowNewRatingErrorPopup(false);
+    setNewRatingError('');
   };
 
   return {
@@ -95,8 +112,9 @@ const useRatingForm = () => {
     temperatureGauge,
     setTemperatureGauge,
     newRatingError,
-    showNewRatingError,
+    showNewRatingErrorPopup,
     setNewRatingError,
+    handleNewRatingErrorPopupClose,
     handleSubmit,
   };
 };

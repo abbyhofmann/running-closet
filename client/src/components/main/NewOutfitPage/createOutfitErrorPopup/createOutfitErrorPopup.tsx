@@ -1,15 +1,15 @@
 import { Dialog, DialogContent, DialogTitle, Typography } from '@mui/material';
 
-interface CreateOutfitErrorPopupProps {
+interface ErrorPopupProps {
   open: boolean;
   onClose: () => void;
   errorMessage: string;
 }
 
 /**
- * Popup for displaying an error message when creating an outfit.
+ * Popup for displaying an error message during the create outfit process - utilized when selecting outfit and rating components.
  */
-const CreateOutfitErrorPopup = (props: CreateOutfitErrorPopupProps) => {
+const ErrorPopup = (props: ErrorPopupProps) => {
   const { open, onClose, errorMessage } = props;
 
   const handleClose = () => {
@@ -27,4 +27,4 @@ const CreateOutfitErrorPopup = (props: CreateOutfitErrorPopupProps) => {
     </Dialog>
   );
 };
-export default CreateOutfitErrorPopup;
+export default ErrorPopup;

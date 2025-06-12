@@ -7,7 +7,7 @@ import WorkoutScroller from './workoutScroller';
 import OutfitItemScroller from './outfitItemScroller';
 import useNewOutfitPage from '../../../hooks/useNewOutfitPage';
 import LocationInput from './newWorkoutPopup/locationInput';
-import CreateOutfitErrorPopup from './createOutfitErrorPopup/createOutfitErrorPopup';
+import ErrorPopup from './createOutfitErrorPopup/createOutfitErrorPopup';
 
 /**
  * Renders a page where the user can create a new outfit.
@@ -177,7 +177,7 @@ const NewOutfitPage = () => {
         onClick={() => handleAddRatingClick(outfit)}>
         Rate this Outfit
       </Button>
-      <CreateOutfitErrorPopup
+      <ErrorPopup
         open={createOutfitErrorPopupOpen}
         onClose={handleCreateOutfitErrorPopupClose}
         errorMessage={createOutfitErrorMessage}

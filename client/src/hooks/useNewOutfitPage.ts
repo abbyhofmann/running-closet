@@ -16,6 +16,7 @@ import { createWorkout, getWorkouts } from '../services/workoutService';
 const useNewOutfitPage = () => {
   const { user } = useUserContext();
   const navigate = useNavigate();
+  const { resetOutfit } = useOutfitContext();
 
   // outfit
   const { outfit, setOutfit } = useOutfitContext();
@@ -79,6 +80,11 @@ const useNewOutfitPage = () => {
       setOutfit({ ...outfit, wearer: user });
     }
   }, [outfit, setOutfit, user]);
+
+  // reset outfit when rendering page (upon navigating to the page to reset outfit if navigating to and from create outfit page)
+  useEffect(() => {
+    resetOutfit();
+  }, []);
 
   //   DEBUGGG
   useEffect(() => {

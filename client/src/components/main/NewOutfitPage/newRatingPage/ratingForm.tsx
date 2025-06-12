@@ -1,23 +1,19 @@
 import { Button, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import { Stack } from '@mui/system';
-import useOutfitContext from '../../../../hooks/useOutfitContext';
 import useRatingForm from '../../../../hooks/useRatingForm';
 import RatingStars from './ratingStars';
 import TempGauge from './tempGauge';
+import ErrorPopup from '../createOutfitErrorPopup/createOutfitErrorPopup';
 
 const RatingForm = () => {
-  const navigate = useNavigate();
-  const { outfit } = useOutfitContext();
-
   const {
     stars,
     setStars,
     temperatureGauge,
     setTemperatureGauge,
     newRatingError,
-    showNewRatingError,
-    setNewRatingError,
+    showNewRatingErrorPopup,
+    handleNewRatingErrorPopupClose,
     handleSubmit,
   } = useRatingForm();
 
@@ -35,6 +31,11 @@ const RatingForm = () => {
         onClick={() => handleSubmit()}>
         Create Outfit!
       </Button>
+      <ErrorPopup
+        open={showNewRatingErrorPopup}
+        onClose={handleNewRatingErrorPopupClose}
+        errorMessage={newRatingError}
+      />
     </Stack>
   );
 };

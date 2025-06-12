@@ -89,50 +89,7 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
                 <OutfitContext.Provider value={{ outfit, setOutfit, resetOutfit }}>
                   <Routes>
                     <Route path='/' element={<NewOutfitPage />} />
-                    {/* <Route
-                      path='top'
-                      element={
-                        <ClothingItemForm clothingItem={'top'} nextClothingItem={'bottom'} />
-                      }
-                    />
-                    <Route
-                      path='bottom'
-                      element={
-                        <ClothingItemForm clothingItem={'bottom'} nextClothingItem={'outerwear'} />
-                      }
-                    />
-                    <Route
-                      path='outerwear'
-                      element={
-                        <ClothingItemForm
-                          clothingItem={'outerwear'}
-                          nextClothingItem={'accessory'}
-                        />
-                      }
-                    />
-                    <Route
-                      path='accessory'
-                      element={
-                        <ClothingItemForm clothingItem={'accessory'} nextClothingItem={'shoe'} />
-                      }
-                    />
-                    <Route
-                      path='shoe'
-                      element={
-                        <ClothingItemForm
-                          clothingItem={'shoe'}
-                          nextClothingItem={'outfitOverview'}
-                        />
-                      }
-                    /> */}
-                    {/* <Route
-                      path='outfitOverview'
-                      element={<OutfitOverviewPage />}
-                    /> */}
-                    {/* TODO - updating routing so that upon creating a new outfit, you are redirected to view my outfits page */}
                     <Route path='rating' element={<RatingForm />} />
-                    {/* <Route path='accessories' element={<AccessoriesForm />} />
-                    <Route path='shoes' element={<ShoesForm />} /> */}
                   </Routes>
                 </OutfitContext.Provider>
               }
