@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Accessory, Bottom, Outerwear, Outfit, OutfitItem, Shoe, Top, Workout } from '../types';
 import useUserContext from './useUserContext';
 import useOutfitContext from './useOutfitContext';
@@ -17,14 +17,13 @@ const useNewOutfitPage = () => {
   const { user } = useUserContext();
   const navigate = useNavigate();
   const { resetOutfit } = useOutfitContext();
-  const location = useLocation();
 
   // outfit
   const { outfit, setOutfit } = useOutfitContext();
 
   // date and location selection for outfit worn
   const [dateWorn, setDateWorn] = useState<Date | null>(null); // TODO - idk if this type is correct
-  const [runLocation, setRunLocation] = useState<string>('');
+  const [location, setLocation] = useState<string>('');
 
   // selected workout for the new outfit
   const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
@@ -84,9 +83,7 @@ const useNewOutfitPage = () => {
 
   // reset outfit when rendering page (upon navigating to the page to reset outfit if navigating to and from create outfit page)
   useEffect(() => {
-    if (location.key === 'default') {
-      resetOutfit();
-    }
+    resetOutfit();
   }, []);
 
   //   DEBUGGG
@@ -95,7 +92,7 @@ const useNewOutfitPage = () => {
   }, [outfit]);
 
   const handleLocationSelection = (selectedLocation: string) => {
-    setRunLocation(runLocation);
+    setLocation(location);
     setOutfit({ ...outfit, location: selectedLocation });
   };
 
