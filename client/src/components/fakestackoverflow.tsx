@@ -18,6 +18,7 @@ import OutfitContext from '../contexts/OutfitContext';
 import RatingForm from './main/newOutfitPage/newRatingPage/ratingForm';
 import MyOutfitsPage from './main/myOutfitsPage';
 import ViewOutfitPage from './main/viewOutfitPage';
+import FeedPage from './main/feedPage';
 
 const ProtectedRoute = ({
   user,
@@ -83,6 +84,8 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
             <Route path='/outfit/:oid' element={<ViewOutfitPage />} />
             {/* view all outfits */}
             {/* <Route path='/allOutfits' element={<ViewAllOutfitsPage />} /> */}
+            {/* NEW HOME PAGE (TODO - update /home route to route to this page instead) */}
+            <Route path='/newHome' element={<FeedPage />} />
             <Route
               path='/createOutfit/*'
               element={

@@ -93,6 +93,14 @@ export default function NavigationMenu() {
           }}>
           All Outfits
         </MenuItem>
+        <MenuItem
+          key='new-home'
+          onClick={() => {
+            navigate(`/newHome`);
+            handleClose();
+          }}>
+          Feed Page
+        </MenuItem>
       </Menu>
     </div>
   );
