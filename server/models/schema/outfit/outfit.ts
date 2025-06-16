@@ -17,7 +17,7 @@ import { Schema } from 'mongoose';
  */
 const outfitSchema: Schema = new Schema(
   {
-    wearer: { type: Schema.Types.ObjectId, ref: 'Runner' },
+    wearer: { type: Schema.Types.ObjectId, ref: 'User' },
     dateWorn: { type: Date },
     location: { type: String },
     workout: { type: Schema.Types.ObjectId, ref: 'Workout' },

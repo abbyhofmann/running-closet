@@ -850,7 +850,14 @@ export const fetchUserById = async (uid: string): Promise<UserResponse> => {
 export const fetchUserByUsername = async (username: string): Promise<UserResponse> => {
   try {
     const user = await UserModel.findOne({ username, deleted: false }).populate([
-      { path: 'following', model: UserModel },
+      {
+        path: 'following',
+        model: UserModel,
+        populate: {
+          path: 'outfits',
+          model: OutfitModel,
+        },
+      },
       { path: 'followers', model: UserModel },
       { path: 'outfits', model: OutfitModel },
       { path: 'workouts', model: WorkoutModel },
