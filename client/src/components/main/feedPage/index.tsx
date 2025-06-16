@@ -15,33 +15,18 @@ const FeedPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // go through user.following - for each person, add outfit to list of outfits, then fetch outfits by id to render (map call)
-        const followingOutfits: Outfit[] = [];
-        console.log('user outfits: ', user.following[0].outfits);
+        const outfitPromises: Promise<Outfit>[] = [];
 
-        // user.following.forEach(async followingUser => {
-        //   const userOutfits = followingUser.outfits;
-        //   await Promise.all(
-        //     userOutfits.map(async (outfit: Outfit) => {
-        //       if (outfit._id) {
-        //         const fetchedOutfit = await getOutfitById(outfit._id);
-        //         followingOutfits.push(fetchedOutfit);
-        //       }
-        //     }),
-        //   );
-        // });
-        // const outfitPromises = user.following.flatMap(followingUser =>
-        //   followingUser.outfits
-        //     .filter(o => o._id) // keep only outfits with an ID
-        //     .map(o => getOutfitById(o._id)),
-        // );
+        for (const followingUser of user.following) {
+          for (const o of followingUser.outfits) {
+            if (o._id) {
+              outfitPromises.push(getOutfitById(o._id));
+            }
+          }
+        }
 
-        // const fetchedOutfits = await Promise.all(outfitPromises);
-
-        // console.log('outfits:', fetchedOutfits);
-        // setOutfitFeed(fetchedOutfits);
-        console.log('outfits: ', followingOutfits);
-        setOutfitFeed(followingOutfits);
+        const fetchedOutfits = await Promise.all(outfitPromises);
+        setOutfitFeed(fetchedOutfits);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error('Error fetching question:', error);
