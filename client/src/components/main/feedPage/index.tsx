@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/system';
-import { Typography } from '@mui/material';
+import { Paper, Typography } from '@mui/material';
 import { Outfit } from '../../../types';
 import useUserContext from '../../../hooks/useUserContext';
 import { getOutfitById } from '../../../services/outfitService';
+import FeedScroller from './feedScroller';
 
 /**
  * FeedPage component renders a page displaying a list of outfits of the logged-in user's following list.
@@ -29,7 +30,7 @@ const FeedPage = () => {
         setOutfitFeed(fetchedOutfits);
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('Error fetching question:', error);
+        console.error('Error fetching outfits:', error);
       }
     };
 
@@ -38,6 +39,9 @@ const FeedPage = () => {
 
   return (
     <Box>
+      <Paper elevation={3} sx={{ p: 3, bgcolor: '#fafafa' }}>
+        <FeedScroller outfits={outfitFeed} />
+      </Paper>
       <Box id='feed_outfit_list' className='feed_outfit_list'>
         {outfitFeed.map(feedItem => (
           <Typography key={feedItem._id?.toString()}>{feedItem._id?.toString()}</Typography>

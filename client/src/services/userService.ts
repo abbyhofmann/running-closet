@@ -95,6 +95,19 @@ const getUserByUsername = async (username: string): Promise<User> => {
 };
 
 /**
+ * Gets the username of the user with the given id.
+ * @param uid the id of the user for which we are retrieving the username.
+ * @returns the username string of the user with the given id or throws if there is an error.
+ */
+const getUsernameById = async (uid: string): Promise<string> => {
+  const res = await api.get(`${USER_API_URL}/getUsernameById/${uid}`);
+  if (res.status !== 200) {
+    throw new Error('Error while fetching the username.');
+  }
+  return res.data;
+};
+
+/**
  * Logs out the current user of fake stack overflow.
  * @returns the user object of the user logged out.
  */
@@ -179,4 +192,5 @@ export {
   followUser,
   unfollowUser,
   logoutUser,
+  getUsernameById,
 };

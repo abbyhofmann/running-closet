@@ -7,6 +7,7 @@ import {
   DeleteUserRequest,
   GetUserRequest,
   FollowUserRequest,
+  FindUserByUserIdRequest,
 } from '../types';
 import {
   saveUser,
@@ -22,6 +23,7 @@ import {
   setCurrentUser,
   logoutCurrentUser,
   removeUserFromFollowerFollowingLists,
+  fetchUserById,
 } from '../models/application';
 
 const userController = (socket: FakeSOSocket) => {
@@ -373,6 +375,32 @@ const userController = (socket: FakeSOSocket) => {
     }
   };
 
+  /**
+   * Gets the username of the user associated with the given user ID.
+   *
+   * @param req The request object with the user id of the user for which the username is being retrieved.
+   * @param res The HTTP response object used to send back the result of the operation.
+   * @returns A Promise that resolves to void.
+   */
+  const getUsernameById = async (req: FindUserByUserIdRequest, res: Response): Promise<void> => {
+    const { uid } = req.params;
+
+    if (!ObjectId.isValid(uid)) {
+      res.status(400).send('Invalid ID format');
+      return;
+    }
+
+    try {
+      const user = await fetchUserById(uid);
+      if ('error' in user) {
+        throw new Error(user.error as string);
+      }
+      res.json(user.username);
+    } catch (err) {
+      res.status(500).send(`Error when fetching user: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/registerUser', registerUser);
   router.post('/loginUser', loginUser);
@@ -384,6 +412,7 @@ const userController = (socket: FakeSOSocket) => {
   router.get('/getCurrentUser', currentUser);
   router.get('/getUserByUsername/:username', getUserByUsername);
   router.post('/logoutUser', logoutUser);
+  router.get('/getUsernameById/:uid', getUsernameById);
 
   return router;
 };

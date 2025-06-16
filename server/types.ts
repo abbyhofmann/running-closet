@@ -1074,3 +1074,15 @@ export interface WeatherDay {
   sunset: string;
   hours: HourlyWeather[];
 };
+
+/**
+ * Interface for the request parameter when fetching the username of a user given
+ * their user ID.
+ * - uid - The unique identifier of the user.
+ */
+
+export interface FindUserByUserIdRequest extends Request {
+  params: {
+    uid: string;
+  };
+}
