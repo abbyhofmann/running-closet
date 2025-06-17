@@ -10,20 +10,24 @@ const FeedScroller = ({ outfits }: { outfits: Outfit[] }) => {
 
   return (
     <div>
-      <Stack direction='row' sx={{ gap: 1 }} alignItems='center'>
-        <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
-          Feed
-        </Typography>
-        <FaRunning color='#473BF0' size={'20px'} />
+      <Stack direction='column' sx={{ gap: 1 }} alignItems='center'>
+        <Stack direction='row' sx={{ gap: 1 }} alignItems='center'>
+          <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+            Recent Outfit Logs
+          </Typography>
+          <FaRunning color='#473BF0' size={'20px'} />
+        </Stack>
       </Stack>
       <Box
         sx={{
           'display': 'flex',
-          'overflowX': 'auto', // Enables horizontal scrolling
+          'flexDirection': 'column', // Enables vertical scrolling
+          'overflowY': 'auto',
           'gap': 2, // Spacing between cards
           'padding': 2, // Padding inside container
+          'maxHeight': '60vh', // Limit height of box that contains the cards
           'scrollbarWidth': 'thin', // hides scrollbar
-          '&::-webkit-scrollbar': { height: 8 },
+          '&::-webkit-scrollbar': { width: 6 },
           '&::-webkit-scrollbar-thumb': { backgroundColor: 'gray', borderRadius: 4 },
           'whiteSpace': 'nowrap', // prevents wrapping
         }}>
@@ -32,7 +36,7 @@ const FeedScroller = ({ outfits }: { outfits: Outfit[] }) => {
           return (
             <FeedCard
               key={outfit._id}
-              wearer={outfit.wearer.username}
+              username={outfit.wearer.username}
               dateWorn={outfit.dateWorn}
               photoUrl={'/run_outfit.jpg'}
               clickOutfit={() => navigate(`/outfit/${outfit._id}`)}

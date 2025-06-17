@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box } from '@mui/system';
 import { Paper, Typography } from '@mui/material';
 import { Outfit } from '../../../types';
@@ -39,20 +39,17 @@ const FeedPage = () => {
 
   return (
     <Box>
-      <Paper elevation={3} sx={{ p: 3, bgcolor: '#fafafa' }}>
-        <FeedScroller outfits={outfitFeed} />
-      </Paper>
-      <Box id='feed_outfit_list' className='feed_outfit_list'>
-        {outfitFeed.map(feedItem => (
-          <Typography key={feedItem._id?.toString()}>{feedItem._id?.toString()}</Typography>
-        ))}
-      </Box>
-      <Typography>{outfitFeed.length}</Typography>
-      {/* {titleText === 'Search Results' && !qlist.length && (
-        <Typography className='bold_title right_padding' sx={{ color: '#32292F' }}>
-          No Questions Found
-        </Typography>
-      )} */}
+      {/* <Paper
+        elevation={3}
+        sx={{
+          margin: 'auto',
+          width: 'fit-content', // shrink-wrap to content
+          maxWidth: '100%', // cap it on very large screens
+          p: 2,
+          bgcolor: '#fafafa',
+        }}> */}
+      <FeedScroller outfits={outfitFeed} />
+      {/* </Paper> */}
     </Box>
   );
 };

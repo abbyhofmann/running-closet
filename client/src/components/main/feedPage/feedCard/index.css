@@ -1,0 +1,15 @@
+.feedImage {
+  max-width: 100%;         
+  height: auto;
+  margin-top: 8px;
+  border-radius: 5px;
+}
+
+.feedNode {
+  padding: 1%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 20%;         
+  margin: auto;  
+}
