@@ -121,10 +121,14 @@ const useNewOutfitPage = () => {
   };
 
   const handleTopSelection = (top: Top) => {
-    if (!outfit.tops.includes(top)) {
+    const isSelected = outfit.tops.some(existingTop => existingTop._id === top._id);
+    if (!isSelected) {
       setOutfit({ ...outfit, tops: [...outfit.tops, top] });
     } else {
-      setOutfit({ ...outfit, tops: outfit.tops.filter(existingTop => existingTop !== top) });
+      setOutfit({
+        ...outfit,
+        tops: outfit.tops.filter(existingTop => existingTop._id !== top._id),
+      });
     }
   };
 
@@ -141,12 +145,13 @@ const useNewOutfitPage = () => {
   };
 
   const handleBottomSelection = (bottom: Bottom) => {
-    if (!outfit.bottoms.includes(bottom)) {
+    const isSelected = outfit.bottoms.some(existingBottom => existingBottom._id === bottom._id);
+    if (!isSelected) {
       setOutfit({ ...outfit, bottoms: [...outfit.bottoms, bottom] });
     } else {
       setOutfit({
         ...outfit,
-        bottoms: outfit.bottoms.filter(existingBottom => existingBottom !== bottom),
+        bottoms: outfit.bottoms.filter(existingBottom => existingBottom._id !== bottom._id),
       });
     }
   };
@@ -164,13 +169,16 @@ const useNewOutfitPage = () => {
   };
 
   const handleAccessorySelection = (accessory: Accessory) => {
-    if (!outfit.accessories.includes(accessory)) {
+    const isSelected = outfit.accessories.some(
+      existingAccessory => existingAccessory._id === accessory._id,
+    );
+    if (!isSelected) {
       setOutfit({ ...outfit, accessories: [...outfit.accessories, accessory] });
     } else {
       setOutfit({
         ...outfit,
         accessories: outfit.accessories.filter(
-          existingAccessory => existingAccessory !== accessory,
+          existingAccessory => existingAccessory._id !== accessory._id,
         ),
       });
     }
@@ -189,12 +197,17 @@ const useNewOutfitPage = () => {
   };
 
   const handleOuterwearSelection = (outerwear: Outerwear) => {
-    if (!outfit.outerwear.includes(outerwear)) {
+    const isSelected = outfit.outerwear.some(
+      existingOuterwear => existingOuterwear._id === outerwear._id,
+    );
+    if (!isSelected) {
       setOutfit({ ...outfit, outerwear: [...outfit.outerwear, outerwear] });
     } else {
       setOutfit({
         ...outfit,
-        outerwear: outfit.outerwear.filter(existingOuterwear => existingOuterwear !== outerwear),
+        outerwear: outfit.outerwear.filter(
+          existingOuterwear => existingOuterwear._id !== outerwear._id,
+        ),
       });
     }
   };

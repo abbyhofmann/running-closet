@@ -71,7 +71,9 @@ const OutfitItemScroller = ({
             key={outfitItem._id?.toString()}
             outfitItem={outfitItem}
             onSelectOutfitItem={onSelectOutfitItem}
-            selected={currentSelectedOutfitItems.includes(outfitItem)}
+            selected={currentSelectedOutfitItems.some(
+              selectedItem => selectedItem._id === outfitItem._id,
+            )}
           />
         ))}
 

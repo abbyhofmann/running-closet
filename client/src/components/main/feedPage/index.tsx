@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Box } from '@mui/system';
-import { Paper, Typography } from '@mui/material';
 import { Outfit } from '../../../types';
 import useUserContext from '../../../hooks/useUserContext';
 import { getOutfitById } from '../../../services/outfitService';
