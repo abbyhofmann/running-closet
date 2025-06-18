@@ -38,19 +38,9 @@ const FeedPage = () => {
   }, []);
 
   return (
-    <Box>
-      {/* <Paper
-        elevation={3}
-        sx={{
-          margin: 'auto',
-          width: 'fit-content', // shrink-wrap to content
-          maxWidth: '100%', // cap it on very large screens
-          p: 2,
-          bgcolor: '#fafafa',
-        }}> */}
+    <div>
       <FeedScroller outfits={outfitFeed} />
-      {/* </Paper> */}
-    </Box>
+    </div>
   );
 };
 
