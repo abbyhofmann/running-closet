@@ -2,6 +2,7 @@ import { ObjectId } from 'mongodb';
 import { QueryOptions } from 'mongoose';
 import sgMail from '@sendgrid/mail';
 import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
+import streamifier from 'streamifier';
 import {
   Answer,
   AnswerResponse,
@@ -52,7 +53,6 @@ import {
   OutfitData,
   ForwardGeocodePayload,
   WeatherDay,
-  CloudinaryUploadResponse,
   UploadImageResponse,
 } from '../types';
 import AnswerModel from './answers';
@@ -2183,10 +2183,10 @@ export const fetchHistoricalWeatherData = async (
 /**
  * Uploads an image to Cloudinary cloud storage.
  *
- * @param imageUrl Url of the image being uploaded.
+ * @param imageData Form data containing the image file data to upload.
  * @returns The HTTPS url of where the image is stored in Cloudinary or error if upload fails.
  */
-export const uploadImageToCloudinary = async (imageUrl: string): Promise<UploadImageResponse> => {
+export const uploadImageToCloudinary = async (buffer: Buffer): Promise<UploadApiResponse> => {
   // Cloudinary configuration
   cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -2194,19 +2194,14 @@ export const uploadImageToCloudinary = async (imageUrl: string): Promise<UploadI
     api_secret: process.env.CLOUDINARY_API_SECRET,
   });
 
-  try {
-    // Upload the image
-    const uploadResult: UploadApiResponse | void = await cloudinary.uploader.upload(imageUrl);
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream((error, result) => {
+      if (error || !result) {
+        return reject(error || new Error('Cloudinary upload failed'));
+      }
+      return resolve(result);
+    });
 
-    if (!uploadResult) {
-      throw new Error('Image upload result is void');
-    }
-
-    console.log('upload result: ', uploadResult);
-    console.log('result url: ', uploadResult.secure_url);
-    return uploadResult;
-  } catch (err) {
-    console.log(err);
-    return { error: 'Error when uploading image' };
-  }
+    streamifier.createReadStream(buffer).pipe(stream);
+  });
 };

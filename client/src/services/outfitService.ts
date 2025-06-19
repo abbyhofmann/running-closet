@@ -152,6 +152,21 @@ const getHistoricalWeatherData = async (
   return res.data;
 };
 
+const uploadImage = async (formData: FormData): Promise<string> => {
+  // send raw form data
+  const res = await api.post(`${OUTFIT_API_URL}/uploadImage`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+
+  if (res.status !== 200) {
+    throw new Error('Error while uploading image');
+  }
+
+  return res.data;
+};
+
 export {
   createOutfit,
   getAllOutfitItems,
@@ -161,4 +176,5 @@ export {
   forwardGeocodeLocation,
   generateStaticMapImage,
   getHistoricalWeatherData,
+  uploadImage,
 };

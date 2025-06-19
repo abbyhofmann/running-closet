@@ -1089,30 +1089,12 @@ export interface FindUserByUserIdRequest extends Request {
 }
 
 /**
- * Cloudinary response upon uploading an image to the cloud.
- */
-export interface CloudinaryUploadResponse {
-    public_id: string,
-    version: number,
-    signature: string,
-    width: number,
-    height: number,
-    format: string,
-    resource_type: string,
-    created_at: Date,
-    bytes: number,
-    type: string,
-    url: string,
-    secure_url: string 
-}
-
-/**
  * Interface for the request body when uploading an image to Cloudinary.
- * - urlImageToUpload: Url of the image being uploaded.
+ * - imageToUpload: Form data containing the image file to upload.
  */
 export interface UploadImageRequest {
   body: {
-    urlImageToUpload: string;
+    imageToUpload: FormData;
   };
 }
 

@@ -1,6 +1,6 @@
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { IconButton } from '@mui/material';
 import React, { useState, useRef, ChangeEvent } from 'react';
+import { uploadImage } from '../../../../services/outfitService';
 
 const ImageUpload = () => {
   const defaultImage = '/clothing_compilation.jpg';
@@ -15,28 +15,19 @@ const ImageUpload = () => {
 
   const uploadImageDisplay = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
+      const selectedImageFile = event.target.files?.[0]; // TODO - restrict to images
+      console.log('selectedImage: ', selectedImageFile);
+      if (!selectedImageFile) return;
       setImageUrl('/uploading.gif');
-      //   const uploadedFile = fileUploadRef.current.files[0];
-      // const cachedURL = URL.createObjectURL(uploadedFile);
-      // setAvatarURL(cachedURL);
-      const uploadedFile = event.target.files?.[0];
-      console.log('uploadedFile: ', uploadedFile);
-      if (!uploadedFile) return;
 
+      // send file as form data
       const formData = new FormData();
-      formData.append('file', uploadedFile);
+      formData.append('file', selectedImageFile);
 
-      const response = await fetch('https://api.escuelajs.co/api/v1/files/upload', {
-        method: 'post',
-        body: formData,
-      });
-
-      if (response.status === 201) {
-        const data = await response.json();
-        setImageUrl(data?.location);
-      } else {
-        throw new Error('Upload failed');
-      }
+      const uploadedImageCloudUrl = await uploadImage(formData);
+      console.log('uploadedImageCloudUrl: ', uploadedImageCloudUrl);
+      setImageUrl(uploadedImageCloudUrl);
+      // add url to outfit state
     } catch (error) {
       console.error(error);
       setImageUrl(defaultImage);

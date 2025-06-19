@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
+import multer from 'multer';
 import {
   FakeSOSocket,
   CreateOutfitRequest,
@@ -39,6 +40,8 @@ import {
   fetchHistoricalWeatherData,
   uploadImageToCloudinary,
 } from '../models/application';
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 const outfitController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -102,11 +105,10 @@ const outfitController = (socket: FakeSOSocket) => {
   /**
    * Checks if the provided UploadImageRequest contains the necessary field.
    *
-   * @param req UploadImageRequest object containing the URL of the image to upload.
+   * @param req UploadImageRequest object containing the form data of the image to upload.
    * @returns `true` if the request is valid, otherwise `false`.
    */
-  const isUploadImageRequestValid = (req: UploadImageRequest): boolean =>
-    !!req.body.urlImageToUpload && req.body.urlImageToUpload !== '';
+  const isUploadImageRequestValid = (req: UploadImageRequest): boolean => !!req.body.imageToUpload;
 
   /**
    * Adds a new outfit to the database. The outfit request is validated and the outfit is then saved.
@@ -447,27 +449,39 @@ const outfitController = (socket: FakeSOSocket) => {
     }
   };
 
-  const uploadImage = async (req: UploadImageRequest, res: Response): Promise<void> => {
-    if (!isUploadImageRequestValid(req)) {
-      res.status(400).send('Invalid upload image data request body');
+  const uploadImage = async (req: Request, res: Response): Promise<void> => {
+    // if (!isUploadImageRequestValid(req)) {
+    //   res.status(400).send('Invalid upload image data request body');
+    //   return;
+    // }
+
+    if (!req.file || !req.file.buffer) {
+      res.status(400).send('No file uploaded');
       return;
     }
 
-    const { urlImageToUpload } = req.body;
-
     try {
-      const uploadedImageUrl = await uploadImageToCloudinary(urlImageToUpload);
-
-      if (uploadedImageUrl && 'error' in uploadedImageUrl) {
-        throw new Error(uploadedImageUrl.error);
-      }
-
-      console.log('json being sent: ', uploadedImageUrl.secure_url);
-
-      res.json(uploadedImageUrl.secure_url);
+      const uploadedImage = await uploadImageToCloudinary(req.file.buffer);
+      res.json(uploadedImage.secure_url);
     } catch (err) {
-      res.status(500).send(`Error when uploading image: ${(err as Error).message}`);
+      res.status(500).send(`Error uploading image: ${(err as Error).message}`);
     }
+
+    // const { imageToUpload } = req.body;
+
+    // try {
+    //   const uploadedImageUrl = await uploadImageToCloudinary(imageToUpload);
+
+    //   if (uploadedImageUrl && 'error' in uploadedImageUrl) {
+    //     throw new Error(uploadedImageUrl.error);
+    //   }
+
+    //   console.log('json being sent: ', uploadedImageUrl.secure_url);
+
+    //   res.json(uploadedImageUrl.secure_url);
+    // } catch (err) {
+    //   res.status(500).send(`Error when uploading image: ${(err as Error).message}`);
+    // }
   };
 
   // add appropriate HTTP verbs and their endpoints to the router.
@@ -479,7 +493,7 @@ const outfitController = (socket: FakeSOSocket) => {
   router.post('/forwardGeocodeLocation', forwardGeocodeLocation);
   router.post('/generateStaticMapImage', generateStaticMapImage);
   router.post('/getHistoricalWeatherData', getHistoricalWeatherData);
-  router.post('/uploadImage', uploadImage);
+  router.post('/uploadImage', upload.single('file'), uploadImage);
 
   return router;
 };
