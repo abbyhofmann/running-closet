@@ -49,6 +49,7 @@ export interface User {
  * - outerwear: The outerwear worn in the outfit.
  * - accessories: The accessories worn in the outfit.
  * - shoes: The shoes worn in the outfit.
+ * - imageUrl: The url of where the outfit image is stored in the cloud (Cloudinary).
  */
 export interface Outfit {
   _id?: string;
@@ -62,6 +63,7 @@ export interface Outfit {
   outerwear: Outerwear[];
   accessories: Accessory[];
   shoes?: Shoe;
+  imageUrl?: string;
 }
 
 /**

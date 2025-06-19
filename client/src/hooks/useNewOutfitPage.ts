@@ -38,6 +38,9 @@ const useNewOutfitPage = () => {
   const [userAccessories, setUserAccessories] = useState<Accessory[]>([]);
   const [userShoes, setUserShoes] = useState<Shoe[]>([]);
 
+  // url of outfit image stored in cloud (Cloudinary)
+  const [outfitImageUrl, setOutfitImageUrl] = useState<string>('');
+
   // state variable for re-rendering scrollbars when user creates new outfit item
   const [createdNewOutfitItem, setCreatedNewOutfitItem] = useState<OutfitItem | null>(null);
 

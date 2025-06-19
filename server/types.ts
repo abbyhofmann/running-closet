@@ -626,6 +626,7 @@ export type AllOutfitItemsResponse = AllOutfitItemsObject | { error: string };
  * - outerwear: The outerwear worn in the outfit.
  * - accessories: The accessories worn in the outfit.
  * - shoe: The shoes worn in the outfit.
+* - imageUrl: The url of where the outfit image is stored in the cloud (Cloudinary).
  */
 export interface Outfit {
   _id?: ObjectId;
@@ -639,6 +640,7 @@ export interface Outfit {
   outerwear: Outerwear[];
   accessories: Accessory[];
   shoes: Shoe;
+  imageUrl: string;
 }
 
 /**
@@ -653,6 +655,7 @@ export interface Outfit {
  * - outerwearIds: The list of ids of the outerwear items worn as part of the outfit.
  * - accessoriesIds: The list of ids of the accessories worn as part of the outfit.
  * - shoeId: The id of the shoes worn in the outfit.
+ * - imageUrl: The url of where the outfit image is stored in the cloud (Cloudinary).
  */
 export interface CreateOutfitRequest {
   body: {
@@ -666,6 +669,7 @@ export interface CreateOutfitRequest {
     outerwearIds: string[];
     accessoriesIds: string[];
     shoesId: string;
+    imageUrl: string;
   };
 }
 

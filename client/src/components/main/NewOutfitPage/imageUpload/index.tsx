@@ -1,39 +1,15 @@
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import React, { useState, useRef } from 'react';
 import { Box, Stack } from '@mui/system';
 import { Typography } from '@mui/material';
 import { FaImage } from 'react-icons/fa';
-import { uploadImage } from '../../../../services/outfitService';
+import useImageUpload from '../../../../hooks/useImageUpload';
 
+/**
+ * Component for selecting and uploading an image, which is used when adding
+ * a photo to an outfit.
+ */
 const ImageUpload = () => {
-  const defaultImage = '/clothing_compilation.jpg';
-  const [imageUrl, setImageUrl] = useState<string>(defaultImage); // TODO - choose different default photo
-
-  const fileUploadRef = useRef<HTMLInputElement | null>(null);
-
-  const handleImageUpload = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    fileUploadRef.current?.click();
-  };
-
-  const uploadImageDisplay = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      const selectedImageFile = event.target.files?.[0];
-      if (!selectedImageFile) return;
-      setImageUrl('/uploading.gif');
-
-      // send file as form data
-      const formData = new FormData();
-      formData.append('file', selectedImageFile);
-
-      const uploadedImageCloudUrl = await uploadImage(formData);
-      setImageUrl(uploadedImageCloudUrl);
-      // TODO add url to outfit state
-    } catch (error) {
-      console.error(error);
-      setImageUrl(defaultImage);
-    }
-  };
+  const { imageUrl, handleImageUpload, fileUploadRef, uploadImageDisplay } = useImageUpload();
 
   return (
     <Stack spacing={2} sx={{ width: '100%' }}>

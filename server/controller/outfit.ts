@@ -68,7 +68,8 @@ const outfitController = (socket: FakeSOSocket) => {
       req.body.bottomIds.length > 0 &&
       !!req.body.outerwearIds &&
       !!req.body.accessoriesIds &&
-      !!req.body.shoesId
+      !!req.body.shoesId &&
+      !!req.body.imageUrl
     );
   }
 
@@ -137,6 +138,7 @@ const outfitController = (socket: FakeSOSocket) => {
       outerwearIds,
       accessoriesIds,
       shoesId,
+      imageUrl,
     } = req.body;
 
     try {
@@ -193,6 +195,7 @@ const outfitController = (socket: FakeSOSocket) => {
         outerwear,
         accessories,
         shoes,
+        imageUrl,
       };
 
       const outfitFromDb = await saveOutfit(outfit);
