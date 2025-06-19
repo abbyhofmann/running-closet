@@ -25,6 +25,7 @@ const createOutfit = async (
   outerwearIds: string[],
   accessoriesIds: string[],
   shoesId: string,
+  imageUrl: string,
 ): Promise<Outfit> => {
   const data = {
     creatorId,
@@ -37,6 +38,7 @@ const createOutfit = async (
     outerwearIds,
     accessoriesIds,
     shoesId,
+    imageUrl,
   };
 
   const res = await api.post(`${OUTFIT_API_URL}/createOutfit`, data);

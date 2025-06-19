@@ -38,9 +38,6 @@ const useNewOutfitPage = () => {
   const [userAccessories, setUserAccessories] = useState<Accessory[]>([]);
   const [userShoes, setUserShoes] = useState<Shoe[]>([]);
 
-  // url of outfit image stored in cloud (Cloudinary)
-  const [outfitImageUrl, setOutfitImageUrl] = useState<string>('');
-
   // state variable for re-rendering scrollbars when user creates new outfit item
   const [createdNewOutfitItem, setCreatedNewOutfitItem] = useState<OutfitItem | null>(null);
 
@@ -285,6 +282,10 @@ const useNewOutfitPage = () => {
     if (hasInvalidIds) {
       throw new Error('One or more outfit items are missing an id.');
     }
+
+    if (!outfitToValidate.imageUrl) {
+      throw new Error('missing image');
+    }
   };
 
   // function for new outfit item popup
@@ -322,6 +323,13 @@ const useNewOutfitPage = () => {
     }
   };
 
+  const handleImageUpload = (imageCloudUrl: string) => {
+    setOutfit({
+      ...outfit,
+      imageUrl: imageCloudUrl,
+    });
+  };
+
   return {
     outfit,
     workouts,
@@ -356,6 +364,7 @@ const useNewOutfitPage = () => {
     createOutfitErrorPopupOpen,
     handleCreateOutfitErrorPopupClose,
     createOutfitErrorMessage,
+    handleImageUpload,
   };
 };
 

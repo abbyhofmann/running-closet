@@ -48,6 +48,7 @@ const NewOutfitPage = () => {
     createOutfitErrorPopupOpen,
     handleCreateOutfitErrorPopupClose,
     createOutfitErrorMessage,
+    handleImageUpload,
   } = useNewOutfitPage();
 
   return (
@@ -175,7 +176,7 @@ const NewOutfitPage = () => {
       <Paper
         elevation={3}
         sx={{ display: 'flex', justifyContent: 'center', p: 3, bgcolor: '#fafafa' }}>
-        <ImageUpload />
+        <ImageUpload onImageUpload={handleImageUpload} />
       </Paper>
 
       <Button

@@ -4,7 +4,7 @@ import { uploadImage } from '../services/outfitService';
 /**
  * Custom hook to handle image upload functionality.
  */
-const useImageUpload = () => {
+const useImageUpload = (setOutfitImageUrl: (cloudUrl: string) => void) => {
   const defaultImage = '/clothing_compilation.jpg';
   const [imageUrl, setImageUrl] = useState<string>(defaultImage); // TODO - choose different default photo
 
@@ -28,6 +28,7 @@ const useImageUpload = () => {
       const uploadedImageCloudUrl = await uploadImage(formData);
       setImageUrl(uploadedImageCloudUrl);
       // TODO add url to outfit state
+      setOutfitImageUrl(uploadedImageCloudUrl);
     } catch (error) {
       console.error(error);
       setImageUrl(defaultImage);

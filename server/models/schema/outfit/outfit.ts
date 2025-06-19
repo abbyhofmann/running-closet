@@ -14,6 +14,7 @@ import { Schema } from 'mongoose';
  * - `outerwear`: The outerwear worn in the outfit.
  * - `accessories`: The accessories worn in the outfit.
  * - `shoes`: The shoes worn in the outfit.
+ * - `imageUrl`: The url of where the outfit image is stored in the cloud (Cloudinary).
  */
 const outfitSchema: Schema = new Schema(
   {
@@ -27,6 +28,7 @@ const outfitSchema: Schema = new Schema(
     outerwear: [{ type: Schema.Types.ObjectId, ref: 'Outerwear' }],
     accessories: [{ type: Schema.Types.ObjectId, ref: 'Accessory' }],
     shoes: { type: Schema.Types.ObjectId, ref: 'Shoe' },
+    imageUrl: { type: String },
   },
   { collection: 'Outfit' },
 );

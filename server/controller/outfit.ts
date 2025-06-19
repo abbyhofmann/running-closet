@@ -123,6 +123,7 @@ const outfitController = (socket: FakeSOSocket) => {
    */
   const createOutfit = async (req: CreateOutfitRequest, res: Response): Promise<void> => {
     if (!isCreateOutfitRequestValid(req)) {
+      console.log('req bodyyy ', req.body);
       res.status(400).send('Invalid create outfit request');
       return;
     }

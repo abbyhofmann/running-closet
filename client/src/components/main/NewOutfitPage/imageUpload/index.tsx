@@ -4,12 +4,18 @@ import { Typography } from '@mui/material';
 import { FaImage } from 'react-icons/fa';
 import useImageUpload from '../../../../hooks/useImageUpload';
 
+interface ImageUploadProps {
+  onImageUpload: (cloudUrl: string) => void;
+}
+
 /**
  * Component for selecting and uploading an image, which is used when adding
  * a photo to an outfit.
  */
-const ImageUpload = () => {
-  const { imageUrl, handleImageUpload, fileUploadRef, uploadImageDisplay } = useImageUpload();
+const ImageUpload = (props: ImageUploadProps) => {
+  const { onImageUpload } = props;
+  const { imageUrl, handleImageUpload, fileUploadRef, uploadImageDisplay } =
+    useImageUpload(onImageUpload);
 
   return (
     <Stack spacing={2} sx={{ width: '100%' }}>

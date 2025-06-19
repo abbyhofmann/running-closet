@@ -30,7 +30,8 @@ const useRatingForm = () => {
       !newOutfit.wearer?._id ||
       !newOutfit.workout?._id ||
       !newOutfit.dateWorn ||
-      !newOutfit.location
+      !newOutfit.location ||
+      !newOutfit.imageUrl
     ) {
       throw new Error('Missing required outfit fields.');
     }
@@ -58,6 +59,7 @@ const useRatingForm = () => {
         return a._id;
       }),
       newOutfit.shoes._id,
+      newOutfit.imageUrl,
     );
 
     if (!newOutfitCreated || !newOutfitCreated._id) {
