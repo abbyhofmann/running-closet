@@ -11,6 +11,7 @@ import {
   GenerateStaticMapImageRequest,
   GetHistoricalWeatherDataRequest,
   HourlyWeather,
+  UploadImageRequest,
 } from '../types';
 import {
   fetchUserByUsername,
@@ -36,6 +37,7 @@ import {
   fetchCoordinates,
   fetchStaticMapImage,
   fetchHistoricalWeatherData,
+  uploadImageToCloudinary,
 } from '../models/application';
 
 const outfitController = (socket: FakeSOSocket) => {
@@ -96,6 +98,15 @@ const outfitController = (socket: FakeSOSocket) => {
     !!req.body.coordinates.lat &&
     !!req.body.coordinates.lng &&
     !!req.body.dateTimeInfo;
+
+  /**
+   * Checks if the provided UploadImageRequest contains the necessary field.
+   *
+   * @param req UploadImageRequest object containing the URL of the image to upload.
+   * @returns `true` if the request is valid, otherwise `false`.
+   */
+  const isUploadImageRequestValid = (req: UploadImageRequest): boolean =>
+    !!req.body.urlImageToUpload && req.body.urlImageToUpload !== '';
 
   /**
    * Adds a new outfit to the database. The outfit request is validated and the outfit is then saved.
@@ -436,6 +447,29 @@ const outfitController = (socket: FakeSOSocket) => {
     }
   };
 
+  const uploadImage = async (req: UploadImageRequest, res: Response): Promise<void> => {
+    if (!isUploadImageRequestValid(req)) {
+      res.status(400).send('Invalid upload image data request body');
+      return;
+    }
+
+    const { urlImageToUpload } = req.body;
+
+    try {
+      const uploadedImageUrl = await uploadImageToCloudinary(urlImageToUpload);
+
+      if (uploadedImageUrl && 'error' in uploadedImageUrl) {
+        throw new Error(uploadedImageUrl.error);
+      }
+
+      console.log('json being sent: ', uploadedImageUrl.secure_url);
+
+      res.json(uploadedImageUrl.secure_url);
+    } catch (err) {
+      res.status(500).send(`Error when uploading image: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/createOutfit', createOutfit);
   router.get('/getAllOutfitItems/:uid', getAllOutfitItems);
@@ -445,6 +479,7 @@ const outfitController = (socket: FakeSOSocket) => {
   router.post('/forwardGeocodeLocation', forwardGeocodeLocation);
   router.post('/generateStaticMapImage', generateStaticMapImage);
   router.post('/getHistoricalWeatherData', getHistoricalWeatherData);
+  router.post('/uploadImage', uploadImage);
 
   return router;
 };

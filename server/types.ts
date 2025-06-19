@@ -1,3 +1,4 @@
+import { UploadApiResponse } from 'cloudinary';
 import { Request } from 'express';
 import { ObjectId } from 'mongodb';
 import { Server } from 'socket.io';
@@ -1086,3 +1087,36 @@ export interface FindUserByUserIdRequest extends Request {
     uid: string;
   };
 }
+
+/**
+ * Cloudinary response upon uploading an image to the cloud.
+ */
+export interface CloudinaryUploadResponse {
+    public_id: string,
+    version: number,
+    signature: string,
+    width: number,
+    height: number,
+    format: string,
+    resource_type: string,
+    created_at: Date,
+    bytes: number,
+    type: string,
+    url: string,
+    secure_url: string 
+}
+
+/**
+ * Interface for the request body when uploading an image to Cloudinary.
+ * - urlImageToUpload: Url of the image being uploaded.
+ */
+export interface UploadImageRequest {
+  body: {
+    urlImageToUpload: string;
+  };
+}
+
+/**
+ * Type representing the possible responses for an image upload-related operation.
+ */
+export type UploadImageResponse = UploadApiResponse | { error: string };

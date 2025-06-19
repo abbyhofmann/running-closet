@@ -8,6 +8,7 @@ import OutfitItemScroller from './outfitItemScroller';
 import useNewOutfitPage from '../../../hooks/useNewOutfitPage';
 import LocationInput from './newWorkoutPopup/locationInput';
 import ErrorPopup from './createOutfitErrorPopup/createOutfitErrorPopup';
+import ImageUpload from './imageUpload';
 
 /**
  * Renders a page where the user can create a new outfit.
@@ -169,6 +170,8 @@ const NewOutfitPage = () => {
           />
         </Paper>
       ))}
+
+      <ImageUpload />
 
       <Button
         variant='contained'

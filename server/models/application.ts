@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { QueryOptions } from 'mongoose';
 import sgMail from '@sendgrid/mail';
+import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
 import {
   Answer,
   AnswerResponse,
@@ -51,6 +52,8 @@ import {
   OutfitData,
   ForwardGeocodePayload,
   WeatherDay,
+  CloudinaryUploadResponse,
+  UploadImageResponse,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -2175,4 +2178,35 @@ export const fetchHistoricalWeatherData = async (
   const data = await res.json();
 
   return data.days[0];
+};
+
+/**
+ * Uploads an image to Cloudinary cloud storage.
+ *
+ * @param imageUrl Url of the image being uploaded.
+ * @returns The HTTPS url of where the image is stored in Cloudinary or error if upload fails.
+ */
+export const uploadImageToCloudinary = async (imageUrl: string): Promise<UploadImageResponse> => {
+  // Cloudinary configuration
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+
+  try {
+    // Upload the image
+    const uploadResult: UploadApiResponse | void = await cloudinary.uploader.upload(imageUrl);
+
+    if (!uploadResult) {
+      throw new Error('Image upload result is void');
+    }
+
+    console.log('upload result: ', uploadResult);
+    console.log('result url: ', uploadResult.secure_url);
+    return uploadResult;
+  } catch (err) {
+    console.log(err);
+    return { error: 'Error when uploading image' };
+  }
 };
