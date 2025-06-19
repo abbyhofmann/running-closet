@@ -450,11 +450,6 @@ const outfitController = (socket: FakeSOSocket) => {
   };
 
   const uploadImage = async (req: Request, res: Response): Promise<void> => {
-    // if (!isUploadImageRequestValid(req)) {
-    //   res.status(400).send('Invalid upload image data request body');
-    //   return;
-    // }
-
     if (!req.file || !req.file.buffer) {
       res.status(400).send('No file uploaded');
       return;
@@ -466,22 +461,6 @@ const outfitController = (socket: FakeSOSocket) => {
     } catch (err) {
       res.status(500).send(`Error uploading image: ${(err as Error).message}`);
     }
-
-    // const { imageToUpload } = req.body;
-
-    // try {
-    //   const uploadedImageUrl = await uploadImageToCloudinary(imageToUpload);
-
-    //   if (uploadedImageUrl && 'error' in uploadedImageUrl) {
-    //     throw new Error(uploadedImageUrl.error);
-    //   }
-
-    //   console.log('json being sent: ', uploadedImageUrl.secure_url);
-
-    //   res.json(uploadedImageUrl.secure_url);
-    // } catch (err) {
-    //   res.status(500).send(`Error when uploading image: ${(err as Error).message}`);
-    // }
   };
 
   // add appropriate HTTP verbs and their endpoints to the router.

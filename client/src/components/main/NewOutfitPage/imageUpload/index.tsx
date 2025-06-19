@@ -1,5 +1,8 @@
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import React, { useState, useRef, ChangeEvent } from 'react';
+import React, { useState, useRef } from 'react';
+import { Box, Stack } from '@mui/system';
+import { Typography } from '@mui/material';
+import { FaImage } from 'react-icons/fa';
 import { uploadImage } from '../../../../services/outfitService';
 
 const ImageUpload = () => {
@@ -15,8 +18,7 @@ const ImageUpload = () => {
 
   const uploadImageDisplay = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
-      const selectedImageFile = event.target.files?.[0]; // TODO - restrict to images
-      console.log('selectedImage: ', selectedImageFile);
+      const selectedImageFile = event.target.files?.[0];
       if (!selectedImageFile) return;
       setImageUrl('/uploading.gif');
 
@@ -25,9 +27,8 @@ const ImageUpload = () => {
       formData.append('file', selectedImageFile);
 
       const uploadedImageCloudUrl = await uploadImage(formData);
-      console.log('uploadedImageCloudUrl: ', uploadedImageCloudUrl);
       setImageUrl(uploadedImageCloudUrl);
-      // add url to outfit state
+      // TODO add url to outfit state
     } catch (error) {
       console.error(error);
       setImageUrl(defaultImage);
@@ -35,23 +36,47 @@ const ImageUpload = () => {
   };
 
   return (
-    <div className='relative h-96 w-96 m-8'>
-      <img src={imageUrl} alt='Uploaded outfit' className='h-96 w-96 rounded-full' />
+    <Stack spacing={2} sx={{ width: '100%' }}>
+      {/* label aligned to left */}
+      <Stack direction='row' alignItems='center' spacing={1}>
+        <Typography variant='h6' fontWeight='bold'>
+          Upload Outfit Photo
+        </Typography>
+        <FaImage color='#473BF0' size='20px' />
+      </Stack>
 
-      <form id='form' encType='multipart/form-data'>
-        {/* <IconButton type='submit' aria-label='search' size='small' onClick={handleImageUpload}>
-          <FileUploadIcon />
-        </IconButton> */}
-        <button
-          type='submit'
-          onClick={handleImageUpload}
-          className='flex-center absolute bottom-12 right-14 h-9 w-9 rounded-full'>
-          <FileUploadIcon />
-          {/* <img src={EditIcon} alt='Edit' className='object-cover' /> */}
-        </button>
-        <input type='file' id='file' ref={fileUploadRef} onChange={uploadImageDisplay} hidden />
-      </form>
-    </div>
+      {/* image remains centered */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'relative',
+        }}>
+        <img
+          src={imageUrl}
+          alt='Uploaded outfit'
+          style={{ width: 'auto', height: '450px', borderRadius: '12px' }}
+        />
+
+        <form id='form' encType='multipart/form-data'>
+          <button
+            type='submit'
+            onClick={handleImageUpload}
+            className='flex-center absolute bottom-6 right-6 h-9 w-9 rounded-full'>
+            <FileUploadIcon />
+          </button>
+          <input
+            type='file'
+            id='file'
+            accept='image/*'
+            ref={fileUploadRef}
+            onChange={uploadImageDisplay}
+            hidden
+          />
+        </form>
+      </Box>
+    </Stack>
   );
 };
 

@@ -171,7 +171,12 @@ const NewOutfitPage = () => {
         </Paper>
       ))}
 
-      <ImageUpload />
+      {/* image upload */}
+      <Paper
+        elevation={3}
+        sx={{ display: 'flex', justifyContent: 'center', p: 3, bgcolor: '#fafafa' }}>
+        <ImageUpload />
+      </Paper>
 
       <Button
         variant='contained'
