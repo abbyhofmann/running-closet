@@ -49,31 +49,31 @@ const useClothingItemForm = (clothingType: string) => {
       setShowCreateClothingItemError(false);
 
       if (clothingType === 'top') {
-        const newTop = await createTop(user._id!, brand, model, 'newTopUrl.com');
+        const newTop = await createTop(user._id!, brand, model);
         setOutfit({
           ...outfit,
           tops: [...outfit.tops, newTop],
         });
       } else if (clothingType === 'bottom') {
-        const newBottom = await createBottom(user._id!, brand, model, 'newTopUrl.com');
+        const newBottom = await createBottom(user._id!, brand, model);
         setOutfit({
           ...outfit,
           bottoms: [...outfit.bottoms, newBottom],
         });
       } else if (clothingType === 'accessory') {
-        const newAccessory = await createAccessory(user._id!, brand, model, 'newTopUrl.com');
+        const newAccessory = await createAccessory(user._id!, brand, model);
         setOutfit({
           ...outfit,
           accessories: [...outfit.accessories, newAccessory],
         });
       } else if (clothingType === 'outerwear') {
-        const newOuterwear = await createOuterwear(user._id!, brand, model, 'newTopUrl.com');
+        const newOuterwear = await createOuterwear(user._id!, brand, model);
         setOutfit({
           ...outfit,
           outerwear: [...outfit.outerwear, newOuterwear],
         });
       } else if (clothingType === 'shoe') {
-        const newShoe = await createShoe(user._id!, brand, model, 'newTopUrl.com');
+        const newShoe = await createShoe(user._id!, brand, model);
         setOutfit({
           ...outfit,
           shoes: newShoe,

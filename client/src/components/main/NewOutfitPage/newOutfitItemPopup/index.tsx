@@ -14,24 +14,21 @@ const NewOutfitItemPopup = (props: NewOutfitItemPopupProps) => {
   const { open, onClose, outfitItemType, onNewOutfitItemCreated } = props;
   const [brand, setBrand] = useState<string>('');
   const [model, setModel] = useState<string>('');
-  const [s3url, setS3url] = useState<string>('');
   const { user } = useUserContext();
 
   // clear the form after the object is created
   const resetForm = () => {
     setBrand('');
     setModel('');
-    setS3url('');
   };
 
   const handleSubmit = () => {
-    if (brand && model && s3url) {
+    if (brand && model) {
       const newOutfitItem: OutfitItem = {
         runner: user,
         outfits: [],
         brand,
         model,
-        s3PhotoUrl: s3url,
       };
 
       onNewOutfitItemCreated(newOutfitItem);
@@ -62,22 +59,12 @@ const NewOutfitItemPopup = (props: NewOutfitItemPopupProps) => {
           onChange={e => setBrand(e.target.value)}
         />
         <TextField
-          autoFocus
           margin='dense'
           label='Model'
           type='text'
           fullWidth
           value={model}
           onChange={e => setModel(e.target.value)}
-        />
-        <TextField
-          autoFocus
-          margin='dense'
-          label='Photo URL'
-          type='text'
-          fullWidth
-          value={s3url}
-          onChange={e => setS3url(e.target.value)}
         />
         <Button
           onClick={handleSubmit}

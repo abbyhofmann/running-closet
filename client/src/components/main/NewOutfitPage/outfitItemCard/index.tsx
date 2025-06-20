@@ -17,7 +17,7 @@ const OutfitItemCard = ({
       'cursor': 'pointer',
       'minWidth': 150, // default width
       'maxWidth': '100%', // allow for expansion of width if needed
-      'height': 140, // fixed height
+      'height': 100, // fixed height
       'flexDirection': 'column',
       'flex': '0 0 auto',
       '&:hover': {
@@ -64,17 +64,6 @@ const OutfitItemCard = ({
           wordBreak: 'break-word',
         }}>
         {outfitItem.model}
-      </Typography>
-      <Typography
-        variant='body2'
-        sx={{
-          color: 'rgba(0,0,0,0.6)',
-          textAlign: 'center',
-          width: '100%',
-          overflowWrap: 'break-word',
-          wordBreak: 'break-word',
-        }}>
-        {outfitItem.s3PhotoUrl}
       </Typography>
     </Box>
   </Card>

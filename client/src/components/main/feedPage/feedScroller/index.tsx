@@ -30,13 +30,13 @@ const FeedScroller = ({ outfits }: { outfits: Outfit[] }) => {
             '&::-webkit-scrollbar-thumb': { backgroundColor: 'gray', borderRadius: 4 },
           }}>
           {outfits.map(outfit => {
-            if (!outfit._id || !outfit.wearer || !outfit.dateWorn) return null;
+            if (!outfit._id || !outfit.wearer || !outfit.dateWorn || !outfit.imageUrl) return null;
             return (
               <FeedCard
                 key={outfit._id}
                 username={outfit.wearer.username}
                 dateWorn={outfit.dateWorn}
-                photoUrl={'/run_outfit.jpg'}
+                photoUrl={outfit.imageUrl}
                 clickOutfit={() => navigate(`/outfit/${outfit._id}`)}
               />
             );

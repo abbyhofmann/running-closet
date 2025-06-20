@@ -9,12 +9,12 @@ const topController = (socket: FakeSOSocket) => {
   /**
    * Checks if the provided create top request contains the required fields.
    *
-   * @param req The request object containing the new top's runner id, brand, model, and photo URL.
+   * @param req The request object containing the new top's runner id, brand, and model.
    *
    * @returns `true` if the request is valid, otherwise `false`.
    */
   function isCreateTopRequestValid(req: CreateTopRequest): boolean {
-    return !!req.body.runnerId && !!req.body.brand && !!req.body.model && !!req.body.s3PhotoUrl;
+    return !!req.body.runnerId && !!req.body.brand && !!req.body.model;
   }
 
   /**
@@ -33,7 +33,7 @@ const topController = (socket: FakeSOSocket) => {
       return;
     }
 
-    const { runnerId, brand, model, s3PhotoUrl } = req.body;
+    const { runnerId, brand, model } = req.body;
 
     try {
       // get the user (runner) object
@@ -47,7 +47,6 @@ const topController = (socket: FakeSOSocket) => {
         runner: user,
         brand,
         model,
-        s3PhotoUrl,
         outfits: [],
       };
 

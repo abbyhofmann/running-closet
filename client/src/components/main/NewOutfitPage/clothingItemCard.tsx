@@ -8,7 +8,6 @@ interface ClothingItemCardProps {
   clothingItemType: string;
   brand: string;
   model: string;
-  s3PhotoUrl: string;
 }
 
 /**
@@ -16,10 +15,10 @@ interface ClothingItemCardProps {
  * @returns the clothing item card element.
  */
 const ClothingItemCard = (props: ClothingItemCardProps) => {
-  const { clothingItemType, brand, model, s3PhotoUrl } = props;
+  const { clothingItemType, brand, model } = props;
 
   return (
-    <Card key={s3PhotoUrl}>
+    <Card>
       <Box
         sx={{
           display: 'flex',

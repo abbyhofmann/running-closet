@@ -134,12 +134,7 @@ const useNewOutfitPage = () => {
 
   const handleCreateTop = async (newOutfitItem: OutfitItem | null) => {
     if (user._id && newOutfitItem) {
-      const newTop = await createTop(
-        user._id,
-        newOutfitItem?.brand,
-        newOutfitItem?.model,
-        newOutfitItem?.s3PhotoUrl,
-      );
+      const newTop = await createTop(user._id, newOutfitItem?.brand, newOutfitItem?.model);
       setCreatedNewOutfitItem(newTop);
     }
   };
@@ -158,12 +153,7 @@ const useNewOutfitPage = () => {
 
   const handleCreateBottom = async (newOutfitItem: OutfitItem | null) => {
     if (user._id && newOutfitItem) {
-      const newBottom = await createBottom(
-        user._id,
-        newOutfitItem?.brand,
-        newOutfitItem?.model,
-        newOutfitItem?.s3PhotoUrl,
-      );
+      const newBottom = await createBottom(user._id, newOutfitItem?.brand, newOutfitItem?.model);
       setCreatedNewOutfitItem(newBottom);
     }
   };
@@ -190,7 +180,6 @@ const useNewOutfitPage = () => {
         user._id,
         newOutfitItem?.brand,
         newOutfitItem?.model,
-        newOutfitItem?.s3PhotoUrl,
       );
       setCreatedNewOutfitItem(newAccessory);
     }
@@ -218,7 +207,6 @@ const useNewOutfitPage = () => {
         user._id,
         newOutfitItem?.brand,
         newOutfitItem?.model,
-        newOutfitItem?.s3PhotoUrl,
       );
       setCreatedNewOutfitItem(newOuterwearItem);
     }
@@ -233,12 +221,7 @@ const useNewOutfitPage = () => {
 
   const handleCreateShoe = async (newOutfitItem: OutfitItem | null) => {
     if (user._id && newOutfitItem) {
-      const newShoe = await createShoe(
-        user._id,
-        newOutfitItem?.brand,
-        newOutfitItem?.model,
-        newOutfitItem?.s3PhotoUrl,
-      );
+      const newShoe = await createShoe(user._id, newOutfitItem?.brand, newOutfitItem?.model);
       setCreatedNewOutfitItem(newShoe);
     }
   };

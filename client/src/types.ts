@@ -117,7 +117,6 @@ export interface Rating {
  * - runner: The runner who created the outfit item.
  * - brand: The brand name of the outfit item.
  * - model: The model name of the outfit item.
- * - s3PhotoUrl: The URL link to the S3 bucket where the outfit item photo is stored.
  * - outfits: The list of outfits that the outfit item is a part of.
  */
 export interface OutfitItem {
@@ -125,7 +124,6 @@ export interface OutfitItem {
   runner: User;
   brand: string;
   model: string;
-  s3PhotoUrl: string;
   outfits: Outfit[];
 }
 
@@ -144,7 +142,6 @@ export interface AllOutfitItemsObject {
  * - runner: The runner who created the top.
  * - brand: The brand name of the top.
  * - model: The model name of the top.
- * - s3PhotoUrl: The URL link to the S3 bucket where the top photo is stored.
  * - outfits: The list of outfits that the top is a part of.
  */
 export interface Top extends OutfitItem {}
@@ -155,7 +152,6 @@ export interface Top extends OutfitItem {}
  * - runner: The runner who created the bottom.
  * - brand: The brand name of the bottom.
  * - model: The model name of the bottom.
- * - s3PhotoUrl: The URL link to the S3 bucket where the bottom photo is stored.
  * - outfits: The list of outfits that the bottom is a part of.
  */
 export interface Bottom extends OutfitItem {}
@@ -166,7 +162,6 @@ export interface Bottom extends OutfitItem {}
  * - runner: The runner who created the accessory.
  * - brand: The brand name of the accessory.
  * - model: The model name of the accessory.
- * - s3PhotoUrl: The URL link to the S3 bucket where the accessory photo is stored.
  * - outfits: The list of outfits that the accessory is a part of.
  */
 export interface Accessory extends OutfitItem {}
@@ -177,7 +172,6 @@ export interface Accessory extends OutfitItem {}
  * - runner: The runner who created the outerwear item.
  * - brand: The brand name of the outerwear item.
  * - model: The model name of the outerwear item.
- * - s3PhotoUrl: The URL link to the S3 bucket where the outerwear photo is stored.
  * - outfits: The list of outfits that the outerwear item is a part of.
  */
 export interface Outerwear extends OutfitItem {}
@@ -188,7 +182,6 @@ export interface Outerwear extends OutfitItem {}
  * - runner: The runner who created the shoe.
  * - brand: The brand name of the shoe.
  * - model: The model name of the shoe.
- * - s3PhotoUrl: The URL link to the S3 bucket where the shoe photo is stored.
  * - outfits: The list of outfits that the shoe is a part of.
  */
 export interface Shoe extends OutfitItem {}
