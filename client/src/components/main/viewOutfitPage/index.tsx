@@ -62,7 +62,7 @@ const ViewOutfitPage = () => {
 
   return (
     <div>
-      <Stack sx={{ color: '#32292F' }}>
+      <Stack sx={{ color: '#32292F' }} alignItems='center'>
         <Stack alignItems='center' direction='column'>
           {/* general info (date/time and location) */}
           <Stack alignItems='center' direction='column' sx={{ mb: '30px' }}>
@@ -174,28 +174,32 @@ const ViewOutfitPage = () => {
           </Stack>
         </Stack>
 
-        {/* outfit item table */}
-        <Box className='outfit_items_columns right_padding'>
-          {/* map must be converted to array to call map on it */}
-          {Array.from(outfitItemNamesAndIcons.entries()).map(([name, Icon]) => (
-            <Box
-              key={name}
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                textAlign: 'center', // center text within children
-                gap: 1, // optional spacing between title and items
-              }}>
-              <Box>
-                <Typography variant='h5'>
-                  <strong>{name}</strong>
-                </Typography>
-                <Icon color='#473BF0' size={'40px'} />
+        <Stack alignItems='start' direction='row'>
+          {/* outfit item table */}
+          <Box className='outfit_items_columns'>
+            {/* map must be converted to array to call map on it */}
+            {Array.from(outfitItemNamesAndIcons.entries()).map(([name, Icon]) => (
+              <Box
+                key={name}
+                sx={{
+                  width: '250px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  textAlign: 'center', // center text within children
+                  gap: 1, // optional spacing between title and items
+                }}>
+                <Box>
+                  <Typography variant='h5'>
+                    <strong>{name}</strong>
+                  </Typography>
+                  <Icon color='#473BF0' size={'40px'} />
+                </Box>
+                {renderOutfitItems(name, outfit)}
               </Box>
-              {renderOutfitItems(name, outfit)}
-            </Box>
-          ))}
-        </Box>
+            ))}
+          </Box>
+          <img className='feedImage' src={outfit.imageUrl} />
+        </Stack>
       </Stack>
     </div>
   );

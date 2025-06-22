@@ -1,6 +1,16 @@
 .outfit_items_columns {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-gap: 80px 20px;
-  }
+    grid-template-rows: repeat(3);
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px 20px;
+    margin: 25px;
+}
+
+.feedImage {
+  width:100%;
+  max-width:450px;      
+  height: auto;
+  margin-top: 8px;
+  border-radius: 5px;
+}
   
