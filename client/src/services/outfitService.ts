@@ -169,6 +169,24 @@ const uploadImage = async (formData: FormData): Promise<string> => {
   return res.data;
 };
 
+/**
+ * Function to get outfits by filter.
+ *
+ * @param order - The order in which to fetch outfits. Default is 'newest'.
+ * @param search - The search term to filter outfits. Default is an empty string.
+ * @throws Error if there is an issue fetching or filtering outfits.
+ */
+const getOutfitsByFilter = async (
+  order: string = 'newest',
+  search: string = '',
+): Promise<Outfit[]> => {
+  const res = await api.get(`${OUTFIT_API_URL}/getOutfit?order=${order}&search=${search}`);
+  if (res.status !== 200) {
+    throw new Error('Error when fetching or filtering outfits');
+  }
+  return res.data;
+};
+
 export {
   createOutfit,
   getAllOutfitItems,
@@ -179,4 +197,5 @@ export {
   generateStaticMapImage,
   getHistoricalWeatherData,
   uploadImage,
+  getOutfitsByFilter,
 };

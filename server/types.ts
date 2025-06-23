@@ -1089,3 +1089,15 @@ export interface UploadImageRequest {
  * Type representing the possible responses for an image upload-related operation.
  */
 export type UploadImageResponse = UploadApiResponse | { error: string };
+
+/**
+ * Interface for the request query to find outfits using a search string, which contains:
+ * - order - The order in which to sort the outfits
+ * - search - The search string used to find outfits
+ */
+export interface FindOutfitRequest extends Request {
+  query: {
+    order: OrderType;
+    search: string;
+  };
+}

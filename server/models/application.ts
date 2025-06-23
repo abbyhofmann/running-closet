@@ -54,6 +54,7 @@ import {
   ForwardGeocodePayload,
   WeatherDay,
   UploadImageResponse,
+  OutfitItem,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -2203,5 +2204,120 @@ export const uploadImageToCloudinary = async (buffer: Buffer): Promise<UploadApi
     });
 
     streamifier.createReadStream(buffer).pipe(stream);
+  });
+};
+
+/**
+ * Gets the newest outfits from a list, sorted by the date worn in descending order.
+ *
+ * @param {Outfit[]} olist - The list of outfits to sort
+ *
+ * @returns {Outfit[]} - The sorted list of outfits
+ */
+const sortOutfitsByNewest = (olist: Outfit[]): Outfit[] =>
+  olist.sort((a, b) => {
+    if (a.dateWorn > b.dateWorn) {
+      return -1;
+    }
+
+    if (a.dateWorn < b.dateWorn) {
+      return 1;
+    }
+
+    return 0;
+  });
+
+/**
+ * Retrieves outfits from the database, ordered by the specified criteria.
+ *
+ * @param {OrderType} order - The order type to filter the outfits
+ *
+ * @returns {Promise<Outfit[]>} - Promise that resolves to a list of ordered outfits
+ */
+export const getOutfitsByOrder = async (order: OrderType): Promise<Outfit[]> => {
+  try {
+    const olist: Outfit[] = [];
+    // if (order === 'active') {
+    //   qlist = await QuestionModel.find().populate([
+    //     { path: 'tags', model: TagModel },
+    //     { path: 'answers', model: AnswerModel },
+    //   ]);
+    //   return sortQuestionsByActive(qlist);
+    // }
+    // qlist = await QuestionModel.find().populate([{ path: 'tags', model: TagModel }]);
+    // if (order === 'unanswered') {
+    //   return sortQuestionsByUnanswered(qlist);
+    // }
+
+    // TODO - add cases for other order criteria
+    // if (order === 'newest') {
+    return sortOutfitsByNewest(olist);
+    // }
+    // return sortQuestionsByMostViews(qlist);
+  } catch (error) {
+    return [];
+  }
+};
+
+const checkKeywordInUser = (u: User, keyword: string): boolean =>
+  u.username.includes(keyword) || u.firstName.includes(keyword) || u.lastName.includes(keyword);
+
+const checkKeywordInOutfitItems = (outfitItems: OutfitItem[], keyword: string): boolean => {
+  for (const item of outfitItems) {
+    if (item.brand.includes(keyword) || item.model.includes(keyword)) {
+      return true;
+    }
+  }
+  return false;
+};
+
+/**
+ * Checks if any keywords in the provided list exist in a given outfit's location, name
+ * of the wearer of the outfit, and brands/models of outfit items.
+ *
+ * @param {Outfit} q - The outfit to check
+ * @param {string[]} keywordlist - The list of keywords to check for
+ *
+ * @returns {boolean} - `true` if any keyword is present, `false` otherwise.
+ */
+const checkKeywordInOutfit = (o: Outfit, keywordlist: string[]): boolean => {
+  for (const w of keywordlist) {
+    if (
+      o.location.includes(w) ||
+      checkKeywordInUser(o.wearer, w) ||
+      checkKeywordInOutfitItems(o.tops, w) ||
+      checkKeywordInOutfitItems(o.bottoms, w) ||
+      checkKeywordInOutfitItems(o.outerwear, w) ||
+      checkKeywordInOutfitItems(o.accessories, w) ||
+      o.shoes.brand.includes(w) ||
+      o.shoes.model.includes(w)
+    ) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+/**
+ * Filters outfits based on a search string containing keywords.
+ *
+ * @param {Outfit[]} olist - The list of outfits to filter
+ * @param {string} search - The search string containing keywords
+ *
+ * @returns {Outfit[]} - The filtered list of outfits matching the search criteria
+ */
+export const filterOutfitsBySearch = (olist: Outfit[], search: string): Outfit[] => {
+  const searchKeyword = parseKeyword(search);
+
+  if (!olist || olist.length === 0) {
+    return [];
+  }
+  return olist.filter((o: Outfit) => {
+    if (searchKeyword.length === 0) {
+      return true;
+    }
+
+    return checkKeywordInOutfit(o, searchKeyword);
   });
 };

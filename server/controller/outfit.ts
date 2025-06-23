@@ -13,6 +13,7 @@ import {
   GetHistoricalWeatherDataRequest,
   HourlyWeather,
   UploadImageRequest,
+  FindOutfitRequest,
 } from '../types';
 import {
   fetchUserByUsername,
@@ -39,6 +40,8 @@ import {
   fetchStaticMapImage,
   fetchHistoricalWeatherData,
   uploadImageToCloudinary,
+  getOutfitsByOrder,
+  filterOutfitsBySearch,
 } from '../models/application';
 
 const upload = multer({ storage: multer.memoryStorage() });
@@ -467,6 +470,24 @@ const outfitController = (socket: FakeSOSocket) => {
     }
   };
 
+  const getOutfitsByFilter = async (req: FindOutfitRequest, res: Response): Promise<void> => {
+    const { order } = req.query;
+    const { search } = req.query;
+    try {
+      const olist: Outfit[] = await getOutfitsByOrder(order);
+
+      // Filter by search keyword
+      const resolist: Outfit[] = await filterOutfitsBySearch(olist, search);
+      res.json(resolist);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        res.status(500).send(`Error when fetching outfits by filter: ${err.message}`);
+      } else {
+        res.status(500).send(`Error when fetching outfits by filter`);
+      }
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/createOutfit', createOutfit);
   router.get('/getAllOutfitItems/:uid', getAllOutfitItems);
@@ -477,6 +498,7 @@ const outfitController = (socket: FakeSOSocket) => {
   router.post('/generateStaticMapImage', generateStaticMapImage);
   router.post('/getHistoricalWeatherData', getHistoricalWeatherData);
   router.post('/uploadImage', upload.single('file'), uploadImage);
+  router.get('/getOutfit', getOutfitsByFilter);
 
   return router;
 };
