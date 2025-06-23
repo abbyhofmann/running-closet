@@ -2236,7 +2236,16 @@ const sortOutfitsByNewest = (olist: Outfit[]): Outfit[] =>
  */
 export const getOutfitsByOrder = async (order: OrderType): Promise<Outfit[]> => {
   try {
-    const olist: Outfit[] = [];
+    const olist: Outfit[] = await OutfitModel.find().populate([
+      { path: 'wearer', model: UserModel },
+      { path: 'rating', model: RatingModel },
+      { path: 'tops', model: TopModel },
+      { path: 'bottoms', model: BottomModel },
+      { path: 'outerwear', model: OuterwearModel },
+      { path: 'accessories', model: AccessoryModel },
+      { path: 'shoes', model: ShoeModel },
+      { path: 'workout', model: WorkoutModel },
+    ]);
     // if (order === 'active') {
     //   qlist = await QuestionModel.find().populate([
     //     { path: 'tags', model: TagModel },
@@ -2264,7 +2273,7 @@ const checkKeywordInUser = (u: User, keyword: string): boolean =>
 
 const checkKeywordInOutfitItems = (outfitItems: OutfitItem[], keyword: string): boolean => {
   for (const item of outfitItems) {
-    if (item.brand.includes(keyword) || item.model.includes(keyword)) {
+    if (item.brand.toLowerCase().includes(keyword) || item.model.toLowerCase().includes(keyword)) {
       return true;
     }
   }
@@ -2282,20 +2291,20 @@ const checkKeywordInOutfitItems = (outfitItems: OutfitItem[], keyword: string): 
  */
 const checkKeywordInOutfit = (o: Outfit, keywordlist: string[]): boolean => {
   for (const w of keywordlist) {
+    const wLower = w.toLowerCase();
     if (
-      o.location.includes(w) ||
-      checkKeywordInUser(o.wearer, w) ||
-      checkKeywordInOutfitItems(o.tops, w) ||
-      checkKeywordInOutfitItems(o.bottoms, w) ||
-      checkKeywordInOutfitItems(o.outerwear, w) ||
-      checkKeywordInOutfitItems(o.accessories, w) ||
-      o.shoes.brand.includes(w) ||
-      o.shoes.model.includes(w)
+      o.location.toLowerCase().includes(wLower) ||
+      checkKeywordInUser(o.wearer, wLower) ||
+      checkKeywordInOutfitItems(o.tops, wLower) ||
+      checkKeywordInOutfitItems(o.bottoms, wLower) ||
+      checkKeywordInOutfitItems(o.outerwear, wLower) ||
+      checkKeywordInOutfitItems(o.accessories, wLower) ||
+      o.shoes.brand.toLowerCase().includes(wLower) ||
+      o.shoes.model.toLowerCase().includes(wLower)
     ) {
       return true;
     }
   }
-
   return false;
 };
 
