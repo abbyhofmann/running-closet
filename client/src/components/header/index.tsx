@@ -8,6 +8,7 @@ import './index.css';
 import LogoutButton from './logoutButton';
 import CurrentUserProfile from './currentUserProfile';
 import NavigationMenu from './navigationMenu';
+import OutfitsSearchBar from '../main/viewAllOutfitsPage/outfitsSearchBar';
 
 /**
  * Header component that renders the main title and a search bar.
@@ -75,20 +76,7 @@ const Header = () => {
             paddingRight: 2,
           }}>
           <CurrentUserProfile />
-          <Box
-            component='form'
-            sx={{ '& > :not(style)': { m: 'auto', width: '20ch' } }}
-            autoComplete='off'>
-            <TextField
-              id='searchBar'
-              placeholder='Search ...'
-              value={val}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              sx={{ color: '#32292F', border: '#32292F' }}
-              variant='outlined'
-            />
-          </Box>
+          <OutfitsSearchBar />
           <NotificationDropdown />
           <LogoutButton />
         </Box>

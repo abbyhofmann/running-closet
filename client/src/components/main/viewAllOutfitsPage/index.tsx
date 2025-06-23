@@ -1,62 +1,16 @@
 import { Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Box } from '@mui/system';
-import { OrderType, Outfit } from '../../../types';
 import OutfitsSearchBar from './outfitsSearchBar';
-import { getOutfitsByFilter } from '../../../services/outfitService';
 import OutfitCard from '../myOutfitsPage/outfitCard';
+import useViewAllOutfitsPage from '../../../hooks/useViewAllOutfitsPage';
 
 // TODO - hook for this
 const ViewAllOutfitsPage = () => {
-  const [searchParams] = useSearchParams();
-  const [outfits, setOutfits] = useState<Outfit[]>([]);
-  const [titleText, setTitleText] = useState<string>('All Outfits');
-  const [search, setSearch] = useState<string>('');
-  const [outfitOrder, setOutfitOrder] = useState<OrderType>('newest');
-
-  const navigate = useNavigate();
-
-  const handleClickOutfit = (outfitId: string) => {
-    navigate(`/outfit/${outfitId}`);
-  };
-
-  useEffect(() => {
-    let pageTitle = 'All Outfits';
-    let searchString = '';
-
-    const searchQuery = searchParams.get('search');
-
-    if (searchQuery) {
-      pageTitle = 'Search Results';
-      searchString = searchQuery;
-    }
-
-    setTitleText(pageTitle);
-    setSearch(searchString);
-  }, [searchParams]);
-
-  useEffect(() => {
-    /**
-     * Function to fetch outfits based on the search.
-     */
-    const fetchData = async () => {
-      try {
-        const res = await getOutfitsByFilter(outfitOrder, search);
-        setOutfits(res || []);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, [outfitOrder, search]);
+  const { titleText, outfits, handleClickOutfit } = useViewAllOutfitsPage();
 
   return (
     <Box>
-      <Typography>All Outfits / Search Results</Typography>
-      <OutfitsSearchBar />
+      {/* <OutfitsSearchBar /> */}
       <Typography>{titleText}</Typography>
       <Box id='outfit_list' className='outfit_list'>
         {outfits.map((o, idx) =>

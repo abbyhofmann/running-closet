@@ -1,6 +1,9 @@
 import { ChangeEvent, useState, KeyboardEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * Custom hook for outfit search bar related operations.
+ */
 const useOutfitsSearchBar = () => {
   const navigate = useNavigate();
 

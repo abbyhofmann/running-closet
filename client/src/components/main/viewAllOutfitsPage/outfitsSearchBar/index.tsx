@@ -2,6 +2,9 @@ import { TextField } from '@mui/material';
 import { Box } from '@mui/system';
 import useOutfitsSearchBar from '../../../../hooks/useOutfitsSearchBar';
 
+/**
+ * Search bar component for searching outfits.
+ */
 const OutfitsSearchBar = () => {
   const { val, handleInputChange, handleKeyDown } = useOutfitsSearchBar();
   return (
