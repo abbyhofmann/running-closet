@@ -5,6 +5,7 @@ import { Box } from '@mui/system';
 import StarIcon from '@mui/icons-material/Star';
 import { OutfitData } from '../../../../types';
 import useOutfitCard from '../../../../hooks/useOutfitCard';
+import useUserContext from '../../../../hooks/useUserContext';
 
 /**
  * Props for the outfit card component.
@@ -28,6 +29,7 @@ interface OutfitCardProps {
  */
 const OutfitCard = ({ o, clickOutfit }: OutfitCardProps) => {
   const { formatDateTime } = useOutfitCard();
+  const { user } = useUserContext();
 
   return (
     <Box sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
@@ -37,6 +39,11 @@ const OutfitCard = ({ o, clickOutfit }: OutfitCardProps) => {
         onClick={() => {
           clickOutfit(o.oid);
         }}>
+        {user.username !== o.wearer && (
+          <Typography sx={{ fontStyle: 'italic' }}>
+            <strong>{o.wearer}</strong>
+          </Typography>
+        )}
         <Typography variant='h6' sx={{ color: '#302B27', marginY: 'auto' }}>
           <strong>{formatDateTime(o.dateWorn)}</strong>
         </Typography>
