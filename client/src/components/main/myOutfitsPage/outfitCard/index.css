@@ -1,12 +1,8 @@
 .outfitNode {
-    place-self: center;
-    padding: 5%;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    justify-items: center;
     align-items: center;
-    width: 90%;
-    height: 100%;
   }
 
   .outfitCardImage {
@@ -14,5 +10,4 @@
     height: 500px; /* set fixed height */
     object-fit: cover; /* crop to fit the container without stretching */
     border-radius: 5px;
-    margin-top: 8px;
   }

@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import { Box, Stack } from '@mui/system';
-import './index.css';
+import '../myOutfitsPage/index.css';
 import OutfitCard from '../myOutfitsPage/outfitCard';
 import useViewAllOutfitsPage from '../../../hooks/useViewAllOutfitsPage';
 
@@ -14,7 +14,7 @@ const ViewAllOutfitsPage = () => {
           <strong>{titleText}</strong>
         </Typography>
       </Stack>
-      <Box id='all_outfit_list' className='all_outfit_list'>
+      <Box className='my_outfit_list'>
         {outfits.map((o, idx) =>
           o._id && o.dateWorn && o.location && o.workout && o.rating && o.wearer && o.imageUrl ? ( // TODO - maybe clean this up and not have ternary operation return null...
             <OutfitCard

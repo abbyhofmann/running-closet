@@ -1,0 +1,8 @@
+.my_outfit_list {
+    grid-template-columns: repeat(3, 1fr);
+    display: grid;
+    gap: 70px; /* consistent spacing */
+    padding: 16px;
+    margin: 20px;
+  }
+  

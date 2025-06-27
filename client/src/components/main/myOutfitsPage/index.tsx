@@ -1,6 +1,7 @@
 import { Box, Stack } from '@mui/system';
 import { Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import './index.css';
 import OutfitCard from './outfitCard';
 import useMyOutfitsPage from '../../../hooks/useMyOutfitsPage';
 
@@ -20,7 +21,7 @@ const MyOutfitsPage = () => {
             <strong>{userPartialOutfits.length} Outfits</strong>
           </Typography>
         </Stack>
-        <Box className='tag_list right_padding'>
+        <Box className='my_outfit_list'>
           {userPartialOutfits.map(outfit => (
             <OutfitCard key={outfit.oid} o={outfit} clickOutfit={handleClickOutfit} />
           ))}

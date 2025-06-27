@@ -1,5 +1,5 @@
 import './index.css';
-import { Card, Rating, Typography } from '@mui/material';
+import { Card, Paper, Rating, Typography } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import { Box } from '@mui/system';
 import StarIcon from '@mui/icons-material/Star';
@@ -32,9 +32,26 @@ const OutfitCard = ({ o, clickOutfit }: OutfitCardProps) => {
   const { user } = useUserContext();
 
   return (
-    <Box sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+    <Paper
+      elevation={3}
+      sx={{
+        p: 2,
+        bgcolor: '#fafafa',
+        width: '100%',
+        // height: '100%',
+        cursor: 'pointer',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}>
       <Card
-        sx={{ bgcolor: grey[300] }}
+        sx={{
+          width: '100%',
+          bgcolor: grey[300],
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
         className='outfitNode'
         onClick={() => {
           clickOutfit(o.oid);
@@ -60,9 +77,11 @@ const OutfitCard = ({ o, clickOutfit }: OutfitCardProps) => {
           size='large'
           emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize='inherit' />}
         />
-        <img className='outfitCardImage' src={o.imageUrl} />
+        <Box sx={{ padding: 1 }}>
+          <img className='outfitCardImage' src={o.imageUrl} />
+        </Box>
       </Card>
-    </Box>
+    </Paper>
   );
 };
 
