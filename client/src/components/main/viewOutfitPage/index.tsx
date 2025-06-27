@@ -6,10 +6,13 @@ import { Outfit } from '../../../types';
 import './index.css';
 import OutfitItemCard from '../newOutfitPage/outfitItemCard';
 import useViewOutfitPage from '../../../hooks/useViewOutfitPage';
+import useUserContext from '../../../hooks/useUserContext';
 
 const ViewOutfitPage = () => {
   const { outfit, isShoe, formatDateTime, mapImageUrl, outfitItemNamesAndIcons } =
     useViewOutfitPage();
+
+  const { user } = useUserContext();
 
   const renderOutfitItems = (name: string, outfitToRender: Outfit | null) => {
     const key = name.toLowerCase();
@@ -66,6 +69,12 @@ const ViewOutfitPage = () => {
         <Stack alignItems='center' direction='column'>
           {/* general info (date/time and location) */}
           <Stack alignItems='center' direction='column' sx={{ mb: '30px' }}>
+            {/* username display logic */}
+            {user.username !== outfit.wearer?.username && (
+              <Typography variant='h4' sx={{ color: '#473BF0' }}>
+                <strong>{outfit.wearer?.username}</strong>
+              </Typography>
+            )}
             <Typography fontStyle='italic' variant='h3'>
               <strong>{formatDateTime(outfit?.dateWorn ? outfit?.dateWorn : new Date())}</strong>
             </Typography>
@@ -198,7 +207,7 @@ const ViewOutfitPage = () => {
               </Box>
             ))}
           </Box>
-          <img className='feedImage' src={outfit.imageUrl} />
+          <img className='viewOutfitPageImage' src={outfit.imageUrl} />
         </Stack>
       </Stack>
     </div>

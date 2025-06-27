@@ -9,14 +9,14 @@ import useOutfitCard from '../../../../hooks/useOutfitCard';
  *
  * username: the username of the user who created the outfit.
  * dateWorn: the date (date/time) the user wore the outfit.
- * photoUrl: the s3 url of the outfit's photo. - TODO: make this not hard-coded by adding a photo field to
+ * imageUrl: the s3 url of the outfit's photo. - TODO: make this not hard-coded by adding a photo field to
  *      outfit and making it required to upload a photo upon outfit creation! also, should location be added?
  * clickOutfit - Function to handle the outfit click event.
  */
 interface FeedCardProps {
   username: string;
   dateWorn: Date;
-  photoUrl: string;
+  imageUrl: string;
   clickOutfit: () => void;
 }
 
@@ -28,7 +28,7 @@ interface FeedCardProps {
  * @returns The FeedCard component.
  */
 const FeedCard = (props: FeedCardProps) => {
-  const { username, dateWorn, photoUrl, clickOutfit } = props;
+  const { username, dateWorn, imageUrl, clickOutfit } = props;
   const { formatDateTime } = useOutfitCard();
 
   return (
@@ -45,7 +45,7 @@ const FeedCard = (props: FeedCardProps) => {
         <Typography variant='h6' sx={{ color: '#302B27', marginY: 'auto' }}>
           <strong>{formatDateTime(dateWorn)}</strong>
         </Typography>
-        <img className='feedImage' src={photoUrl} />
+        <img className='feedImage' src={imageUrl} />
       </Card>
     </Box>
   );

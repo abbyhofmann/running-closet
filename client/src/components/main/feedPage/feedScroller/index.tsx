@@ -36,7 +36,7 @@ const FeedScroller = ({ outfits }: { outfits: Outfit[] }) => {
                 key={outfit._id}
                 username={outfit.wearer.username}
                 dateWorn={outfit.dateWorn}
-                photoUrl={outfit.imageUrl}
+                imageUrl={outfit.imageUrl}
                 clickOutfit={() => navigate(`/outfit/${outfit._id}`)}
               />
             );

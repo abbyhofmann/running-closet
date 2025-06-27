@@ -39,9 +39,9 @@ const OutfitCard = ({ o, clickOutfit }: OutfitCardProps) => {
         onClick={() => {
           clickOutfit(o.oid);
         }}>
-        {user.username !== o.wearer && (
+        {user.username !== o.wearerUsername && (
           <Typography sx={{ fontStyle: 'italic' }}>
-            <strong>{o.wearer}</strong>
+            <strong>{o.wearerUsername}</strong>
           </Typography>
         )}
         <Typography variant='h6' sx={{ color: '#302B27', marginY: 'auto' }}>
@@ -60,6 +60,7 @@ const OutfitCard = ({ o, clickOutfit }: OutfitCardProps) => {
           size='large'
           emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize='inherit' />}
         />
+        <img className='outfitCardImage' src={o.imageUrl} />
       </Card>
     </Box>
   );

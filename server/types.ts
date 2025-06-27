@@ -954,19 +954,21 @@ export type MultipleOutfitResponse = Outfit[] | { error: string };
 /**
  * Interface represents the data for an outfit.
  * - oid: The unique identifier for the outfit.
- * - wearer: The username of the wearer of the outfit.
+ * - wearerUsername: The username of the wearer of the outfit.
  * - dateWorn: The date the outfit was worn.
  * - location: The location the outfit was worn.
  * - runType: The type of run for which the outfit was worn.
  * - stars: The number of stars given to the outfit.
+ * - imageUrl: Url of outfit image stored in s3.
  */
 export interface OutfitData {
   oid: string;
-  wearer: string;
+  wearerUsername: string;
   dateWorn: Date;
   location: string;
   runType: string;
   stars: number;
+  imageUrl: string;
 }
 
 /**
